@@ -10,6 +10,21 @@ var ChartbuilderLocalStorageAPI = require("./util/ChartbuilderLocalStorageAPI");
 var Chartbuilder = require("./components/Chartbuilder.jsx");
 var container = document.querySelector(".chartbuilder-container");
 
+var _validateMeta = function(metadata) {
+	var errorMessArr = [];
+
+	if ( !(typeof metadata.title === 'string' && metadata.title.length > 0) ) {
+		errorMessArr.push({
+							location : "",
+							text : "The title field is empty",
+							type : "error"
+						});
+
+	}
+
+	return errorMessArr;
+};
+
 document.addEventListener("DOMContentLoaded", function() {
 	document.cookie = "authed=yes";
 	// Initialize data from localStorage
@@ -19,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		<Chartbuilder
 			showMobilePreview={false}
 			enableJSONExport={true}
+			validateMeta={_validateMeta}
 		/>,
 	container );
 
