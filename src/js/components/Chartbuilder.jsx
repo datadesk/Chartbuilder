@@ -25,6 +25,7 @@ var ChartMetadata = require("./ChartMetadata.jsx");
 var ChartTypeSelector = require("./ChartTypeSelector.jsx");
 var RendererWrapper = require("./RendererWrapper.jsx");
 var LocalStorageTimer = require("./LocalStorageTimer.jsx");
+var Instructions = require("./Instructions.jsx");
 
 var AlertGroup = require("chartbuilder-ui").AlertGroup;
 
@@ -200,6 +201,7 @@ var Chartbuilder = React.createClass({
 					{mobilePreview}
 				</div>
 				<div className="chartbuilder-editor">
+				  <Instructions/>
 					<ChartTypeSelector
 						metadata={this.state.metadata}
 						chartProps={this.state.chartProps}

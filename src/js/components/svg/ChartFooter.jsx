@@ -54,7 +54,7 @@ var ChartFooter = React.createClass({
 		var sourceText;
 		var sourceLine;
 		if (this.props.metadata.source && this.props.metadata.source !== "") {
-			sourceText = "Data: " + this.props.metadata.source;
+			sourceText = "Source: " + this.props.metadata.source;
 		} else {
 			sourceText = "";
 		}
@@ -96,7 +96,7 @@ var ChartFooter = React.createClass({
 				text={this.props.metadata.credit}
 				className="svg-text-credit"
 				onUpdate={this.props.onUpdate}
-				translate={[this.props.translate.left, this.props.translate.bottom - this.props.extraHeight]}
+				translate={[this.props.translate.right, this.props.translate.bottom - this.props.extraHeight]}
 				updateState={this._handleStateUpdate.bind(null, "creditWidth")}
 			/>
 		);
@@ -126,11 +126,14 @@ var ChartCreditText = React.createClass({
 	},
 
 	render: function() {
+		var classNameDirection = "right";
+		console.log(this);
+
 		return (
 			<SvgText
 				text={this.props.text}
 				translate={this.props.translate}
-				className="svg-text-credit"
+				className={"svg-text-credit " + classNameDirection}
 			/>
 		);
 	}
@@ -156,12 +159,12 @@ var ChartSourceText = React.createClass({
 		var maxWidth;
 
 		if (this.state.ownLine) {
-			translate = [_translate.left, _translate.bottom - this.props.extraHeight + this.props.heightPerLine];
-			classNameDirection = "left"
+			translate = [_translate.right, _translate.bottom - this.props.extraHeight + this.props.heightPerLine];
+			classNameDirection = "right";
 			maxWidth = this.props.chartWidth;
 		} else {
-			translate = [_translate.right, _translate.bottom];
-			classNameDirection = "right"
+			translate = [_translate.left, _translate.bottom];
+			classNameDirection = "left";
 			maxWidth = this.props.chartWidth - this.props.creditDimensions.width - this.props.creditSourcePadding;
 		}
 
