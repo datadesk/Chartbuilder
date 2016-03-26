@@ -110,6 +110,7 @@ var DataInput = React.createClass({
 			<div className={this.props.className}
 				onDragOver={this._toggleDropState}
 			>
+				<p>The first row must be column headers!</p>
 				<TextArea
 					value={this.props.chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}
