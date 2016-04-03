@@ -137,9 +137,9 @@ var defaultProps = {
 	 */
 	metadata: {
 		chartType: 'xy',
-		title: "",
+		title: "Enter chart title",
 		source: "",
-		credit: "@latimesgraphics",
+		credit: "Your Name @latimesgraphics",
 		size: "auto"
 	}
 };

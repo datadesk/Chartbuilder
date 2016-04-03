@@ -107,6 +107,7 @@ var ChartMetadata = React.createClass({
 					<span>Set title, source, credit and size</span>
 				</h2>
 				{textInputs}
+				<h3>Size</h3>
 				{this.props.additionalComponents}
 				<ButtonGroup
 					buttons={chart_sizes}

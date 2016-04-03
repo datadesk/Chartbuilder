@@ -118,9 +118,9 @@ var defaultProps = {
 	metadata: {
 		id: null,
 		chartType: "chartgrid",
-		title: "",
+		title: "Enter chart title",
 		source: "",
-		credit: "Made with Chartbuilder",
+		credit: "Your Name @latimesgraphics",
 		size: "auto"
 	}
 };
