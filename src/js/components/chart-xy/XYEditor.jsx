@@ -37,7 +37,7 @@ var ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
 /* Available XY chart type options */
 var typeOptions = [
 	{ title: "Line", content: "Line", value: "line" },
-	{ title: "Columns", content: "Columns", value: "column" },
+	{ title: "Bars", content: "Bars", value: "column" },
 	{ title: "Dots", content: "Dots", value: "scatterPlot" }
 ];
 
