@@ -139,7 +139,7 @@ var defaultProps = {
 		chartType: 'xy',
 		title: "Enter chart title",
 		source: "",
-		credit: "Your Name @latimesgraphics",
+		credit: "Your Name / @latimesgraphics",
 		size: "auto"
 	}
 };

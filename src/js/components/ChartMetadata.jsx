@@ -28,8 +28,8 @@ var chart_sizes = [
 		value: "medium"
 	},
 	{
-		title: "Long spot chart",
-		content: "Long spot chart",
+		title: "Deep spot chart",
+		content: "Deep spot chart",
 		value: "spotLong"
 	},
 	{

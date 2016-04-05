@@ -172,7 +172,7 @@ var XYEditor = React.createClass({
 				<div className="editor-options">
 					<h2>
 						<span className="step-number">2</span>
-						<span>Input your data</span>
+						<span>Paste your data</span>
 					</h2>
 					<DataInput
 						errors={inputErrors}
@@ -183,7 +183,7 @@ var XYEditor = React.createClass({
 				<div className="editor-options">
 					<h2>
 						<span className="step-number">3</span>
-						<span>Set series options</span>
+						<span>Set chart type</span>
 					</h2>
 				<XY_resetLabels
 					annotations={chartProps._annotations}
