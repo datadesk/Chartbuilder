@@ -308,14 +308,6 @@ var XY_chartSettings = React.createClass({
 							labelText="Color"
 						/>
 					</div>
-					<div className="section axissection">
-						<Toggle
-							className={"toggle-" + chartSetting.colorIndex}
-							onToggle={this._handleSettingsUpdate.bind(null, this.props.index, "altAxis")}
-							label="Right axis"
-							toggled={chartSetting.altAxis}
-						/>
-					</div>
 				</div>
 
 				<div className="section typesection">
