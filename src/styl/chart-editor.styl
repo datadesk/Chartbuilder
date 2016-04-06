@@ -95,7 +95,7 @@ span.step-number
 		flex-direction(column)
 		transform(translateX(4%))
 		label
-			color #bebebe
+			color $color-editor-text
 			font-size 16px
 			line-height 24px
 		@media screen and (max-width: $single_column_breakpoint)
@@ -132,6 +132,12 @@ span.step-number
 	width 100%
 	label
 		pointer-events none
+
+.cb-button-group .cb-button
+	color $color-editor-disabled
+	&.active
+		color $color-editor-text
+
 
 .colorsection
 	float right
@@ -254,7 +260,6 @@ span.step-number
 			label
 				font-size 16px
 				line-height 24px
-				color #bebebe
 			@media screen and (max-width: $single_column_breakpoint)
 				width 100%
 

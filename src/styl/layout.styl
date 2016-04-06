@@ -103,7 +103,7 @@ canvas
 
 .clearfix
 	clear both
-	
+
 *
 	-ms-overflow-style none
 
@@ -135,7 +135,7 @@ canvas
 	width $chart-area-width
 	left ($chart-area-padding / 2)
 	top $header-height
-	overflow-y scroll
+	overflow-y auto
 	overflow-x hidden
 	height 100%
 	max-width 100%
@@ -182,7 +182,7 @@ canvas
 	padding 0 10px
 	min-width 100px
 	@import 'chart-editor.styl'
-	
+
 @media screen and (max-width: $single_column_breakpoint)
 	.header
 		position relative

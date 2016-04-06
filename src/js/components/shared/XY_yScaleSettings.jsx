@@ -107,14 +107,14 @@ var XY_yScaleSettings = React.createClass({
 		var title_block = (
 			<h2 className="scale-option-title">
 				<span className="step-number">{this.props.stepNumber}</span>
-				{this.props.titleOverride ? this.props.titleOverride : "Configure the " + this.props.name + " axis"}
+				{this.props.titleOverride ? this.props.titleOverride : "Configure the vertical axis (y-axis)"}
 			</h2>
 			);
 
 		if (this.props.stepNumber === "") {
 			title_block = (
 				<h2 className="scale-option-title">
-					{this.props.titleOverride ? this.props.titleOverride : "Configure the " + this.props.name + " axis"}
+					{this.props.titleOverride ? this.props.titleOverride : "Configure the vertical axis (y-axis)"}
 				</h2>
 				);
 		}
@@ -122,19 +122,6 @@ var XY_yScaleSettings = React.createClass({
 		return (
 			<div className={this.props.className}>
 				{title_block}
-				<TextInput
-					className="scale-option"
-					onChange={this._handleScaleUpdate.bind(null, "prefix")}
-					value={currScale.prefix}
-					placeholder="Prefix"
-				/>
-				<TextInput
-					id="suffix"
-					className="scale-option"
-					onChange={this._handleScaleUpdate.bind(null, "suffix")}
-					value={currScale.suffix}
-					placeholder="Suffix"
-				/>
 				<div className="scale-tangle-inputs">
 					<LabelledTangle
 						label="Minimum"
@@ -172,6 +159,19 @@ var XY_yScaleSettings = React.createClass({
 						className="scale-reset"
 					/>
 				</div>
+				<TextInput
+					className="scale-option"
+					onChange={this._handleScaleUpdate.bind(null, "prefix")}
+					value={currScale.prefix}
+					placeholder="Prefix"
+				/>
+				<TextInput
+					id="suffix"
+					className="scale-option"
+					onChange={this._handleScaleUpdate.bind(null, "suffix")}
+					value={currScale.suffix}
+					placeholder="Suffix"
+				/>
 				{errors}
 			</div>
 		);

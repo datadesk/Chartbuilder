@@ -308,8 +308,15 @@ var XY_chartSettings = React.createClass({
 							labelText="Color"
 						/>
 					</div>
+					<div className="section axissection">
+						<Toggle
+							className={"toggle-" + chartSetting.colorIndex}
+							onToggle={this._handleSettingsUpdate.bind(null, this.props.index, "primaryData")}
+							label="Primary data"
+							toggled={chartSetting.primaryData}
+						/>
+					</div>
 				</div>
-
 				<div className="section typesection">
 					<ButtonGroup
 						className="button-group-wrapper"
@@ -318,7 +325,6 @@ var XY_chartSettings = React.createClass({
 						value={chartSetting.type}
 					/>
 				</div>
-
 				<div className="clearfix"></div>
 			</div>
 		);

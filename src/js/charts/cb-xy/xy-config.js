@@ -111,7 +111,8 @@ var defaultProps = {
 			{
 				altAxis: false,
 				type: "line",
-				colorIndex: 0
+				colorIndex: 0,
+				primaryData: false
 			}
 		],
 		extraPadding: {
@@ -145,7 +146,7 @@ var defaultProps = {
 };
 
 var xy_config = new ChartConfig({
-	displayName: "XY Chart",
+	displayName: "Single Chart",
 	parser: require("./parse-xy"),
 	calculateDimensions: require("./xy-dimensions"),
 	display: display,
