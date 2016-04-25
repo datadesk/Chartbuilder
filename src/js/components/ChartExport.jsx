@@ -171,7 +171,6 @@ var ChartExport = React.createClass({
 				/>
 			);
 		}
-
 		if (this.props.enableJSONExport) {
 			chartExportButtons.push(
 				<Button
