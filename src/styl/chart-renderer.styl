@@ -65,6 +65,10 @@ svg
     &.leftAxis
       text
         text-anchor start
+      .tick
+        stroke-dasharray 2,4px
+        &.zero
+          stroke-dasharray none
 
     &.rightAxis
       text
