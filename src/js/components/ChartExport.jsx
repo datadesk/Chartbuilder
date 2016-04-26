@@ -116,10 +116,20 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
+	_saveSVGToServer: function(filename, uri) {
+		var params = "name="+filename+"&svg="+encodeURIComponent(uri);
+		console.log(params);
+		var postrequest = new XMLHttpRequest();
+		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-php/chartbuilder-writer-2.0.php", true);
+		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		postrequest.send(params);
+	},
+
 	downloadSVG: function() {
 		var filename = this._makeFilename("svg");
 		var chart = this._addIDsForIllustrator(this.state.chartNode);
 		var autoClickDownload = this._autoClickDownload;
+		var saveSVGToServer = this._saveSVGToServer;
 		saveSvgAsPng.svgAsDataUri(chart, {
 			cleanFontDefs: true,
 			fontFamilyRemap: {
@@ -127,8 +137,10 @@ var ChartExport = React.createClass({
 				"Khula-Regular": "Khula",
 			}
 		}, function(uri) {
+			saveSVGToServer(filename, uri);
 			autoClickDownload(filename, uri);
 		});
+
 	},
 
 	downloadJSON: function() {
@@ -157,7 +169,7 @@ var ChartExport = React.createClass({
 				key="png-export"
 				className="export-button"
 				onClick={this.downloadPNG}
-				text="Image"
+				text="PNG Image"
 			/>
 		];
 
