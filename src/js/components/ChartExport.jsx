@@ -86,10 +86,27 @@ var ChartExport = React.createClass({
 		return chart[0][0];
 	},
 
+	_getDateString: function() {
+		// Return date string as YYYY-MM-DD
+		var d = new Date();
+	    var dd = d.getDate();
+	    var mm = d.getMonth()+1; //January is 0!
+	    var yyyy = d.getFullYear();
+
+	    if(dd<10){
+            dd='0'+dd
+        }
+        if(mm<10){
+            mm='0'+mm
+        }
+        var dateString = "-" + yyyy + "-" + mm + "-" + dd;
+        return dateString;
+	},
+
 	_makeFilename: function(extension) {
-		var filename = this.props.metadata.title;
+		var filename = this.props.metadata.title.toLowerCase() + this._getDateString();
 		return [
-			filename.replace(/\s/g, "_"),
+			filename.replace(/\s/g, "-"),
 			extension
 		].join(".");
 	},
