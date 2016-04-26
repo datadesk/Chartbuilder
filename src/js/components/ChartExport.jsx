@@ -87,15 +87,9 @@ var ChartExport = React.createClass({
 	},
 
 	_makeFilename: function(extension) {
-		var filename = this.props.data.reduce(function(a, b, i) {
-			if (a.length === 0) {
-				return b.name;
-			} else {
-				return [a, b.name].join("_");
-			}
-		}, this.props.metadata.title);
+		var filename = this.props.metadata.title;
 		return [
-			(filename + "_chartbuilder").replace(/\s/g, "_"),
+			filename.replace(/\s/g, "_"),
 			extension
 		].join(".");
 	},
@@ -118,7 +112,6 @@ var ChartExport = React.createClass({
 
 	_saveSVGToServer: function(filename, uri) {
 		var params = "name="+filename+"&svg="+encodeURIComponent(uri);
-		console.log(params);
 		var postrequest = new XMLHttpRequest();
 		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-php/chartbuilder-writer-2.0.php", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
