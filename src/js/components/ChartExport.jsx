@@ -104,7 +104,7 @@ var ChartExport = React.createClass({
 	},
 
 	_makeFilename: function(extension) {
-		var filename = this.props.metadata.title.toLowerCase() + this._getDateString();
+		var filename = "la-g-" + this.props.metadata.title.toLowerCase() + this._getDateString();
 		return [
 			filename.replace(/\s/g, "-"),
 			extension
