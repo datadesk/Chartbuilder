@@ -143,6 +143,9 @@ var ChartExport = React.createClass({
 		saveSvgAsPng.svgAsDataUri(chart, {
 			cleanFontDefs: true,
 			fontFamilyRemap: {
+				"Benton Gothic Regular": "BentonGothic-Regular",
+				"Benton Gothic Bold": "BentonGothic-Bold",
+				"Benton Gothic Black": "BentonGothic-Black",
 				"Khula-Light": "Khula Light",
 				"Khula-Regular": "Khula",
 			}
