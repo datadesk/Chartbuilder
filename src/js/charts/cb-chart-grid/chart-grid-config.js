@@ -120,7 +120,8 @@ var defaultProps = {
 		chartType: "chartgrid",
 		title: "Enter chart title",
 		source: "",
-		credit: "Your Name / @latimesgraphics",
+		slug: "la-g-",
+		credit: "Your Name",
 		size: "auto"
 	}
 };

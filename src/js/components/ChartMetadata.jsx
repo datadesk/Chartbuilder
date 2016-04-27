@@ -40,9 +40,10 @@ var chart_sizes = [
 ];
 
 var text_input_values = [
-	{ name: "title", content: "Title", default: "", isRequired: true },
-	{ name: "credit", content: "Credit", default: "Your name / @latimesgraphics" },
-	{ name: "source", content: "Source",  default: "something"}
+	{ name: "title", content: "Title", isRequired: true },
+	{ name: "credit", content: "Credit"},
+	{ name: "source", content: "Source"},
+	{ name: "slug",  content: "Slug (auto-generated)"}
 ];
 
 /**
@@ -61,9 +62,10 @@ var ChartMetadata = React.createClass({
 		metadata: PropTypes.shape({
 			chartType: PropTypes.string.isRequired,
 			size: PropTypes.string.isRequired,
+			slug: PropTypes.string,
 			source: PropTypes.string,
 			credit: PropTypes.string,
-			title: PropTypes.string
+			title: PropTypes.string,
 		}),
 		stepNumber: PropTypes.string,
 		additionalComponents: PropTypes.array
@@ -77,18 +79,48 @@ var ChartMetadata = React.createClass({
 
 	// Update metadata store with new settings
 	_handleMetadataUpdate: function(k, v) {
+		console.log(k,v);
 		ChartViewActions.updateMetadata(k, v);
+	},
+
+	_getDateString: function() {
+		// Return date string as YYYY-MM-DD
+		var d = new Date();
+	    var dd = d.getDate();
+	    var mm = d.getMonth()+1; //January is 0!
+	    var yyyy = d.getFullYear();
+
+	    if(dd<10){
+            dd='0'+dd
+        }
+        if(mm<10){
+            mm='0'+mm
+        }
+        var dateString = "-" + yyyy + "-" + mm + "-" + dd;
+        return dateString;
+	},
+
+	_slugify: function() {
+		var slug = "la-g-" + this.props.metadata.title.toLowerCase() + this._getDateString();
+		// Switch spaces to slugs
+		slug = slug.replace(/\s/g, "-");
+		// Trim special characters
+		slug = slug.replace(/[^\w-]+/g, "");
+		return slug;
 	},
 
 	render: function() {
 		var metadata = this.props.metadata;
-		// console.log("metadata", this.props.metadata);
+
 		if (this.props.additionalComponents.length > 0) {
 			this.props.additionalComponents.forEach(function(c, i) {
 				c.props.onUpdate = this._handleMetadataUpdate;
 				c.props.value = metadata[c.key] || "";
 			}, this);
 		}
+
+		metadata.slug = this._slugify();
+
 		// Create text input field for each metadata textInput
 		var textInputs = text_input_values.map(function(textInput) {
 			return <ChartMetadataText
@@ -130,7 +162,7 @@ var ChartMetadataText = React.createClass({
 			<div>
 				<TextInput
 					value={this.props.value}
-					className="meta-option"
+					className={"meta-option " + this.props.name}
 					onChange={this.props.onChange.bind(null, this.props.name)}
 					placeholder={this.props.placeholder}
 					isRequired={this.props.isRequired}

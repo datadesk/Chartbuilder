@@ -215,7 +215,7 @@ var Chartbuilder = React.createClass({
 					{mobilePreview}
 				</div>
 				<div className="chartbuilder-editor">
-				  <Instructions/>
+				  	<Instructions/>
 					<ChartTypeSelector
 						metadata={this.state.metadata}
 						chartProps={this.state.chartProps}

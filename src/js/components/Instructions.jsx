@@ -3,7 +3,6 @@ var React = require("react");
 var Instructions = React.createClass({
 
 	render: function() {
-		var self = this;
 		return (
 		        <div className="page-header">
 			        <h1 className="chartbuilder-title">Chartbuilder</h1>
