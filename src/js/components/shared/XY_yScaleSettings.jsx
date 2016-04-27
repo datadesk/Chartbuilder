@@ -122,6 +122,7 @@ var XY_yScaleSettings = React.createClass({
 		return (
 			<div className={this.props.className}>
 				{title_block}
+				<p>Click and drag or double-click to edit the numeric fields</p>
 				<div className="scale-tangle-inputs">
 					<LabelledTangle
 						label="Minimum"
