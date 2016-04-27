@@ -81,6 +81,7 @@ var ChartTypeSelctor = React.createClass({
 				<span className="step-number">1</span>
 				<span>Select chart type</span>
 			</h2>
+			<p>For a vertical bar chart, choose "Grid" and select "Bars" below in step 3.</p>
 			<ButtonGroup
 				buttons={this.state.chartConfig}
 				onClick={this._handleChartTypeChange}
