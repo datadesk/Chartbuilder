@@ -68,6 +68,17 @@ var ChartFooter = React.createClass({
 		return sourceLine;
 	},
 
+	_createCreditLine: function() {
+		var creditText;
+
+		if (this.props.metadata.credit && this.props.metadata.credit !== "") {
+			creditText = this.props.metadata.credit + " / @latimesgraphics";
+		} else {
+			creditText = "@latimesgraphics";
+		}
+		return creditText;
+	},
+
 	render: function() {
 		var sourceLineText = this._createSourceLine();
 		var chartSource = null;
@@ -91,9 +102,10 @@ var ChartFooter = React.createClass({
 			);
 		}
 
+		var creditLineText = this._createCreditLine();
 		chartCredit = (
 			<ChartCreditText
-				text={this.props.metadata.credit}
+				text={creditLineText}
 				className="svg-text-credit"
 				onUpdate={this.props.onUpdate}
 				translate={[this.props.translate.right, this.props.translate.bottom - this.props.extraHeight]}
@@ -127,7 +139,6 @@ var ChartCreditText = React.createClass({
 
 	render: function() {
 		var classNameDirection = "right";
-		console.log(this);
 
 		return (
 			<SvgText

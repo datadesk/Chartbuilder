@@ -40,9 +40,9 @@ var chart_sizes = [
 ];
 
 var text_input_values = [
-	{ name: "title", content: "Title", isRequired: true },
-	{ name: "credit", content: "Credit" },
-	{ name: "source", content: "Source" }
+	{ name: "title", content: "Title", default: "", isRequired: true },
+	{ name: "credit", content: "Credit", default: "Your name / @latimesgraphics" },
+	{ name: "source", content: "Source",  default: "something"}
 ];
 
 /**
@@ -82,7 +82,7 @@ var ChartMetadata = React.createClass({
 
 	render: function() {
 		var metadata = this.props.metadata;
-
+		// console.log("metadata", this.props.metadata);
 		if (this.props.additionalComponents.length > 0) {
 			this.props.additionalComponents.forEach(function(c, i) {
 				c.props.onUpdate = this._handleMetadataUpdate;

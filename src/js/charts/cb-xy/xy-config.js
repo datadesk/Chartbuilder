@@ -50,7 +50,7 @@ var display = {
 	margin: {
 		top: "0.8em",
 		right: "0.25em",
-		bottom: "0.15em",
+		bottom: "0.25em",
 		left: "0.25em"
 	},
 	padding: {
@@ -140,7 +140,7 @@ var defaultProps = {
 		chartType: 'xy',
 		title: "Enter chart title",
 		source: "",
-		credit: "Your Name / @latimesgraphics",
+		credit: "",
 		size: "auto"
 	}
 };
