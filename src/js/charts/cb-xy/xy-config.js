@@ -140,7 +140,7 @@ var defaultProps = {
 		chartType: 'xy',
 		title: "Enter chart title",
 		source: "",
-		credit: "",
+		credit: "Your name",
 		size: "auto"
 	}
 };

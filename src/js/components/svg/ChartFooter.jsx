@@ -71,10 +71,10 @@ var ChartFooter = React.createClass({
 	_createCreditLine: function() {
 		var creditText;
 
-		if (this.props.metadata.credit && this.props.metadata.credit !== "") {
-			creditText = this.props.metadata.credit + " / @latimesgraphics";
+		if (this.props.metadata.credit === "" || this.props.metadata.credit === "Your name") {
+			creditText =  "@latimesgraphics";
 		} else {
-			creditText = "@latimesgraphics";
+			creditText = this.props.metadata.credit + " / @latimesgraphics";
 		}
 		return creditText;
 	},
