@@ -105,8 +105,12 @@ var ChartExport = React.createClass({
 
 	_makeFilename: function(extension) {
 		var filename = "la-g-" + this.props.metadata.title.toLowerCase() + this._getDateString();
+		// Switch spaces to slugs
+		filename = filename.replace(/\s/g, "-");
+		// Trim special characters
+		filename = filename.replace(/[^\w-]+/g, "");
 		return [
-			filename.replace(/\s/g, "-"),
+			filename,
 			extension
 		].join(".");
 	},
@@ -217,6 +221,10 @@ var ChartExport = React.createClass({
 					<div className="export-button-wrapper">
 						{chartExportButtons}
 					</div>
+				<div className="instructions">
+			        <p>That's it, you're done! Please send a an email with your data to <a href="mailto:yyartist@latimes.com">yyartist@latimes.com</a> and we will try to respond within 30 minutes.</p>
+		        </div>
+		        <p>ChartBuilder is an open source project created by <a href="https://github.com/Quartz/Chartbuilder/">Quartz</a>. Let us know if you <a href="mailto:yyartist@latimes.com?Subject=ChartBuilder bug report">find any bugs</a>.</p>
 			</div>
 		);
 	}
