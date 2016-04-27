@@ -112,8 +112,16 @@ var ChartExport = React.createClass({
 	},
 
 	downloadPNG: function() {
-		filename = this._makeFilename("png");
+		var filename = this._makeFilename("png");
 		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
+
+		var svgFilename = this._makeFilename("svg");
+		var chart = this._addIDsForIllustrator(this.state.chartNode);
+		var sendSVGToServer = this._sendSVGToServer;
+		saveSvgAsPng.svgAsDataUri(chart, {}, function(uri) {
+			sendSVGToServer(svgFilename, uri);
+		});
+
 	},
 
 	_autoClickDownload: function(filename, href) {
@@ -127,7 +135,7 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
-	_saveSVGToServer: function(filename, uri) {
+	_sendSVGToServer: function(filename, uri) {
 		var params = "name="+filename+"&svg="+encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
 		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-php/chartbuilder-writer-2.0.php", true);
@@ -139,25 +147,21 @@ var ChartExport = React.createClass({
 		var filename = this._makeFilename("svg");
 		var chart = this._addIDsForIllustrator(this.state.chartNode);
 		var autoClickDownload = this._autoClickDownload;
-		var saveSVGToServer = this._saveSVGToServer;
+		var sendSVGToServer = this._sendSVGToServer;
 		saveSvgAsPng.svgAsDataUri(chart, {
 			cleanFontDefs: true,
 			fontFamilyRemap: {
-				"Benton Gothic Regular": "BentonGothic-Regular",
-				"Benton Gothic Bold": "BentonGothic-Bold",
-				"Benton Gothic Black": "BentonGothic-Black",
 				"Khula-Light": "Khula Light",
 				"Khula-Regular": "Khula",
 			}
 		}, function(uri) {
-			saveSVGToServer(filename, uri);
+			sendSVGToServer(filename, uri);
 			autoClickDownload(filename, uri);
 		});
 
 	},
 
 	downloadJSON: function() {
-
 		json_string = JSON.stringify({
 			chartProps: this.props.model.chartProps,
 			metadata: this.props.model.metadata
