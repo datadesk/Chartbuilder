@@ -112,6 +112,9 @@ var ChartExport = React.createClass({
 		saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(uri){
 			sendToServer(filename, slug, uri);
 		});
+
+		this.downloadJSON(true);
+
 	},
 
 	_autoClickDownload: function(filename, href) {
@@ -156,17 +159,28 @@ var ChartExport = React.createClass({
 			sendToServer(pngFilename, slug, uri);
 		});
 
+		this.downloadJSON(true);
+
 	},
 
-	downloadJSON: function() {
+	downloadJSON: function(sendToServer) {
 		json_string = JSON.stringify({
 			chartProps: this.props.model.chartProps,
 			metadata: this.props.model.metadata
-		}, null, "\t")
+		}, null, "\t");
 
 		var filename = this._makeFilename("json");
-		var href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
-		this._autoClickDownload(filename, href);
+
+		// If sendToServer is specified, save it to our server.
+		// Otherwise, simply download the file (which we won't normally do.)
+		if (sendToServer) {
+			var base64json = btoa(json_string);
+			this._sendToServer(filename, this.props.metadata.slug, encodeURIComponent(base64json));
+		} else {
+			var href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
+			this._autoClickDownload(filename, href);
+		}
+
 	},
 
 	setAdvancedOptionState: function() {
