@@ -118,8 +118,8 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
-	_sendSVGToServer: function(filename, uri) {
-		var params = "name="+filename+"&svg="+encodeURIComponent(uri);
+	_sendSVGToServer: function(filename, slug, uri) {
+		var params = "name="+filename+"&slug="+slug+"&svg="+encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
 		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-php/chartbuilder-writer-2.0.php", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -128,6 +128,7 @@ var ChartExport = React.createClass({
 
 	downloadSVG: function() {
 		var filename = this._makeFilename("svg");
+		var slug = this.props.metadata.slug;
 		var chart = this._addIDsForIllustrator(this.state.chartNode);
 		var autoClickDownload = this._autoClickDownload;
 		var sendSVGToServer = this._sendSVGToServer;
@@ -138,7 +139,7 @@ var ChartExport = React.createClass({
 				"Khula-Regular": "Khula",
 			}
 		}, function(uri) {
-			sendSVGToServer(filename, uri);
+			sendSVGToServer(filename, slug, uri);
 			autoClickDownload(filename, uri);
 		});
 
