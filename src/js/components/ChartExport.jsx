@@ -96,15 +96,22 @@ var ChartExport = React.createClass({
 
 	downloadPNG: function() {
 		var filename = this._makeFilename("png");
-		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
-
+		var slug = this.props.metadata.slug;
 		var svgFilename = this._makeFilename("svg");
 		var chart = this._addIDsForIllustrator(this.state.chartNode);
-		var sendSVGToServer = this._sendSVGToServer;
+		var sendToServer = this._sendToServer;
+
+		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
+
+		// Save SVG to server
 		saveSvgAsPng.svgAsDataUri(chart, {}, function(uri) {
-			sendSVGToServer(svgFilename, uri);
+			sendToServer(svgFilename, slug, uri);
 		});
 
+		// Save PNG to server
+		saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(uri){
+			sendToServer(filename, slug, uri);
+		});
 	},
 
 	_autoClickDownload: function(filename, href) {
@@ -118,8 +125,8 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
-	_sendSVGToServer: function(filename, slug, uri) {
-		var params = "name="+filename+"&slug="+slug+"&svg="+encodeURIComponent(uri);
+	_sendToServer: function(filename, slug, uri) {
+		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
 		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-php/chartbuilder-writer-2.0.php", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -128,10 +135,12 @@ var ChartExport = React.createClass({
 
 	downloadSVG: function() {
 		var filename = this._makeFilename("svg");
+		var pngFilename = this._makeFilename("png");
 		var slug = this.props.metadata.slug;
 		var chart = this._addIDsForIllustrator(this.state.chartNode);
 		var autoClickDownload = this._autoClickDownload;
-		var sendSVGToServer = this._sendSVGToServer;
+		var sendToServer = this._sendToServer;
+
 		saveSvgAsPng.svgAsDataUri(chart, {
 			cleanFontDefs: true,
 			fontFamilyRemap: {
@@ -139,8 +148,12 @@ var ChartExport = React.createClass({
 				"Khula-Regular": "Khula",
 			}
 		}, function(uri) {
-			sendSVGToServer(filename, slug, uri);
+			sendToServer(filename, slug, uri);
 			autoClickDownload(filename, uri);
+		});
+
+		saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(uri){
+			sendToServer(pngFilename, slug, uri);
 		});
 
 	},
