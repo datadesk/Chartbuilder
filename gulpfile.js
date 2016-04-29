@@ -23,6 +23,10 @@ var uglify = require("gulp-uglify");
 var config = require("./gulp/config");
 var gutil = require("gulp-util")
 
+var fs = require('fs');
+var walk = require('fs-walk');
+
+
 gulp.task("stylus", function () {
 	return gulp.src(config.paths.src.styl + "/main.styl")
 		.pipe(stylus({
@@ -88,6 +92,18 @@ gulp.task("browserify:prod", function () {
 		.pipe(gulp.dest(config.paths.build.js));
 });
 
+gulp.task("browserify:archive:dev", function () {
+	var bundler = browserify(config.paths.src.js + "/archive.js", {
+		debug: true
+	})
+	.transform(envify({ NODE_ENV: "dev" }));
+
+	return bundler.bundle()
+		.pipe(source("archive-main.js"))
+		.pipe(gulp.dest(config.paths.build.js))
+		.pipe(reload({ stream:true }));
+});
+
 
 gulp.task("clean", function (done) {
 	del([
@@ -132,6 +148,18 @@ gulp.task("copy-assets", function () {
 		.pipe(reload({ stream: true }));
 });
 
+gulp.task("walk-archive", function() {
+	var paths = [];
+
+	walk.walkSync(config.paths.src.htdocs + "/archive", function(basedir, filename) {
+		paths.push(filename);
+	}, function(err) {
+	    if (err) console.log(err);
+	});
+
+	fs.writeFile(config.paths.src.js + '/filenames.json', paths.join("\n"));
+});
+
 gulp.task("browser-sync", ["watch"], function () {
 	browserSync({
 		server: { baseDir: "build" },
@@ -149,12 +177,15 @@ gulp.task("browser-sync-test", ["test-page-setup"], function () {
 // Serve files, watch for changes and update
 gulp.task("watch", [
 	"browserify:dev",
+	"browserify:archive:dev",
+	"walk-archive",
 	"stylus",
 	"copy-htdocs",
 	"copy-fonts",
 	"copy-assets"
 ], function (done) {
 	gulp.watch(config.paths.src.js + "/**", ["browserify:dev"]);
+	gulp.watch(config.paths.src.js + "/archive.js", ["browserify:archive:dev"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch(config.paths.src.htdocs + "/**", ["copy-htdocs"]);
 	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);
@@ -204,3 +235,6 @@ gulp.task("gh-pages", function() {
 	return gulp.src("./build/**/*")
 		.pipe(require("gulp-gh-pages")());
 });
+
+
+

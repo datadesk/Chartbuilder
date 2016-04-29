@@ -54,6 +54,7 @@
     "d3": "^3.5.5",
     "d4": "git://github.com/yanofsky/d4.git",
     "flux": "~2.1.1",
+    "fs-walk": "^0.0.1",
     "lodash": "^4.0.0",
     "markdown-it": "^6.0.0",
     "react": "^0.14.7",
