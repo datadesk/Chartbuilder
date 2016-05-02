@@ -151,13 +151,13 @@ gulp.task("copy-assets", function () {
 gulp.task("walk-storage-dir", function() {
 	var paths = [];
 
-	walk.walkSync(config.paths.src + "/storage", function(basedir, filename) {
-		paths.push(filename);
+	walk.dirsSync(config.paths.storage, function(basedir, dir) {
+		paths.push(dir);
 	}, function(err) {
 	    if (err) console.log(err);
 	});
 
-	fs.writeFile(config.paths.src.js + '/filenames.json', paths.join("\n"));
+	fs.writeFile(config.paths.storage + '/chart-slugs.txt', paths.join("\n"));
 });
 
 gulp.task("browser-sync", ["watch"], function () {

@@ -4,7 +4,8 @@ var dirs = {
 	build: './build',
 	tmp: './.tmp',
 	src: './src',
-	dist: './dist'
+	dist: './dist',
+	test: './test'
 };
 
 var paths = {
@@ -25,6 +26,7 @@ var paths = {
 	},
 	build: {
 		css: dirs.build + '/css',
+		data: dirs.build + '/data',
 		img: dirs.build + '/img',
 		js: dirs.build + '/js',
 		fonts: dirs.build + '/fonts',
@@ -33,7 +35,7 @@ var paths = {
 	dist: {
 		css: dirs.dist + '/css'
 	},
-	storage: "/chartbuilder-storage"
+	storage: dirs.src + "/htdocs/storage/data"
 };
 
 var server = {
