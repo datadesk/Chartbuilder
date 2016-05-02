@@ -131,7 +131,7 @@ var ChartExport = React.createClass({
 	_sendToServer: function(filename, slug, uri) {
 		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
-		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-php/chartbuilder-writer-2.0.php", true);
+		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-writer-2.0.php", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		postrequest.send(params);
 	},
