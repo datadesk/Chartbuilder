@@ -33,7 +33,7 @@ var paths = {
 	dist: {
 		css: dirs.dist + '/css'
 	},
-	archive: "/chartbuilder-archive"
+	storage: "/chartbuilder-storage"
 };
 
 var server = {

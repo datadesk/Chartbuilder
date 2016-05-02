@@ -8,3 +8,4 @@ build
 npm-debug.log
 bower_components/
 src/fonts
+src/storage
