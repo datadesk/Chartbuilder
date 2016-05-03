@@ -95,6 +95,7 @@ var ChartExport = React.createClass({
 	},
 
 	downloadPNG: function() {
+		var self = this;
 		var filename = this._makeFilename("png");
 		var slug = this.props.metadata.slug;
 		var svgFilename = this._makeFilename("svg");
@@ -103,17 +104,19 @@ var ChartExport = React.createClass({
 
 		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
 
-		// Save SVG to server
-		saveSvgAsPng.svgAsDataUri(chart, {}, function(uri) {
-			sendToServer(svgFilename, slug, uri);
-		});
-
 		// Save PNG to server
-		saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(uri){
-			sendToServer(filename, slug, uri);
+		saveSvgAsPng.svgAsPngUri(self.state.chartNode, { scale: 2.0 }, function(pngUri){
+			sendToServer(filename, slug, pngUri, function () {
+				// Save SVG to server
+				saveSvgAsPng.svgAsDataUri(chart, {}, function(uri) {
+					sendToServer(svgFilename, slug, uri, function() {
+						self.downloadJSON(true);
+					});
+				});
+			});
 		});
 
-		this.downloadJSON(true);
+
 
 	},
 
@@ -128,15 +131,25 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
-	_sendToServer: function(filename, slug, uri) {
+	_sendToServer: function(filename, slug, uri, cb) {
 		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
 		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-writer-2.0.php", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+		postrequest.onreadystatechange = function() {
+			if (postrequest.readyState == 4 && postrequest.status == 200) {
+				if (cb && typeof(cb) === "function") {
+					cb();
+				}
+			}
+		}
+
 		postrequest.send(params);
 	},
 
 	downloadSVG: function() {
+		var self = this;
 		var filename = this._makeFilename("svg");
 		var pngFilename = this._makeFilename("png");
 		var slug = this.props.metadata.slug;
@@ -151,15 +164,17 @@ var ChartExport = React.createClass({
 				"Khula-Regular": "Khula",
 			}
 		}, function(uri) {
-			sendToServer(filename, slug, uri);
 			autoClickDownload(filename, uri);
+
+			sendToServer(filename, slug, uri, function() {
+				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
+					sendToServer(pngFilename, slug, pngUri, function() {
+						self.downloadJSON(true);
+					});
+				});
+			});
 		});
 
-		saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(uri){
-			sendToServer(pngFilename, slug, uri);
-		});
-
-		this.downloadJSON(true);
 
 	},
 
