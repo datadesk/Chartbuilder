@@ -49,10 +49,11 @@ var StorageList = React.createClass({
 var StorageItem = React.createClass({
     render: function() {
         var imgUrl = "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-storage/" + this.props.slug + "/" + this.props.slug + ".png";
+        var linkUrl = "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-storage/" + this.props.slug + "/";
         return (
             <div className="storageItem">
-                <a href=""><img src={imgUrl}/></a>
-                <h2 className="itemSlug">{this.props.slug}</h2>
+                <a href={linkUrl}><img src={imgUrl}/></a>
+                <h2 className="itemSlug"><a href={linkUrl}>{this.props.slug}</a></h2>
             </div>
         );
     }
