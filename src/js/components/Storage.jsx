@@ -48,7 +48,7 @@ var StorageList = React.createClass({
 
 var StorageItem = React.createClass({
     render: function() {
-        var imgUrl = "../chartbuilder-storage/" + this.props.slug + "/" + this.props.slug + ".png";
+        var imgUrl = "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-storage/" + this.props.slug + "/" + this.props.slug + ".png";
         return (
             <div className="storageItem">
                 <a href=""><img src={imgUrl}/></a>

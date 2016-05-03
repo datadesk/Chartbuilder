@@ -23,9 +23,6 @@ var uglify = require("gulp-uglify");
 var config = require("./gulp/config");
 var gutil = require("gulp-util")
 
-var fs = require('fs');
-var walk = require('fs-walk');
-
 
 gulp.task("stylus", function () {
 	return gulp.src(config.paths.src.styl + "/main.styl")
@@ -69,6 +66,19 @@ gulp.task("browserify:dev", function () {
 		.pipe(reload({ stream:true }));
 });
 
+
+gulp.task("browserify:storage:dev", function () {
+	var bundler = browserify(config.paths.src.js + "/storage.js", {
+		debug: true
+	})
+	.transform(envify({ NODE_ENV: "dev" }));
+
+	return bundler.bundle()
+		.pipe(source("storage-main.js"))
+		.pipe(gulp.dest(config.paths.build.js))
+		.pipe(reload({ stream:true }));
+});
+
 gulp.task("browserify:test", function () {
 	var bundler = browserify("./test/test-page/main.js", {
 				debug: true
@@ -92,18 +102,6 @@ gulp.task("browserify:prod", function () {
 		.pipe(gulp.dest(config.paths.build.js));
 });
 
-
-gulp.task("browserify:storage:dev", function () {
-	var bundler = browserify(config.paths.src.js + "/storage.js", {
-		debug: true
-	})
-	.transform(envify({ NODE_ENV: "dev" }));
-
-	return bundler.bundle()
-		.pipe(source("storage-main.js"))
-		.pipe(gulp.dest(config.paths.build.js))
-		.pipe(reload({ stream:true }));
-});
 
 gulp.task("browserify:storage:prod", function () {
 	var bundler = browserify(config.paths.src.js + "/storage.js")
@@ -185,7 +183,7 @@ gulp.task("watch", [
 	"copy-assets"
 ], function (done) {
 	gulp.watch(config.paths.src.js + "/**", ["browserify:dev"]);
-	gulp.watch(config.paths.src.js + "/archive.js", ["browserify:storage:dev"]);
+	gulp.watch(config.paths.src.js + "/storage.js", ["browserify:storage:dev"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch(config.paths.src.htdocs + "/**", ["copy-htdocs"]);
 	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);

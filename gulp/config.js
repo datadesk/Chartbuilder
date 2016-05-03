@@ -34,8 +34,7 @@ var paths = {
 	},
 	dist: {
 		css: dirs.dist + '/css'
-	},
-	storage: dirs.src + "/htdocs/storage/data"
+	}
 };
 
 var server = {
