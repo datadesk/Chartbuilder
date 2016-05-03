@@ -13,7 +13,7 @@ var Storage = require("../js/components/Storage.jsx");
 document.addEventListener("DOMContentLoaded", function() {
     // Render the storage unit
     ReactDOM.render(
-        <Storage url='data/chart-slugs.txt' />,
+        <Storage url='http://stockserver.usa.tribune.com/chartbuilder-lat/slugs-list.txt' />,
         container
     );
 });

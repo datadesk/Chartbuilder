@@ -42,7 +42,7 @@ var chart_sizes = [
 var text_input_values = [
 	{ name: "title", content: "Title", isRequired: true },
 	{ name: "credit", content: "Credit"},
-	{ name: "source", content: "Source"},
+	{ name: "source", content: "Source", isRequired: true},
 	{ name: "slug",  content: "Slug (auto-generated)"}
 ];
 
