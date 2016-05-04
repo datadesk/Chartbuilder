@@ -1103,6 +1103,12 @@ svg.renderer-svg tspan {
   font-family: 'BentonGothic-Bold', 'Khula-Bold', Arial, sans-serif;
   font-size: 25.2px;
 }
+.grid-chart-block .d4 .leftAxis .tick line {
+  display: none;
+}
+.grid-chart-block .d4 .zero {
+  display: none;
+}
 .svg-source-pipe {
   stroke: #999;
   fill: none;
