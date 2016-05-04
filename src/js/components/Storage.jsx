@@ -12,6 +12,9 @@ var Storage = React.createClass({
         client.onreadystatechange = function() {
             if (client.readyState === 4) {
                 var data = client.responseText.split('\n');
+                if (data[data.length - 1] === "") {
+                    data.pop();
+                }
                 self.setState({data:data});
             }
         };
@@ -48,12 +51,14 @@ var StorageList = React.createClass({
 
 var StorageItem = React.createClass({
     render: function() {
-        var imgUrl = "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-storage/" + this.props.slug + "/" + this.props.slug + ".png";
-        var linkUrl = "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-storage/" + this.props.slug + "/";
+        var baseUrl = "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-storage/" + this.props.slug + "/";
+        var fileUrl = "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-storage/" + this.props.slug + "/" + this.props.slug;
+
         return (
             <div className="storageItem">
-                <a href={linkUrl}><img src={imgUrl}/></a>
-                <h2 className="itemSlug"><a href={linkUrl}>{this.props.slug}</a></h2>
+                <img src={fileUrl + ".png"}/>
+                <h2 className="itemSlug">{this.props.slug}</h2>
+                <p className="links"><a href={fileUrl +  ".svg"}>SVG</a> | <a href={fileUrl + ".png"}>PNG</a> | <a href={fileUrl + ".json"}>JSON</a></p>
             </div>
         );
     }
