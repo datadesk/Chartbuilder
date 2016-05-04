@@ -1,33 +1,21 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 
-// /Library/WebServer/Documents/chartbuilder-php/chartbuilder-writer.php
 // created on stockserver 2014-06-10
-// command line stockserver: php /Library/WebServer/Documents/chartbuilder-php/chartbuilder-writer.php
-// browser: http://stockserver.usa.tribune.com/chartbuilder-php/chartbuilder-writer.php
 // SVG files go to: http://stockserver.usa.tribune.com/chartbuilder-svg/
+
 
 // -----------------------------------
 // SETTING PATHS
 
 echo "<pre>";
 $initial_log = "";
-$initial_log .= "\nCurrent user = ";
-// DIFF BETWEEN? passthru, execshell, etc. -042712
-$current_user = passthru("whoami");
-$initial_log .= "\n";
-
 $initial_log .= "SETTING PATHS\n";
 
 $initial_log .= "This file's location here = " . __FILE__ . "\n"; // showing getter_header
 
-// trying to get /Library/WebServer/Documents/gas_prices
-// $file_dir = getcwd(); // showing for parent script, not header -100912
-// unless in terminal, which case whatever director it's in. Since only on localhost __DIR__ should work -120612
-
 $path_file_dir = __DIR__; //  -120612
 $initial_log .= "File in this directory (\$path_file_dir), should be absolute = " . $path_file_dir . "\n";
-
 
 if (function_exists('chdir')) {
     $initial_log .= "chdir functions are available: function_exists('chdir')\n";
@@ -39,9 +27,23 @@ chdir($path_file_dir);
 $initial_log .= "chdir(\$path_file_dir) = " . $path_file_dir . "\n";
 $initial_log .= "\n";
 
+
+
 // -----------------------------------
 // ADDING EXTERNAL DEPENDENCIES
-require_once "../../sites_shared/develop_shared.php";
+// require_once "../../sites_shared/develop_shared.php";
+
+function format_date($dateobj) {
+	return date("Y-m-d", $dateobj);
+}
+
+function format_date_time($dateobj) { // -050212
+	return date("Y-m-d\_H-i-s\_T", $dateobj);
+}
+
+function unix_2_pretty($timestamp_integer) {
+	return date('F j\, Y g:i:s a T', $timestamp_integer);
+}
 
 
 // -----------------------------------
@@ -182,20 +184,45 @@ $toggle = false;
 // }
 // scan_dir($path_to_data_folder);
 
+
+    
 	$dirarray = scandir($path_file_dir . "/chartbuilder-storage");
 	$slugs_filename = $path_file_dir . "/slugs-list.txt";
 	$slugs_list_file = fopen("$slugs_filename", 'w');
 	$slugs_list = "";
+    
 	$ignored = array('.', '..', '.DS_Store', '.svn', '.htaccess', '*.png', '*.txt', '*.svg', '*.json');
+    
+// http://stackoverflow.com/questions/11923235/scandir-to-sort-by-date-modified
+
+    $postMsg .= "\n\noriginal_slugs\n";
+    
+    $files = array();
+    
+    filemtime($dir . '/' . $file);
 
 	foreach ($dirarray as $value) {
 		if (in_array($value, $ignored)) continue;
-		$slugs_list .= $value . "\n";
+        $files[$value] = filemtime($path_file_dir . "/chartbuilder-storage/" . $value);
+        $postMsg .= $value . " | " .  $files[$value] . "\n";
 	}
+    
 
-	echo $slugs_list;
+    arsort($files);
+    $files = array_keys($files);
+    
+    
+    foreach ($files as $value_slug) {
+    	$slugs_list .= $value_slug . "\n";
+    }
+    
+
+	$postMsg .= "\n\nslugs_list\n" . $slugs_list . "\n";
 	fwrite($slugs_list_file, $slugs_list);
 	fclose($slugs_list_file);
+
+
+
 
 
 	$path_to_log_folder = $path_file_dir . "/chartbuilder-log/";
