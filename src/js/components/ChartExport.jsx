@@ -116,8 +116,6 @@ var ChartExport = React.createClass({
 			});
 		});
 
-
-
 	},
 
 	_autoClickDownload: function(filename, href) {
