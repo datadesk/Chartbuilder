@@ -172,13 +172,6 @@ var ChartGridEditor = React.createClass({
 						<span className="step-number">3</span>
 						<span>Set chart type</span>
 					</h2>
-					<ChartGrid_universalToggle
-						text="Single color"
-						chartSettings={chartProps.chartSettings}
-						universalSettings={this.state.universalSettings}
-						onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
-						onClick={this._handleStateUpdate}
-					/>
 					{chartSettings}
 					<ChartGrid_gridSettings
 						grid={chartProps._grid}
