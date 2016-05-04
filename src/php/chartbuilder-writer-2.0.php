@@ -195,12 +195,10 @@ $toggle = false;
     
 // http://stackoverflow.com/questions/11923235/scandir-to-sort-by-date-modified
 
-    $postMsg .= "\n\noriginal_slugs\n";
+    $postMsg .= "\n\noriginal order of slugs\n";
     
     $files = array();
     
-    filemtime($dir . '/' . $file);
-
 	foreach ($dirarray as $value) {
 		if (in_array($value, $ignored)) continue;
         $files[$value] = filemtime($path_file_dir . "/chartbuilder-storage/" . $value);
