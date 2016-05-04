@@ -108,7 +108,7 @@ var ChartExport = React.createClass({
 		saveSvgAsPng.svgAsPngUri(self.state.chartNode, { scale: 2.0 }, function(pngUri){
 			sendToServer(filename, slug, pngUri, function () {
 				// Save SVG to server
-				saveSvgAsPng.svgAsDataUri(chart, {}, function(uri) {
+				saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
 					sendToServer(svgFilename, slug, uri, function() {
 						self.downloadJSON(true);
 					});
@@ -155,13 +155,7 @@ var ChartExport = React.createClass({
 		var autoClickDownload = this._autoClickDownload;
 		var sendToServer = this._sendToServer;
 
-		saveSvgAsPng.svgAsDataUri(chart, {
-			cleanFontDefs: true,
-			fontFamilyRemap: {
-				"Khula-Light": "Khula Light",
-				"Khula-Regular": "Khula",
-			}
-		}, function(uri) {
+		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
 			autoClickDownload(filename, uri);
 
 			sendToServer(filename, slug, uri, function() {
