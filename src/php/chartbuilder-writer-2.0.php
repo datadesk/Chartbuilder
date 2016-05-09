@@ -215,12 +215,9 @@ $toggle = false;
     }
     
 
-	$postMsg .= "\n\nslugs_list\n" . $slugs_list . "\n";
+	$postMsg .= "\n\nslugs_list, reverse time sort\n" . $slugs_list . "\n";
 	fwrite($slugs_list_file, $slugs_list);
 	fclose($slugs_list_file);
-
-
-
 
 
 	$path_to_log_folder = $path_file_dir . "/chartbuilder-log/";
