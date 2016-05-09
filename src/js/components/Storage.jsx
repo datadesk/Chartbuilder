@@ -58,7 +58,7 @@ var StorageItem = React.createClass({
             <div className="storageItem">
                 <img src={fileUrl + ".png"}/>
                 <h2 className="itemSlug">{this.props.slug}</h2>
-                <p className="links"><a href={"../?jsonurl=" + encodeURIComponent(fileUrl) + ".json"}>Load Chart</a> | <a href={fileUrl +  ".svg"}>SVG</a> | <a href={fileUrl + ".png"}>PNG</a></p>
+                <p className="links"><a href={"../?jsonurl=" + encodeURIComponent(fileUrl) + ".json"}>Edit chart</a> | <a href={fileUrl +  ".svg"}>SVG</a> | <a href={fileUrl + ".png"}>PNG</a></p>
             </div>
         );
     }
