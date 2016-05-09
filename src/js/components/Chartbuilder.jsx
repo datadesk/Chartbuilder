@@ -41,6 +41,7 @@ var numColors = require("../config/chart-style").numColors;
 /* API to localStorage that allows saving and retrieving charts */
 var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
 var validateChartModel = require("../util/validate-chart-model");
+var ChartServerActions = require("../actions/ChartServerActions");
 
 /**
  * Function to query Flux stores for all data. Runs whenever the stores are
@@ -117,21 +118,18 @@ var Chartbuilder = React.createClass({
 		client.onreadystatechange = function() {
 			if (client.readyState == 4) {
 				var data = client.responseText;
-				console.log(data);
+				parsedModel = validateChartModel(client.responseText);
+				if (parsedModel) {
+					// Update flux store with incoming model
+					ChartServerActions.receiveModel(parsedModel);
+				}
 			}
 		}
         client.send();
 	},
 
 	getInitialState: function() {
-		// Check to see if there is a jsonurl parameter in the querystring
-		// If so, load the data from that URL
-		var dataUrl = this.getQueryVariable('jsonurl');
-		if (!dataUrl) {
-			return getStateFromStores();
-		} else {
-			this.loadDataFromUrl(dataUrl);
-		}
+		return getStateFromStores();
 	},
 
 	getDefaultProps: function() {
@@ -150,6 +148,13 @@ var Chartbuilder = React.createClass({
 		ChartMetadataStore.addChangeListener(this._onChange);
 		ErrorStore.addChangeListener(this._onChange);
 		SessionStore.addChangeListener(this._onChange);
+
+		// Check to see if there is a jsonurl parameter in the querystring
+		// If so, load the data from that URL
+		this.dataUrl = this.getQueryVariable('jsonurl');
+		if (this.dataUrl) {
+			this.loadDataFromUrl(this.dataUrl);
+		}
 	},
 
 	/* Remove listeners on component unmount */
