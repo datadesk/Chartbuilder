@@ -40,6 +40,7 @@ var numColors = require("../config/chart-style").numColors;
 
 /* API to localStorage that allows saving and retrieving charts */
 var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
+var validateChartModel = require("../util/validate-chart-model");
 
 /**
  * Function to query Flux stores for all data. Runs whenever the stores are
@@ -98,8 +99,39 @@ var Chartbuilder = React.createClass({
 		renderedSVGClassName: React.PropTypes.string
 	},
 
+	getQueryVariable: function(v) {
+		var q = window.location.search.substring(1);
+		var vars = q.split("&");
+		for (var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split("=");
+			if (decodeURIComponent(pair[0]) === v) {
+				return decodeURIComponent([pair[1]]);
+			}
+		}
+		return false;
+	},
+
+	loadDataFromUrl: function(url) {
+		var client = new XMLHttpRequest();
+		client.open('GET', url);
+		client.onreadystatechange = function() {
+			if (client.readyState == 4) {
+				var data = client.responseText;
+				console.log(data);
+			}
+		}
+        client.send();
+	},
+
 	getInitialState: function() {
-		return getStateFromStores();
+		// Check to see if there is a jsonurl parameter in the querystring
+		// If so, load the data from that URL
+		var dataUrl = this.getQueryVariable('jsonurl');
+		if (!dataUrl) {
+			return getStateFromStores();
+		} else {
+			this.loadDataFromUrl(dataUrl);
+		}
 	},
 
 	getDefaultProps: function() {
