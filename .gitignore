@@ -1,3 +1,4 @@
+.settings_private
 node_modules/**
 .publish
 build
