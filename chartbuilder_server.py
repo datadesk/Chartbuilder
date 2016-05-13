@@ -3,6 +3,9 @@
 import p2p
 # import log
 from flask import Flask
+from flask import jsonify
+from flask import json
+from flask import request
 
 try:
     from secrets import settings_local as settings
@@ -119,8 +122,31 @@ def send_to_p2p():
     """
     Saves the SVG of a chart as a blurb in P2P
     """
+    app.logger.debug("sending to P2P")
 
-    return "Hello, world!"
+    # We should be POSTing
+    if request.method in ["POST", "PUT"]:
+        # Pull the data from the latest POST request
+        data = json.loads(request.data)
+
+        # Make a generic response object
+        r = {}
+
+        try:
+            created, obj = api.update_or_create_chartblurb(data)
+            content = {
+                "message": "Updated in P2P",
+                "created": created,
+                "p2p_blurb": obj,
+            }
+        except Exception as e:
+            # Return the exception if it fails
+            content = {"message": str(e)}
+            r = jsonify(content)
+            r.status_code = 500
+            return r
+
+    return "Sending to p2p!"
 
 
 
