@@ -43,19 +43,86 @@ def slug_exists(slug):
         return False
 
 
+def prep_p2p_blurb_payload(slug):
+    """
+    Accepts a data dictionary POSTed by the chartbuilder interface and transforms
+    it into the data structure expected by P2P's API.
+    """
+    # start things off
+    payload = {
+        'slug': data['slug'] + "-chartbuilder",
+        'title': data['title'],
+        'content-item-type-code': 'blurb',
+        'content_item_state_code': 'working'
+    }
+
+    # We're going to have a base64 encoded SVG,
+    # so I imagine we'll have to do this differently
+    context = {
+        'elements_json': json.dumps(data['elements'])
+    }
+
+    # Render the HTML for body and add that
+    payload['body'] = context['elements']
+
+    # Pass it out
+    return payload
+
+
+def update_or_create_chartblurb(data):
+    """
+    Accepts data from a POST or PUT request and syncs it with P2P
+
+    Returns a tuple with a boolean indicating if an object was created
+    followed by the P2P object itself
+    """
+    app.logger.debug("update_or_create_chartblurb(data)")
+
+    # Try to get the slug from P2P
+    slug = data['slug'] + "-chartbuilder"
+    slug = slug.strip()
+
+    # check if the blurb exists
+    obj = get_object_or_none(slug)
+
+    # prep the data for P2P
+    payload = prep_p2p_blurb_payload(data)
+
+    # Get a P2P connection ready to go
+    conn = get_p2p_connection()
+
+    # If a P2P record already exists...
+    if obj:
+        # ... update it
+        app.logger.debug("updating content item %s" % slug)
+        conn.update_content_item(payload, slug)
+        created = False
+    # if it doesn't already exist...
+    else:
+        # ... create it
+        app.logger.debug("creating content item %s" % slug)
+        conn.create_content_item(payload)
+        created = True
+
+    # return the created bool with the updated object
+    return created, get_object_or_none(slug)
+
+
 @app.route('/')
 def hello_world():
     app.logger.debug("Accessing index page!")
     return 'Hello, world! Today'
 
-@app.route('/user/<username>')
-def show_user_profile(username):
-    # Show the profile for that user
-    return "User %s" % username
 
 @app.route('/send-to-p2p/')
 def send_to_p2p():
+    """
+    Saves the SVG of a chart as a blurb in P2P
+    """
+
     return "Hello, world!"
+
+
 
 
 if __name__ == '__main__':
