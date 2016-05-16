@@ -146,6 +146,25 @@ var ChartExport = React.createClass({
 		postrequest.send(params);
 	},
 
+	_sendToP2P: function(slug, uri, cb) {
+		console.log("sending to p2p");
+		var params = "slug=" + slug + "&data=" +  encodeURIComponent(uri);
+		var postrequest = new XMLHttpRequest();
+		postrequest.open("POST", "http://localhost:5000/send-to-p2p/", true);
+		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+		postrequest.onreadystatechange = function() {
+			if (postrequest.readyState == 4 && postrequest.status == 200) {
+				console.log("yay!")
+				if (cb && typeof(cb) === "function") {
+					cb();
+				}
+			}
+		}
+		postrequest.send(params);
+
+	},
+
 	downloadSVG: function() {
 		var self = this;
 		var filename = this._makeFilename("svg");
@@ -154,17 +173,20 @@ var ChartExport = React.createClass({
 		var chart = this._addIDsForIllustrator(this.state.chartNode);
 		var autoClickDownload = this._autoClickDownload;
 		var sendToServer = this._sendToServer;
+		var sendToP2P = this._sendToP2P;
 
 		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
 			autoClickDownload(filename, uri);
 
-			sendToServer(filename, slug, uri, function() {
-				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
-					sendToServer(pngFilename, slug, pngUri, function() {
-						self.downloadJSON(true);
-					});
-				});
-			});
+			sendToP2P(slug, uri);
+
+			// sendToServer(filename, slug, uri, function() {
+			// 	saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
+			// 		sendToServer(pngFilename, slug, pngUri, function() {
+			// 			self.downloadJSON(true);
+			// 		});
+			// 	});
+			// });
 		});
 
 
@@ -199,14 +221,7 @@ var ChartExport = React.createClass({
 	render: function() {
 		var self = this;
 
-		var chartExportButtons = [
-			<Button
-				key="png-export"
-				className="export-button"
-				onClick={this.downloadPNG}
-				text="PNG Image"
-			/>
-		];
+		var chartExportButtons = [];
 
 		if (this.state.enableSvgExport) {
 			chartExportButtons.push(
@@ -214,7 +229,7 @@ var ChartExport = React.createClass({
 					key="svg-export"
 					className="export-button"
 					onClick={this.downloadSVG}
-					text="SVG"
+					text="Export to P2P"
 				/>
 			);
 		}

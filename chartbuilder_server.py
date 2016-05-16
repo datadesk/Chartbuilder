@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import base64
 import p2p
-# import log
+from datetime import timedelta
 from flask import Flask
 from flask import jsonify
 from flask import json
 from flask import request
+from flask import make_response
+from flask import current_app
+from functools import update_wrapper
 
 try:
     from secrets import settings_local as settings
@@ -13,6 +17,55 @@ except ImportError:
     from secrets import settings_default as settings
 
 app = Flask(__name__)
+
+
+def crossdomain(origin=None, methods=None, headers=None, max_age=21600,
+                attach_to_all=True, automatic_options=True):
+    """
+    Crossdomain decorator so that the Flask server can talk to the nodejs app server.
+    """
+    if methods is not None:
+        methods = ', '.join(sorted(x.upper() for x in methods))
+    if headers is not None and not isinstance(headers, basestring):
+        headers = ', '.join(x.upper() for x in headers)
+    if not isinstance(origin, basestring):
+        origin = ', '.join(origin)
+    if isinstance(max_age, timedelta):
+        max_age = max_age.total_seconds()
+
+    def get_methods():
+        if methods is not None:
+            return methods
+
+        options_resp = current_app.make_default_options_response()
+        return options_resp.headers['allow']
+
+    def decorator(f):
+        def wrapped_function(*args, **kwargs):
+            if automatic_options and request.method == 'OPTIONS':
+                resp = current_app.make_default_options_response()
+            else:
+                resp = make_response(f(*args, **kwargs))
+            if not attach_to_all and request.method != 'OPTIONS':
+                return resp
+
+            h = resp.headers
+
+            h['Access-Control-Allow-Origin'] = origin
+            h['Access-Control-Allow-Methods'] = get_methods()
+            h['Access-Control-Max-Age'] = str(max_age)
+
+            if headers is not None:
+                h['Access-Control-Allow-Headers'] = headers
+
+            return resp
+
+        f.provide_automatic_options = False
+
+        return update_wrapper(wrapped_function, f)
+
+    return decorator
+
 
 
 def get_p2p_connection():
@@ -32,6 +85,41 @@ def get_p2p_connection():
     )
 
 
+def get_object_or_none(slug):
+    """
+    Attempts to retrieve the provided slug via the P2P API.
+
+    If it exists, return it as the dictionary provided by the API.
+
+    If it doesn't exist, return None.
+    """
+    app.logger.debug("get_object_or_none(%s)" % slug)
+    conn = get_p2p_connection()
+    slug = slug.strip()
+
+    try:
+        app.logger.debug("conn.get_fancy_content_item(%s)" % slug)
+        # Custom query params to get the data we need
+        query = {
+            "product_affiliate_code": conn.product_affiliate_code,
+            "source_code": conn.source_code,
+            "content_item_state_code": "all",
+            "include": [
+                "static_collections",
+                "related_items",
+                "embedded_items",
+                "parent_related_items",
+                "programmed_custom_params",
+                "web_url",
+                "geocodes",
+                "notes"
+            ],
+        }
+        return conn.get_fancy_content_item(slug, query)
+    except p2p.P2PNotFound:
+        return None
+
+
 def slug_exists(slug):
     """
     Accepts a P2P slug and tests whether it exists. Returns True or False.
@@ -46,7 +134,7 @@ def slug_exists(slug):
         return False
 
 
-def prep_p2p_blurb_payload(slug):
+def prep_p2p_blurb_payload(data):
     """
     Accepts a data dictionary POSTed by the chartbuilder interface and transforms
     it into the data structure expected by P2P's API.
@@ -54,15 +142,19 @@ def prep_p2p_blurb_payload(slug):
     # start things off
     payload = {
         'slug': data['slug'] + "-chartbuilder",
-        'title': data['title'],
-        'content-item-type-code': 'blurb',
+        'title': data['slug'],
+        'content_item_type_code': 'blurb',
         'content_item_state_code': 'working'
     }
 
-    # We're going to have a base64 encoded SVG,
-    # so I imagine we'll have to do this differently
+    # Decode the base64-encoded string into an SVG file
+    base64n =  data['data'].index("base64,")
+    body_content = data['data']
+    body_content = body_content[base64n + 7:]
+
+
     context = {
-        'elements_json': json.dumps(data['elements'])
+        'elements': base64.decodestring(body_content)
     }
 
     # Render the HTML for body and add that
@@ -88,6 +180,8 @@ def update_or_create_chartblurb(data):
     # check if the blurb exists
     obj = get_object_or_none(slug)
 
+    app.logger.debug("prepping payload")
+
     # prep the data for P2P
     payload = prep_p2p_blurb_payload(data)
 
@@ -104,8 +198,13 @@ def update_or_create_chartblurb(data):
     else:
         # ... create it
         app.logger.debug("creating content item %s" % slug)
-        conn.create_content_item(payload)
-        created = True
+        try:
+            conn.create_content_item(payload)
+            created = True
+            app.logger.debug("created content item")
+        except Exception as e:
+            app.logger.debug("oops")
+            app.logger.debug(e)
 
     # return the created bool with the updated object
     return created, get_object_or_none(slug)
@@ -117,29 +216,37 @@ def hello_world():
     return 'Hello, world! Today'
 
 
-@app.route('/send-to-p2p/')
+@app.route('/send-to-p2p/', methods=["POST"])
+@crossdomain(origin="*")
 def send_to_p2p():
     """
     Saves the SVG of a chart as a blurb in P2P
     """
     app.logger.debug("sending to P2P")
+    # Make a generic response object
+    r = make_response("hello, world!")
+    # r.headers['Access-Control-Allow-Origin'] = "*"
+    # return r
 
     # We should be POSTing
     if request.method in ["POST", "PUT"]:
         # Pull the data from the latest POST request
-        data = json.loads(request.data)
-
-        # Make a generic response object
-        r = {}
+        app.logger.debug("attempting to post")
+        data = request.form
 
         try:
-            created, obj = api.update_or_create_chartblurb(data)
+            app.logger.debug("try. trying hard.")
+            created, obj = update_or_create_chartblurb(data)
             content = {
                 "message": "Updated in P2P",
                 "created": created,
                 "p2p_blurb": obj,
             }
+            app.logger.debug("Created object in P2P!")
+            app.logger.debug(created, obj)
+            # return r
         except Exception as e:
+            app.logger.debug("Exception!")
             # Return the exception if it fails
             content = {"message": str(e)}
             r = jsonify(content)
