@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import base64
 import p2p
+from bs4 import BeautifulSoup
 from datetime import timedelta
 from flask import Flask
 from flask import jsonify
@@ -66,6 +67,15 @@ def crossdomain(origin=None, methods=None, headers=None, max_age=21600,
 
     return decorator
 
+
+def clean_for_p2p(html):
+    """
+    This helper function returns a standardized encoding for HTML to be passed
+    into p2p to avoid exceptions and upside down question marks.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    converted_str = soup.encode("latin-1", "xmlcharrefreplace")
+    return unicode(converted_str, "latin-1")
 
 
 def get_p2p_connection():
@@ -150,11 +160,11 @@ def prep_p2p_blurb_payload(data):
     # Decode the base64-encoded string into an SVG file
     base64n =  data['data'].index("base64,")
     body_content = data['data']
-    body_content = body_content[base64n + 7:]
-
+    body_content = base64.decodestring(body_content[base64n + 7:])
+    body_content_cleaned = clean_for_p2p(body_content)
 
     context = {
-        'elements': base64.decodestring(body_content)
+        'elements': body_content_cleaned
     }
 
     # Render the HTML for body and add that
