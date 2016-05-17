@@ -9,6 +9,9 @@ var d3 = require("d3");
 var Button = require("chartbuilder-ui").Button;
 var saveSvgAsPng = require("save-svg-as-png");
 
+var ChartMetadataStore = require("../stores/ChartMetadataStore");
+var ChartViewActions = require("../actions/ChartViewActions");
+
 function outerHTML(el) {
 	var outer = document.createElement("div");
 	outer.appendChild(el);
@@ -32,12 +35,14 @@ var ChartExport = React.createClass({
 	getDefaultProps: function() {
 		return {
 			enableJSONExport: false,
+			slugEditable: false,
 		};
 	},
 
 	getInitialState: function() {
 		return {
 			enableSvgExport: true,
+			slugEditable: true
 		};
 	},
 
@@ -155,8 +160,7 @@ var ChartExport = React.createClass({
 
 		postrequest.onreadystatechange = function() {
 			if (postrequest.readyState == 4 && postrequest.status == 200) {
-					var instructions = document.getElementById('export-instructions');
-					instructions.innerHTML = "<p>That's it, you're done! You can find your chart in P2P under the slug<br><span class='slug-label'><a href='http://localhost:3000/get-p2p-admin-url/?slug=" + slug + "'>" + slug + "-chartbuilder</a></span>.</p>";
+				// Probably should have something render on success
 
 				if (cb && typeof(cb) === "function") {
 					cb();
@@ -181,7 +185,8 @@ var ChartExport = React.createClass({
 		var sendToP2P = this._sendToP2P;
 		var instructions = document.getElementById('export-instructions');
 
-		instructions.innerHTML = "<p>Saving chart to p2p...</p>";
+		// Set the slug to be not editable and show the final instructions
+		ChartViewActions.updateMetadata('slugEditable', false);
 		instructions.classList.remove("hidden");
 
 		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
@@ -259,7 +264,7 @@ var ChartExport = React.createClass({
 						{chartExportButtons}
 					</div>
 				<div className="instructions hidden" id="export-instructions">
-			        <p>That's it, you're done! You can find your chart in P2P under the slug <strong>{this.props.metadata.slug}</strong>.</p>
+			        <p>That's it, you're done! You can find your chart in P2P under the slug<br/><span className='slug-label'><a href={'http://localhost:3000/get-p2p-admin-url/?slug=' + this.props.metadata.slug}>{this.props.metadata.slug}-chartbuilder</a></span>.</p>
 		        </div>
 		        <p>ChartBuilder is an open source project created by <a href="https://github.com/Quartz/Chartbuilder/">Quartz</a>. Let us know if you <a href="mailto:yyartist@latimes.com?Subject=ChartBuilder bug report">find any bugs</a>.</p>
 			</div>

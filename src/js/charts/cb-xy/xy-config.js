@@ -127,7 +127,8 @@ var defaultProps = {
 				values: []
 			}
 		},
-		mobile: {}
+		mobile: {},
+		slugEditable: true,
 	},
 	/**
 	 * @name metadata
@@ -141,6 +142,7 @@ var defaultProps = {
 		title: "Enter chart title",
 		source: "",
 		slug: "la-g-",
+		slugEditable: true,
 		credit: "Your name",
 		size: "auto"
 	}

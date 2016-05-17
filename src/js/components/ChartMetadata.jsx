@@ -63,8 +63,9 @@ var ChartMetadata = React.createClass({
 			chartType: PropTypes.string.isRequired,
 			size: PropTypes.string.isRequired,
 			slug: PropTypes.string,
-			source: PropTypes.string,
-			credit: PropTypes.string,
+			slugEditable: PropTypes.bool,
+			source: PropTypes.string.isRequired,
+			credit: PropTypes.string.isRequired,
 			title: PropTypes.string,
 		}),
 		stepNumber: PropTypes.string,
@@ -73,14 +74,21 @@ var ChartMetadata = React.createClass({
 
 	// Get text input types from state
 	getInitialState: function() {
+		if (this.props.metadata.slugEditable) {
+			this.props.metadata.slug = this._slugify(this.props.metadata.title);
+
+		}
 		return {
 		};
 	},
 
 	// Update metadata store with new settings
 	_handleMetadataUpdate: function(k, v) {
-		console.log(k,v);
 		ChartViewActions.updateMetadata(k, v);
+
+		if (k === "title" && this.props.metadata.slugEditable) {
+			ChartViewActions.updateMetadata('slug', this._slugify(v));
+		}
 	},
 
 	_getDateString: function() {
@@ -100,8 +108,8 @@ var ChartMetadata = React.createClass({
         return dateString;
 	},
 
-	_slugify: function() {
-		var slug = "la-g-" + this.props.metadata.title.toLowerCase() + this._getDateString();
+	_slugify: function(v) {
+		var slug = "la-g-" + v.toLowerCase() + this._getDateString();
 		// Switch spaces to slugs
 		slug = slug.replace(/\s/g, "-");
 		// Trim special characters
@@ -118,8 +126,6 @@ var ChartMetadata = React.createClass({
 				c.props.value = metadata[c.key] || "";
 			}, this);
 		}
-
-		metadata.slug = this._slugify();
 
 		// Create text input field for each metadata textInput
 		var textInputs = text_input_values.map(function(textInput) {

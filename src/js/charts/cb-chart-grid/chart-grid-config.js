@@ -121,6 +121,7 @@ var defaultProps = {
 		title: "Enter chart title",
 		source: "",
 		slug: "la-g-",
+		slugEditable: true,
 		credit: "Your Name",
 		size: "auto"
 	}
