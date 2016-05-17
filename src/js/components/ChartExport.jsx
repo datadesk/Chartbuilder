@@ -155,7 +155,9 @@ var ChartExport = React.createClass({
 
 		postrequest.onreadystatechange = function() {
 			if (postrequest.readyState == 4 && postrequest.status == 200) {
-				console.log("yay!")
+					var instructions = document.getElementById('export-instructions');
+					instructions.innerHTML = "<p>That's it, you're done! You can find your chart in P2P under the slug<br><span class='slug-label'><a href='http://localhost:3000/get-p2p-admin-url/?slug=" + slug + "'>" + slug + "-chartbuilder</a></span>.</p>";
+
 				if (cb && typeof(cb) === "function") {
 					cb();
 				}
@@ -165,7 +167,10 @@ var ChartExport = React.createClass({
 
 	},
 
-	downloadSVG: function() {
+
+	// renamed from downloadSVG
+	// Saves chart as a blurb in P2P, and saves to stockserver as SVG, PNG and JSON
+	exportChart: function() {
 		var self = this;
 		var filename = this._makeFilename("svg");
 		var pngFilename = this._makeFilename("png");
@@ -174,19 +179,21 @@ var ChartExport = React.createClass({
 		var autoClickDownload = this._autoClickDownload;
 		var sendToServer = this._sendToServer;
 		var sendToP2P = this._sendToP2P;
+		var instructions = document.getElementById('export-instructions');
+
+		instructions.innerHTML = "<p>Saving chart to p2p...</p>";
+		instructions.classList.remove("hidden");
 
 		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
-			autoClickDownload(filename, uri);
-
 			sendToP2P(slug, uri);
 
-			// sendToServer(filename, slug, uri, function() {
-			// 	saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
-			// 		sendToServer(pngFilename, slug, pngUri, function() {
-			// 			self.downloadJSON(true);
-			// 		});
-			// 	});
-			// });
+			sendToServer(filename, slug, uri, function() {
+				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
+					sendToServer(pngFilename, slug, pngUri, function() {
+						self.downloadJSON(true);
+					});
+				});
+			});
 		});
 
 
@@ -228,11 +235,12 @@ var ChartExport = React.createClass({
 				<Button
 					key="svg-export"
 					className="export-button"
-					onClick={this.downloadSVG}
+					onClick={this.exportChart}
 					text="Export to P2P"
 				/>
 			);
 		}
+
 		if (this.props.enableJSONExport) {
 			chartExportButtons.push(
 				<Button
@@ -250,8 +258,8 @@ var ChartExport = React.createClass({
 					<div className="export-button-wrapper">
 						{chartExportButtons}
 					</div>
-				<div className="instructions">
-			        <p>That's it, you're done! Please send a an email with your chart and data to <a href="mailto:yyartist@latimes.com">yyartist@latimes.com</a> and we will try to respond within 30 minutes.</p>
+				<div className="instructions hidden" id="export-instructions">
+			        <p>That's it, you're done! You can find your chart in P2P under the slug <strong>{this.props.metadata.slug}</strong>.</p>
 		        </div>
 		        <p>ChartBuilder is an open source project created by <a href="https://github.com/Quartz/Chartbuilder/">Quartz</a>. Let us know if you <a href="mailto:yyartist@latimes.com?Subject=ChartBuilder bug report">find any bugs</a>.</p>
 			</div>
