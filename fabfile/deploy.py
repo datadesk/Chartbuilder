@@ -1,10 +1,16 @@
 import os
 import shutil
-from fabric.api import local, task, settings, put
+from fabric.api import local, task, settings, put, env
 
-env.hosts = ("IP address goes here",)
-env.user = 'artist'
+try:
+    from secrets import settings_local as settings
+except ImportError:
+    from secrets import settings_default as settings
 
+
+env.hosts = (settings.STOCKSERVER_URL,)
+env.user = settings.STOCKSERVER_USER
+env.password = settings.STOCKSERVER_PASS
 
 @task
 def deploy(silent=False):
@@ -14,17 +20,12 @@ def deploy(silent=False):
     # Run node build command
     # local("npm run build")
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    build_dir = os.path.join(base_dir, 'build_test')
+    build_dir = os.path.join(base_dir, 'build')
+    remote_dir = os.path.join(settings.STOCKSERVER_URL, 'chartbuilder-lat-dev')
 
-    # Remove build dir
-    try:
-        shutil.rmtree(build_dir)
-    except Exception:
-        pass
-       
     # Copy to new directory
     # shutil.copytree(os.path.join(base_dir, 'build'), build_dir)
-    # put(os.path.join(base_dir, 'build'), build_dir)
+    put(build_dir, remote_dir)
 
     # for infile in os.walk(os.path.join(base_dir, 'build')):
     #     print infile
