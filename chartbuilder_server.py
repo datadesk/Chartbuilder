@@ -7,6 +7,7 @@ from datetime import timedelta
 from flask import Flask
 from flask import jsonify
 from flask import json
+from flask import redirect
 from flask import request
 from flask import make_response
 from flask import current_app
@@ -220,12 +221,6 @@ def update_or_create_chartblurb(data):
     return created, get_object_or_none(slug)
 
 
-@app.route('/')
-def hello_world():
-    app.logger.debug("Accessing index page!")
-    return 'Hello, world! Today'
-
-
 @app.route('/send-to-p2p/', methods=["POST"])
 @crossdomain(origin="*")
 def send_to_p2p():
@@ -266,6 +261,23 @@ def send_to_p2p():
     return "Sending to p2p!"
 
 
+@app.route('/get-p2p-admin-url/')
+def get_p2p_admin_url():
+    """
+    Get the P2P admin URL for an exported chart.
+    """
+    app.logger.debug(request.args.get('slug'))
+    slug = "%s-chartbuilder" % request.args.get("slug")
+    conn = get_p2p_connection()
+
+    try:
+        app.logger.debug("conn.get_content_item(%s)" % slug.strip())
+        content_item = conn.get_content_item(slug.strip())
+        content_item_id = content_item["id"]
+        url = '%s/content_items/%s/edit' % (settings.P2P_BASE_URL, content_item_id)
+        return redirect(url, code=302)
+    except p2p.P2PNotFound:
+        return False
 
 
 if __name__ == '__main__':

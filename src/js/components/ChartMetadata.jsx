@@ -74,10 +74,6 @@ var ChartMetadata = React.createClass({
 
 	// Get text input types from state
 	getInitialState: function() {
-		if (this.props.metadata.slugEditable) {
-			this.props.metadata.slug = this._slugify(this.props.metadata.title);
-
-		}
 		return {
 		};
 	},
