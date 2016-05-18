@@ -871,6 +871,9 @@ span.step-number {
 .export-button-wrapper .export-button:active {
   background-color: #e2e2e2;
 }
+.instructions .slug-label {
+  font-family: 'BentonGothic-Bold', 'Khula-Bold', Arial, sans-serif;
+}
 .save-button {
   width: 100%;
   -webkit-transition: none;

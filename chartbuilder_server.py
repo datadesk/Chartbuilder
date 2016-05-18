@@ -280,5 +280,15 @@ def get_p2p_admin_url():
         return False
 
 
+@app.route('/save-to-server/')
+@crossdomain(origin="*")
+def save_to_server():
+    """
+    Meant to replace PHP script that writes to stockserver.
+    One day.
+    """
+    return "hello world!"
+
+
 if __name__ == '__main__':
     app.run(debug=True)
