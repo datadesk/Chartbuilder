@@ -238,7 +238,7 @@ def send_slack_message():
     if slug:
         msg = slack.prep_slack_message(slug)
     else:
-        msg = slack.prep_slack_message("la-g-enter-chart-title-erew-2016-05-17")
+        msg = slack.prep_slack_message("la-g-chart-test")
 
     r = slack.send_message(msg)
 
