@@ -44,7 +44,7 @@ def set_auth_token(code):
 def prep_slack_message(slug):
     chart_link = urllib.quote("%schartbuilder-storage/%s/%s.json" % (settings.STOCKSERVER_URL, slug, slug), safe='')
     chart_url = '%s?jsonurl=%s' % (settings.STOCKSERVER_URL, chart_link)
-    msg = "@here *New chart created: %s* Please review and edit. You can edit the chart by following this link *<%s|%s>*" % (slug, chart_url, slug)
+    msg = "<!here> *New chart created: %s* Please review and edit. You can edit the chart by following this link *<%s|%s>*" % (slug, chart_url, slug)
 
     return msg
 
