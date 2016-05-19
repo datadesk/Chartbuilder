@@ -193,11 +193,11 @@ def update_or_create_chartblurb(data):
     app.logger.debug("update_or_create_chartblurb(data)")
 
     # Try to get the slug from P2P
-    slug = data['slug'] + "-chartbuilder"
-    slug = slug.strip()
+    slug = data['slug'].strip()
+    p2p_slug = slug + "-chartbuilder"
 
     # check if the blurb exists
-    obj = get_object_or_none(slug)
+    obj = get_object_or_none(p2p_slug)
 
     app.logger.debug("prepping payload")
 
@@ -210,13 +210,13 @@ def update_or_create_chartblurb(data):
     # If a P2P record already exists...
     if obj:
         # ... update it
-        app.logger.debug("updating content item %s" % slug)
-        conn.update_content_item(payload, slug)
+        app.logger.debug("updating content item %s" % p2p_slug)
+        conn.update_content_item(payload, p2p_slug)
         created = False
     # if it doesn't already exist...
     else:
         # ... create it
-        app.logger.debug("creating content item %s" % slug)
+        app.logger.debug("creating content item %s" % p2p_slug)
         try:
             conn.create_content_item(payload)
             created = True
@@ -229,7 +229,7 @@ def update_or_create_chartblurb(data):
 
 
     # return the created bool with the updated object
-    return created, get_object_or_none(slug)
+    return created, get_object_or_none(p2p_slug)
 
 
 @app.route('/send-slack-message/')

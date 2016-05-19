@@ -8,7 +8,7 @@ except ImportError:
     from secrets import settings_default as settings
 
 
-env.hosts = (settings.STOCKSERVER_URL,)
+env.hosts = ("%s@%s", settings.STOCKSERVER_USER, settings.STOCKSERVER_URL)
 env.user = settings.STOCKSERVER_USER
 env.password = settings.STOCKSERVER_PASS
 
