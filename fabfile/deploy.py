@@ -40,3 +40,5 @@ def deploy(silent=False):
 
     # install requirements
     pipinstall()
+    restartapache()
+
