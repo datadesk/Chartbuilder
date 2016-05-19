@@ -220,10 +220,13 @@ def update_or_create_chartblurb(data):
         try:
             conn.create_content_item(payload)
             created = True
+            msg = slack.prep_slack_message(slug)
+            slack.send_message(msg)
             app.logger.debug("created content item")
         except Exception as e:
             app.logger.debug("oops")
             app.logger.debug(e)
+
 
     # return the created bool with the updated object
     return created, get_object_or_none(slug)
@@ -231,23 +234,19 @@ def update_or_create_chartblurb(data):
 
 @app.route('/send-slack-message/')
 def send_slack_message():
-    """
-    Prepares and sends a Slack notification to our graphics group.
-    """
-    # token = slack.set_auth_token()
-    message = {
-        "channel": "#graphics-request-test",
-        "username": "Chartbuilder-bot",
-        "text": "Please review and edit my chart - *Chart name will go here* *P2P admin URL will go here*."
-    }
-    resp = requests.post(settings.SLACK_HOOK_URL, data={"payload":json.dumps(message)})
-
-    app.logger.debug(resp.status_code)
-
-    if resp.status_code is 200:
-        return "Successfully posted Slack message"
+    slug = request.args.get("slug")
+    if slug:
+        msg = slack.prep_slack_message(slug)
     else:
-        return "Error connecting to Slack"
+        msg = slack.prep_slack_message("la-g-enter-chart-title-erew-2016-05-17")
+
+    r = slack.send_message(msg)
+
+    if r is True:
+        return "Slack message sent!"
+    else:
+        return "Error sending Slack message"
+
 
 
 @app.route('/send-to-p2p/', methods=["POST"])

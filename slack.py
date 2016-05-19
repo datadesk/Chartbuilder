@@ -7,6 +7,7 @@ the user interface with Slack's Web API
 """
 import json
 import requests
+import urllib
 from flask import jsonify
 from chartbuilder_server import *
 
@@ -40,30 +41,31 @@ def set_auth_token(code):
         return r
 
 
-def send_message():
+def prep_slack_message(slug):
+    chart_link = urllib.quote("%schartbuilder-storage/%s/%s.json" % (settings.STOCKSERVER_URL, slug, slug), safe='')
+    chart_url = '%s?jsonurl=%s' % (settings.STOCKSERVER_URL, chart_link)
+    msg = "*New chart created: %s* Please review and edit. You can edit the chart by following this link *<%s|%s>*" % (slug, chart_url, slug)
+
+    return msg
+
+
+def send_message(msg):
     """
     Prepares and sends a Slack notification to our graphics group.
     """
-    with chartbuilder_server.app_context():
-        message = {
-            "channel": "#graphics-requests",
-            "username": "Chartbuilder-bot",
-            "text": "Please review and edit my chart - *Chart name will go here* *P2P admin URL will go here*."
-        }
-        resp = requests.post("https://slack.com/api/chat.postMessage", params=message)
-        resp_content = resp.json()
+    # token = slack.set_auth_token()
+    message = {
+        "channel": "#graphics-request-test",
+        "username": "Chartbuilder-bot",
+        "text": msg
+    }
+    resp = requests.post(settings.SLACK_HOOK_URL, data={"payload":json.dumps(message)})
 
-        # if the Slack response is good, store the token as a session variable
-        if resp_content['ok'] is True:
-            # return the generated token
-            r = jsonify(resp_content)
-            r.status_code = 200
-            return r
-        # if the response is bad then return some sort of error
-        else:
-            r = jsonify(resp_content)
-            r.message = "Error Connecting to Slack"
-            r.status_code = 400
-            return r
+    app.logger.debug(resp.status_code)
+
+    if resp.status_code is 200:
+        return True
+    else:
+        return False
 
 
