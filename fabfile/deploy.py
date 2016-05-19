@@ -5,9 +5,9 @@ from .pipinstall import pipinstall
 from fabric.api import local, task, settings, put, env
 
 try:
-    from secrets import settings_local as settings
+    from app.secrets import settings_local as settings
 except ImportError:
-    from secrets import settings_default as settings
+    from app.secrets import settings_default as settings
 
 
 @task
@@ -28,7 +28,7 @@ def deploy(silent=False):
     put(build_dir, remote_dir)
 
     # Copy secrets file to stockserver
-    copy_secrets()
+    # copy_secrets()
 
     # Copy Flask app biz
     app_dir = os.path.join(base_dir, 'app')
