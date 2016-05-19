@@ -1,5 +1,5 @@
 import os
-import shutil
+from .copy_secrets import copy_secrets
 from fabric.api import local, task, settings, put, env
 
 try:
@@ -19,11 +19,12 @@ def deploy(silent=False):
     Deploys the latest code to a remote server.
     """
     # Run node build command
-    # local("npm run build")
+    local("npm run build")
+
+    # Copy the build directory
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     build_dir = os.path.join(base_dir, 'build', '*')
-
-    # Copy to new directory
     put(build_dir, env.project_dir)
 
     # Copy secrets file to stockserver
+    copy_secrets()
