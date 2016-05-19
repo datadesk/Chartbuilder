@@ -28,3 +28,7 @@ def deploy(silent=False):
 
     # Copy secrets file to stockserver
     copy_secrets()
+
+    # Copy Flask app biz
+    app_dir = os.path.join(base_dir, 'app')
+    put(app_dir, env.project_dir)
