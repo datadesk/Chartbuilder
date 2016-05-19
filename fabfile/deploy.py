@@ -1,7 +1,7 @@
 import os
 from .clean import clean
-from .copy_secrets import copy_secrets
 from .pipinstall import pipinstall
+from .restartapache import restartapache
 from fabric.api import local, task, settings, put, env
 
 try:

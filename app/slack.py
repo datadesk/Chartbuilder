@@ -61,7 +61,7 @@ def send_message(msg):
     }
     resp = requests.post(settings.SLACK_HOOK_URL, data={"payload":json.dumps(message)})
 
-    app.logger.debug(resp.status_code)
+    # app.logger.debug(resp.status_code)
 
     if resp.status_code is 200:
         return True

@@ -27,7 +27,7 @@ except ImportError:
     from secrets import settings_default as settings
 
 app = Flask(__name__)
-
+app.debug=True
 
 def crossdomain(origin=None, methods=None, headers=None, max_age=21600,
                 attach_to_all=True, automatic_options=True):

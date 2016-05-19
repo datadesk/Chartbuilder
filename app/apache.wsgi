@@ -14,8 +14,11 @@ SITE_PACKAGES = os.path.join(
     BASE_DIR,
     os.path.pardir,
     os.path.pardir,
-    'local/lib/python2.7/site-packages/'
+    'lib/python2.7/site-packages/'
 )
 
 sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, SITE_PACKAGES)
+
+# Import the Flask application
+from chartbuilder_server import app as application
