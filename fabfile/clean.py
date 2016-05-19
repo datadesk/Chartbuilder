@@ -1,5 +1,5 @@
 import os
-from fabric.api import task, cd, sudo
+from fabric.api import task, cd, local
 
 @task
 def clean():
@@ -8,4 +8,4 @@ def clean():
     """
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     with cd(base_dir):
-        sudo("find . -name '*.pyc' -print0|xargs -0 rm", pty=True)
+        local("find . -name '*.pyc' -print0|xargs -0 rm")
