@@ -67,18 +67,6 @@ gulp.task("browserify:dev", function () {
 });
 
 
-gulp.task("browserify:storage:dev", function () {
-	var bundler = browserify(config.paths.src.js + "/storage.js", {
-		debug: true
-	})
-	.transform(envify({ NODE_ENV: "dev" }));
-
-	return bundler.bundle()
-		.pipe(source("storage-main.js"))
-		.pipe(gulp.dest(config.paths.build.js))
-		.pipe(reload({ stream:true }));
-});
-
 gulp.task("browserify:test", function () {
 	var bundler = browserify("./test/test-page/main.js", {
 				debug: true
@@ -97,18 +85,6 @@ gulp.task("browserify:prod", function () {
 
 	return bundler.bundle()
 		.pipe(source("main.js"))
-		.pipe(buffer())
-		.pipe(uglify().on("error", gutil.log))
-		.pipe(gulp.dest(config.paths.build.js));
-});
-
-
-gulp.task("browserify:storage:prod", function () {
-	var bundler = browserify(config.paths.src.js + "/storage.js")
-		.transform(envify({ NODE_ENV: "prod" }));
-
-	return bundler.bundle()
-		.pipe(source("storage-main.js"))
 		.pipe(buffer())
 		.pipe(uglify().on("error", gutil.log))
 		.pipe(gulp.dest(config.paths.build.js));
@@ -176,13 +152,12 @@ gulp.task("browser-sync-test", ["test-page-setup"], function () {
 // Serve files, watch for changes and update
 gulp.task("watch", [
 	"browserify:dev",
-	"browserify:storage:dev",
 	"stylus",
 	"copy-htdocs",
 	"copy-fonts",
 	"copy-assets"
 ], function (done) {
-	gulp.watch(config.paths.src.js + "/**", ["browserify:dev", "browserify:storage:dev"]);
+	gulp.watch(config.paths.src.js + "/**", ["browserify:dev"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch(config.paths.src.htdocs + "/**", ["copy-htdocs"]);
 	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);
@@ -193,7 +168,6 @@ gulp.task("watch", [
 // build for production
 gulp.task("_build", [
 	"browserify:prod",
-	"browserify:storage:prod",
 	"stylus",
 	"stylus:core",
 	"copy-htdocs",

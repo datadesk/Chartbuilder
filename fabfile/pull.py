@@ -1,4 +1,4 @@
-from fabric.api import task, env
+from fabric.api import cd, task, env, run
 from venv import _venv
 
 
@@ -7,4 +7,6 @@ def pull():
     """
     Pulls the latest code using Git
     """
-    _venv("git pull origin %s" % env.branch)
+    env.shell = "/bin/bash -c"
+    with cd(env.project_dir):
+        run("git pull origin %s" % env.branch)

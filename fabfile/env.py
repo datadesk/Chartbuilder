@@ -11,5 +11,5 @@ env.branch = "master"
 env.hosts = (settings.STOCKSERVER_HOST,)
 env.user = settings.STOCKSERVER_USER
 env.password = settings.STOCKSERVER_PASS
-env.project_dir = "/Library/WebServer/Documents/chartbuilder-lat-dev"
-env.activate = "source %s/bin/activate" % env.project_dir
+env.project_dir = "/Library/WebServer/Documents/chartbuilder-lat-dev/repo"
+env.activate = "source /Library/WebServer/Documents/chartbuilder-lat-dev/bin/activate"
