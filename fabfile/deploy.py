@@ -7,11 +7,6 @@ from .restartapache import restartapache
 from .venv import _venv
 from fabric.api import local, task, settings, run
 
-try:
-    from app.secrets import settings_local as settings
-except ImportError:
-    from app.secrets import settings_default as settings
-
 
 @task
 def deploy(silent=False):
