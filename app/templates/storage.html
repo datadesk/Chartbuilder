@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <title>Chartbuilder 2.6.4 archive page</title>
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="css/main.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <style>
         .container {margin-top:42px;}
@@ -15,8 +15,8 @@
     <div class="header">
         <h1>Chartbuilder 2.6.4</h1>
         <nav>
-            <li><a href="/">Make a chart</a></li>
-            <li><a href="/storage/">Archive</a></li>
+            <li><a href="../">Make a chart</a></li>
+            <li><a href="storage/">Archive</a></li>
         </nav>
     </div>
 
@@ -30,9 +30,9 @@
             {% for d in dirs_list %}
                 {% if d != ".DS_Store" %}
                     <div class="storageItem">
-                        <a href="/?jsonurl={{d}}.json"><img src="/chartbuilder-storage/{{d}}/{{d}}.png"/></a>
+                        <a href="/?jsonurl={{d}}.json"><img src="chartbuilder-storage/{{d}}/{{d}}.png"/></a>
                         <h2 class="itemSlug">{{ d }}</h2>
-                        <p class="links"><a href="/?jsonurl={{d}}.json">Edit chart</a> | <a href="/chartbuilder-storage/{{d}}/{{d}}.svg">SVG</a> | <a href="/chartbuilder-storage/{{d}}/{{d}}.png">PNG</a></p>
+                        <p class="links"><a href="/?jsonurl={{d}}.json">Edit chart</a> | <a href="chartbuilder-storage/{{d}}/{{d}}.svg">SVG</a> | <a href="chartbuilder-storage/{{d}}/{{d}}.png">PNG</a></p>
                     </div>
                 {% endif %}
             {% endfor %}
