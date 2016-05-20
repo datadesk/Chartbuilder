@@ -19,7 +19,10 @@ def deploy(silent=False):
     Deploys the latest code to a remote server.
     """
     local("npm run build")
-    local("git commit -am 'updating build' && git push origin master")
+    try:
+        local("git commit -am 'updating build' && git push origin master")
+    except Exception:
+        pass
 
     # cleanup first
     clean()
