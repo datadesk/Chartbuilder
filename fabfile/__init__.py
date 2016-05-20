@@ -8,12 +8,16 @@ from .pull import pull
 from .restartapache import restartapache
 from .serve import serve
 
+from .env import prod
+
+
 __all__ = (
     "clean",
     "copy_secrets",
     "deploy",
     "env",
     "pipinstall",
+    "prod",
     "pull",
     "restartapache",
     "serve",
