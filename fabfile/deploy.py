@@ -20,11 +20,9 @@ def deploy(silent=False):
     """
     local("npm run build")
 
-    try:
+    with settings(warn_only=True):
         local("git commit -am 'updating build'")
         local("git push origin master")
-    except Exception:
-        pass
 
     # cleanup first
     clean()
