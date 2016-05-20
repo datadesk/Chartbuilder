@@ -242,7 +242,7 @@ def sorted_ls(path):
     Returns a list of directories in order of last modified
     """
     mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
-    return list(sorted(os.listdir(path), key=mtime))
+    return reversed(list(sorted(os.listdir(path), key=mtime)))
 
 
 @app.route('/')
