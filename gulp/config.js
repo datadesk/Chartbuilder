@@ -1,7 +1,8 @@
 var path = require('path');
 
 var dirs = {
-	build: './build',
+	build: './app/static',
+	templates: './app/templates',
 	tmp: './.tmp',
 	src: './src',
 	dist: './dist',

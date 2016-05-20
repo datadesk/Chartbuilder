@@ -21,17 +21,9 @@ def deploy(silent=False):
     # Run node build command
     local("npm run build")
 
-    # Copy the build directory
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    build_dir = os.path.join(base_dir, 'build', '*')
-    remote_dir = os.path.join(env.project_dir, 'repo')
-    put(build_dir, remote_dir)
-
-    # Copy secrets file to stockserver
-    # copy_secrets()
-
-    # Copy Flask app biz
+    # Copy to Stockserver
     app_dir = os.path.join(base_dir, 'app')
+    remote_dir = os.path.join(env.project_dir, 'repo')
     put(app_dir, remote_dir)
 
     # Copy requirements

@@ -12,13 +12,14 @@ import requests
 import slack
 from bs4 import BeautifulSoup
 from datetime import timedelta
+from flask import current_app
 from flask import Flask
 from flask import jsonify
 from flask import json
 from flask import redirect
 from flask import request
 from flask import make_response
-from flask import current_app
+from flask import render_template
 from functools import update_wrapper
 
 try:
@@ -26,7 +27,7 @@ try:
 except ImportError:
     from secrets import settings_default as settings
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 app.debug=True
 
 def crossdomain(origin=None, methods=None, headers=None, max_age=21600,
@@ -230,6 +231,22 @@ def update_or_create_chartblurb(data):
 
     # return the created bool with the updated object
     return created, get_object_or_none(p2p_slug)
+
+
+@app.route('/')
+def index():
+    """
+    The main Chartbuilder page.
+    """
+    return render_template('index.html')
+
+
+@app.route('/storage/')
+def storage():
+    """
+    The main Chartbuilder page.
+    """
+    return render_template('storage.html')
 
 
 @app.route('/send-slack-message/')

@@ -10,6 +10,8 @@ var ChartbuilderLocalStorageAPI = require("./util/ChartbuilderLocalStorageAPI");
 var Chartbuilder = require("./components/Chartbuilder.jsx");
 var container = document.querySelector(".chartbuilder-container");
 
+console.log("test!");
+
 document.addEventListener("DOMContentLoaded", function() {
 	document.cookie = "authed=yes";
 	// Initialize data from localStorage

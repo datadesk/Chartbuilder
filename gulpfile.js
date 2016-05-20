@@ -132,8 +132,8 @@ gulp.task("clean-dist", function (done) {
 
 gulp.task("copy-htdocs", function () {
 	return gulp.src(config.paths.src.htdocs + "/**")
-		.pipe(changed(config.dirs.build))
-		.pipe(gulp.dest(config.dirs.build))
+		.pipe(changed(config.dirs.templates))
+		.pipe(gulp.dest(config.dirs.templates))
 		.pipe(reload({ stream: true }));
 });
 
@@ -185,7 +185,6 @@ gulp.task("watch", [
 	gulp.watch(config.paths.src.js + "/**", ["browserify:dev", "browserify:storage:dev"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch(config.paths.src.htdocs + "/**", ["copy-htdocs"]);
-	gulp.watch(config.paths.src.htdocs + "/storage/**", ["copy-htdocs"]);
 	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);
 	gulp.watch("./node_modules/d3/d3.js", ["browserify:dev"]);
 	done();

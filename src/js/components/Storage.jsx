@@ -9,6 +9,7 @@ var Storage = React.createClass({
         var self = this;
         var client = new XMLHttpRequest();
         client.open('GET', this.props.url);
+        console.log(this.props.url);
         client.onreadystatechange = function() {
             if (client.readyState === 4) {
                 var data = client.responseText.split('\n');
