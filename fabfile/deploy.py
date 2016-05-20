@@ -22,6 +22,7 @@ def deploy(silent=False):
     local("npm run build")
 
     # Copy to Stockserver
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     app_dir = os.path.join(base_dir, 'app')
     remote_dir = os.path.join(env.project_dir, 'repo')
     put(app_dir, remote_dir)
