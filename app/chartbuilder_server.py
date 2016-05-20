@@ -6,10 +6,12 @@ A Flask application backend that connects
 Chartbuilder's interface with P2P's API
 Allowing us to publish charts directly to P2P.
 """
+import os
 import base64
 import p2p
 import requests
 import slack
+import urllib
 from bs4 import BeautifulSoup
 from datetime import timedelta
 from flask import current_app
@@ -275,8 +277,6 @@ def send_to_p2p():
     app.logger.debug("sending to P2P")
     # Make a generic response object
     r = make_response("hello, world!")
-    # r.headers['Access-Control-Allow-Origin'] = "*"
-    # return r
 
     # We should be POSTing
     if request.method in ["POST", "PUT"]:
@@ -294,7 +294,6 @@ def send_to_p2p():
             }
             app.logger.debug("Created object in P2P!")
             app.logger.debug(created, obj)
-            # return r
         except Exception as e:
             app.logger.debug("Exception!")
             # Return the exception if it fails
@@ -325,14 +324,40 @@ def get_p2p_admin_url():
         return False
 
 
-@app.route('/save-to-server/')
+@app.route('/save-to-server/', methods=["POST"])
 @crossdomain(origin="*")
 def save_to_server():
     """
     Meant to replace PHP script that writes to stockserver.
     One day.
     """
-    return "hello world!"
+    if request.method in ["POST", "PUT"]:
+        data = request.form
+        name = data['name'].strip()
+        slug = data['slug'].strip()
+        filedata = data['filedata'].strip()
+
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'chartbuilder-storage', slug)
+
+        # Make the path if it doesn't exist, but it almost always should
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        filepath = os.path.join(path, name)
+
+        # Trim base64 prefix from encoded file
+        filepos = filedata.find("base64,", 0, 50)
+        if filepos > -1:
+            filedata = filedata[filepos + len("base64,"):]
+
+        # Decode base64 string
+        filedata_decoded = base64.decodestring(urllib.unquote(filedata))
+
+        # Write the file
+        with open(filepath, 'wb') as file:
+            file.write(filedata_decoded)
+
+    return "Chart saved to drive"
 
 
 if __name__ == '__main__':

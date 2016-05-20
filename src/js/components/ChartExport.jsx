@@ -137,7 +137,7 @@ var ChartExport = React.createClass({
 	_sendToServer: function(filename, slug, uri, cb) {
 		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
-		postrequest.open("POST", "http://stockserver.usa.tribune.com/chartbuilder-lat/chartbuilder-writer-2.0.php", true);
+		postrequest.open("POST", "/save-to-server/", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 		postrequest.onreadystatechange = function() {
@@ -190,7 +190,7 @@ var ChartExport = React.createClass({
 		instructions.classList.remove("hidden");
 
 		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
-			sendToP2P(slug, uri);
+			// sendToP2P(slug, uri);
 
 			sendToServer(filename, slug, uri, function() {
 				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
