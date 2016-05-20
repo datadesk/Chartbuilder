@@ -115,7 +115,7 @@ var Chartbuilder = React.createClass({
 	loadDataFromUrl: function(url) {
 		var client = new XMLHttpRequest();
 		url = 'chartbuilder-storage/' + url.replace('.json', '') + '/' + url;
-		console.log(url);
+		url = url + "?v=" + Math.floor(Math.random() * 10000000000);
 		client.open('GET', url);
 		client.onreadystatechange = function() {
 			if (client.readyState == 4) {
