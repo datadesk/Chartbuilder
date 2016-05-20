@@ -267,8 +267,9 @@ def storage():
 
 @app.route('/chartbuilder-storage/<path:path>')
 def custom_static(path):
-    print path
-    return send_from_directory("/chartbuilder-storage/" , path)
+    # print path
+    media_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chartbuilder-storage')
+    return send_from_directory(media_path , path)
 
 
 @app.route('/send-slack-message/')

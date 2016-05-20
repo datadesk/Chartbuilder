@@ -30,9 +30,13 @@
             {% for d in dirs_list %}
                 {% if d != ".DS_Store" %}
                     <div class="storageItem">
-                        <a href="/?jsonurl={{d}}.json"><img src="chartbuilder-storage/{{d}}/{{d}}.png"/></a>
+                        <a href="../?jsonurl={{d}}.json">
+                            <img src="../chartbuilder-storage/{{d}}/{{d}}.png"/>
+                        </a>
                         <h2 class="itemSlug">{{ d }}</h2>
-                        <p class="links"><a href="/?jsonurl={{d}}.json">Edit chart</a> | <a href="chartbuilder-storage/{{d}}/{{d}}.svg">SVG</a> | <a href="chartbuilder-storage/{{d}}/{{d}}.png">PNG</a></p>
+                        <p class="links">
+                            <a href="../?jsonurl={{d}}.json">Edit chart</a> | <a href="../chartbuilder-storage/{{d}}/{{d}}.svg">SVG</a> | <a href="../chartbuilder-storage/{{d}}/{{d}}.png">PNG</a>
+                        </p>
                     </div>
                 {% endif %}
             {% endfor %}
