@@ -13,3 +13,8 @@ env.user = settings.STOCKSERVER_USER
 env.password = settings.STOCKSERVER_PASS
 env.project_dir = "/Library/WebServer/Documents/chartbuilder-lat-dev/repo"
 env.activate = "source /Library/WebServer/Documents/chartbuilder-lat-dev/bin/activate"
+
+@task
+def prod():
+    env.project_dir = "/Library/WebServer/Documents/chartbuilder-lat/repo"
+    env.activate = "source /Library/WebServer/Documents/chartbuilder-lat/bin/activate"
