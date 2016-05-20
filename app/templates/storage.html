@@ -20,9 +20,26 @@
         </nav>
     </div>
 
-    <div class="chartbuilder-container"></div>
+    <div class="chartbuilder-container">
+        <div class="chartbuilder-storage">
+            <div class="page-header">
+                <h1 class="chartbuilder-title">Chartbuilder archive</h1>
+            </div>
 
-    <script src="/js/storage-main.js"></script>
+            <div class="storage-list">
+            {% for d in dirs_list %}
+                {% if d != ".DS_Store" %}
+                    <div class="storageItem">
+                        <a href="/?jsonurl={{d}}.json"><img src="/chartbuilder-storage/{{d}}/{{d}}.png"/></a>
+                        <h2 class="itemSlug">{{ d }}</h2>
+                        <p class="links"><a href="/?jsonurl={{d}}.json">Edit chart</a> | <a href="/chartbuilder-storage/{{d}}/{{d}}.svg">SVG</a> | <a href="/chartbuilder-storage/{{d}}/{{d}}.png">PNG</a></p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+
 
 </body>
 </html>

@@ -11,6 +11,7 @@ import base64
 import p2p
 import requests
 import slack
+import sys
 import urllib
 from bs4 import BeautifulSoup
 from datetime import timedelta
@@ -23,6 +24,7 @@ from flask import request
 from flask import make_response
 from flask import render_template
 from functools import update_wrapper
+from stat import S_ISREG, ST_CTIME, ST_MODE
 
 try:
     from secrets import settings_local as settings
@@ -235,6 +237,14 @@ def update_or_create_chartblurb(data):
     return created, get_object_or_none(p2p_slug)
 
 
+def sorted_ls(path):
+    """
+    Returns a list of directories in order of last modified
+    """
+    mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
+    return list(sorted(os.listdir(path), key=mtime))
+
+
 @app.route('/')
 def index():
     """
@@ -248,7 +258,10 @@ def storage():
     """
     The main Chartbuilder page.
     """
-    return render_template('storage.html')
+    storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'chartbuilder-storage')
+    dirs = sorted_ls(storage_dir)
+    app.logger.debug(dirs)
+    return render_template('storage.html', dirs_list=dirs)
 
 
 @app.route('/send-slack-message/')
