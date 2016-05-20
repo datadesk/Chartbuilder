@@ -7,6 +7,7 @@ try:
 except ImportError:
     from app.secrets import settings_default as settings
 
+env.branch = "master"
 env.hosts = (settings.STOCKSERVER_HOST,)
 env.user = settings.STOCKSERVER_USER
 env.password = settings.STOCKSERVER_PASS

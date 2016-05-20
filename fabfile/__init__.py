@@ -3,6 +3,7 @@ from .clean import clean
 from .deploy import deploy
 from .env import env
 from .pipinstall import pipinstall
+from .pull import pull
 from .restartapache import restartapache
 from .serve import serve
 
@@ -11,6 +12,7 @@ __all__ = (
     "deploy",
     "env",
     "pipinstall",
+    "pull",
     "restartapache",
     "serve",
 )
