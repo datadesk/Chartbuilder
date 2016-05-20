@@ -241,7 +241,7 @@ var ChartExport = React.createClass({
 					key="svg-export"
 					className="export-button"
 					onClick={this.exportChart}
-					text="Export to P2P"
+					text="Save and export to P2P"
 				/>
 			);
 		}
