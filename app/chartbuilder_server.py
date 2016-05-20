@@ -337,7 +337,8 @@ def save_to_server():
         slug = data['slug'].strip()
         filedata = data['filedata'].strip()
 
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'chartbuilder-storage', slug)
+        storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'chartbuilder-storage')
+        path = os.path.join(storage_dir, slug)
 
         # Make the path if it doesn't exist, but it almost always should
         if not os.path.exists(path):
