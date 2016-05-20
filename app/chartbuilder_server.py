@@ -258,7 +258,7 @@ def storage():
     """
     The main Chartbuilder page.
     """
-    storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'chartbuilder-storage')
+    storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static','chartbuilder-storage')
     dirs = sorted_ls(storage_dir)
     app.logger.debug(dirs)
     return render_template('storage.html', dirs_list=dirs)
@@ -350,7 +350,7 @@ def save_to_server():
         slug = data['slug'].strip()
         filedata = data['filedata'].strip()
 
-        storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, 'chartbuilder-storage')
+        storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'chartbuilder-storage')
         path = os.path.join(storage_dir, slug)
 
         # Make the path if it doesn't exist, but it almost always should

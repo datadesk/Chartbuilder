@@ -9,3 +9,4 @@ def clean():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     with cd(base_dir):
         local("find . -name '*.pyc' -print0|xargs -0 rm")
+        sudo("find . -name '*.pyc' -print0|xargs -0 rm")
