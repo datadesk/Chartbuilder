@@ -9,6 +9,6 @@ def copy_secrets():
     """
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     secrets_dir = os.path.join(base_dir, 'app', 'secrets')
-    remote_dir = os.path.join(env.project_dir, 'app', 'secrets')
+    remote_dir = os.path.join(env.project_dir, 'app',)
 
     put(secrets_dir, remote_dir)

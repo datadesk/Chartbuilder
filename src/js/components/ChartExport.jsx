@@ -137,7 +137,7 @@ var ChartExport = React.createClass({
 	_sendToServer: function(filename, slug, uri, cb) {
 		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
-		postrequest.open("POST", "/save-to-server/", true);
+		postrequest.open("POST", "save-to-server/", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 		postrequest.onreadystatechange = function() {
@@ -155,7 +155,7 @@ var ChartExport = React.createClass({
 		console.log("sending to p2p");
 		var params = "slug=" + slug + "&data=" +  encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
-		postrequest.open("POST", "/send-to-p2p/", true);
+		postrequest.open("POST", "send-to-p2p/", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
 		postrequest.onreadystatechange = function() {

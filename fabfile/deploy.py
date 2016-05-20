@@ -19,6 +19,7 @@ def deploy(silent=False):
     Deploys the latest code to a remote server.
     """
     local("npm run build")
+
     try:
         local("git commit -am 'updating build'")
         local("git push origin master")
@@ -29,19 +30,7 @@ def deploy(silent=False):
     clean()
     pull()
 
-    # Run node build command
-    # _venv("npm install")
-    # _venv("npm run build")
-
-    # Copy to Stockserver
-    # base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # app_dir = os.path.join(base_dir, 'app')
-    # remote_dir = os.path.join(env.project_dir, 'repo')
-    # put(app_dir, remote_dir)
-
-    # Copy requirements
-    # reqs_file = os.path.join(base_dir, 'requirements.txt')
-    # put(reqs_file, remote_dir)
+    # Copy secrets file
     copy_secrets()
 
     # install requirements

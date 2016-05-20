@@ -23,6 +23,7 @@ from flask import redirect
 from flask import request
 from flask import make_response
 from flask import render_template
+from flask import send_from_directory
 from functools import update_wrapper
 from stat import S_ISREG, ST_CTIME, ST_MODE
 
@@ -258,10 +259,16 @@ def storage():
     """
     The main Chartbuilder page.
     """
-    storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static','chartbuilder-storage')
+    storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chartbuilder-storage')
     dirs = sorted_ls(storage_dir)
     app.logger.debug(dirs)
     return render_template('storage.html', dirs_list=dirs)
+
+
+@app.route('/chartbuilder-storage/<path:path>')
+def custom_static(path):
+    print path
+    return send_from_directory("/chartbuilder-storage/" , path)
 
 
 @app.route('/send-slack-message/')
@@ -350,7 +357,7 @@ def save_to_server():
         slug = data['slug'].strip()
         filedata = data['filedata'].strip()
 
-        storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'chartbuilder-storage')
+        storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chartbuilder-storage')
         path = os.path.join(storage_dir, slug)
 
         # Make the path if it doesn't exist, but it almost always should
