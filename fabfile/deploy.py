@@ -20,7 +20,8 @@ def deploy(silent=False):
     """
     local("npm run build")
     try:
-        local("git commit -am 'updating build' && git push origin master")
+        local("git commit -am 'updating build'")
+        local("git push origin master")
     except Exception:
         pass
 
