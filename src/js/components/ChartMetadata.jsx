@@ -139,16 +139,10 @@ var ChartMetadata = React.createClass({
 			<div className="editor-options">
 				<h2>
 					<span className="step-number">{this.props.stepNumber}</span>
-					<span>Set title, source, credit and size</span>
+					<span>Set title, source and credit</span>
 				</h2>
 				{textInputs}
-				<h3>Size</h3>
 				{this.props.additionalComponents}
-				<ButtonGroup
-					buttons={chart_sizes}
-					onClick={this._handleMetadataUpdate.bind(null, "size")}
-					value={metadata.size}
-				/>
 			</div>
 		);
 	}

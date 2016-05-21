@@ -55,7 +55,7 @@ def send_message(msg):
     """
     # token = slack.set_auth_token()
     message = {
-        "channel": "#graphics-request-test",
+        "channel": "#graphics-requests",
         "username": "Chartbuilder-bot",
         "text": msg
     }

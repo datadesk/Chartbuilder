@@ -161,7 +161,6 @@ var ChartExport = React.createClass({
 		postrequest.onreadystatechange = function() {
 			if (postrequest.readyState == 4 && postrequest.status == 200) {
 				// Probably should have something render on success
-
 				if (cb && typeof(cb) === "function") {
 					cb();
 				}
