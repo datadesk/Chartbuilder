@@ -167,21 +167,44 @@ var Chartbuilder = React.createClass({
 		SessionStore.removeChangeListener(this._onChange);
 	},
 
+	_validateMeta: function(meta) {
+		if (meta && meta.title.trim() !== "" && meta.source.trim() !== "") {
+			return [];
+		} else {
+			err = [{
+				location: "input",
+				text: "Your chart needs both a title and a source.",
+				type: "error"
+			}];
+			return err;
+		}
+	},
+
 	_renderErrors: function() {
 
 		var metadataErrors = [];
-		if (this.props.validateMeta) {
-			metadataErrors = this.props.validateMeta(this.state.metadata);
+		if (this._validateMeta()) {
+			metadataErrors = this._validateMeta(this.state.metadata);
 		}
 
 		var errorArrMessage = this.state.errors.messages.concat(metadataErrors);
 
 		if (errorArrMessage.length === 0) {
-			return null;
+			return (
+		        <ChartExport
+		        	data={this.state.chartProps.data}
+		        	enableJSONExport={this.props.enableJSONExport}
+		        	svgWrapperClassName={svgWrapperClassName.desktop}
+		        	metadata={this.state.metadata}
+		        	stepNumber={String(7)}
+		        	additionalComponents={this.props.additionalComponents.misc}
+		        	model={this.state}
+		        />
+			);
 		} else {
 			return (
 				<div>
-					<h2>Have a look at these issues:</h2>
+					<h2>Have a look at these issues before you export your chart:</h2>
 					<AlertGroup
 						alerts={errorArrMessage}
 					/>
@@ -276,15 +299,6 @@ var Chartbuilder = React.createClass({
 					/>
 					{mobileOverrides}
 					{this._renderErrors()}
-					<ChartExport
-						data={this.state.chartProps.data}
-						enableJSONExport={this.props.enableJSONExport}
-						svgWrapperClassName={svgWrapperClassName.desktop}
-						metadata={this.state.metadata}
-						stepNumber={String(editorSteps + 3)}
-						additionalComponents={this.props.additionalComponents.misc}
-						model={this.state}
-					/>
 				</div>
 				<div className="chartbuilder-canvas">
 					<Canvas />

@@ -41,7 +41,7 @@ var chart_sizes = [
 
 var text_input_values = [
 	{ name: "title", content: "Title", isRequired: true },
-	{ name: "credit", content: "Credit"},
+	{ name: "credit", content: "Credit" },
 	{ name: "source", content: "Source", isRequired: true},
 	{ name: "slug",  content: "Slug (auto-generated)"}
 ];
@@ -66,10 +66,11 @@ var ChartMetadata = React.createClass({
 			slugEditable: PropTypes.bool,
 			source: PropTypes.string.isRequired,
 			credit: PropTypes.string.isRequired,
-			title: PropTypes.string,
+			title: PropTypes.string.isRequired,
 		}),
 		stepNumber: PropTypes.string,
-		additionalComponents: PropTypes.array
+		additionalComponents: PropTypes.array,
+		errors: PropTypes.array
 	},
 
 	// Get text input types from state
