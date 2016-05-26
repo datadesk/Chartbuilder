@@ -32,10 +32,6 @@ gulp.task("stylus", function () {
 			"include css": true,
 			errors: true
 		}))
-		.pipe(base64({
-			baseDir: "./src",
-			maxWeightResource: 1000000
-		}))
 		.pipe(gulp.dest(config.paths.build.css))
 		.pipe(reload({stream:true}));
 });

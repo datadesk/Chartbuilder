@@ -169,7 +169,12 @@ def prep_p2p_blurb_payload(data):
         'slug': data['slug'] + "-chartbuilder",
         'title': data['slug'],
         'content_item_type_code': 'blurb',
-        'content_item_state_code': 'working'
+        'content_item_state_code': 'working',
+        'custom_param_data': {
+            'ratio-above-840': data['ratio'],
+            'ratio-420-840': data['ratio'],
+            'ratio-below-420': data['ratio'],
+        }
     }
 
     # Decode the base64-encoded string into an SVG file
@@ -232,7 +237,6 @@ def update_or_create_chartblurb(data):
         except Exception as e:
             app.logger.debug("oops")
             app.logger.debug(e)
-
 
     # return the created bool with the updated object
     return created, get_object_or_none(p2p_slug)

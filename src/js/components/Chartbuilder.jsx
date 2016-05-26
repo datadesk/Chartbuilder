@@ -188,8 +188,15 @@ var Chartbuilder = React.createClass({
 		}
 
 		var errorArrMessage = this.state.errors.messages.concat(metadataErrors);
+		var hasErrors = false;
+		for (var i = 0; i < errorArrMessage.length; i++) {
+			if (errorArrMessage[i].type === "error") {
+				hasErrors = true;
+			}
+		}
 
-		if (errorArrMessage.length === 0) {
+
+		if (!hasErrors) {
 			return (
 		        <ChartExport
 		        	data={this.state.chartProps.data}

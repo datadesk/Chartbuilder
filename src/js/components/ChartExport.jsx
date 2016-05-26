@@ -151,9 +151,8 @@ var ChartExport = React.createClass({
 		postrequest.send(params);
 	},
 
-	_sendToP2P: function(slug, uri, cb) {
-		console.log("sending to p2p");
-		var params = "slug=" + slug + "&data=" +  encodeURIComponent(uri);
+	_sendToP2P: function(slug, uri, ratio, cb) {
+		var params = "slug=" + slug + "&ratio=" + ratio + "&data=" +  encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
 		postrequest.open("POST", "send-to-p2p/", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -184,13 +183,16 @@ var ChartExport = React.createClass({
 		var sendToP2P = this._sendToP2P;
 		var instructions = document.getElementById('export-instructions');
 
+		var ratio = (chart.getAttribute('height') / chart.getAttribute('width')) * 100;
+		ratio = ratio.toString()
+
 		// Set the slug to be not editable and show the final instructions
 		ChartViewActions.updateMetadata('slugEditable', false);
 		instructions.classList.remove("hidden");
 
 		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
 
-			sendToP2P(slug, uri);
+			sendToP2P(slug, uri, ratio);
 			sendToServer(filename, slug, uri, function() {
 				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
 					sendToServer(pngFilename, slug, pngUri, function() {
