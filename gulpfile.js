@@ -43,10 +43,6 @@ gulp.task("stylus:core", ["clean-dist"], function () {
 			"include css": true,
 			errors: true
 		}))
-		.pipe(base64({
-			baseDir: "./src",
-			maxWeightResource: 1000000
-		}))
 		.pipe(gulp.dest(config.paths.dist.css));
 });
 
