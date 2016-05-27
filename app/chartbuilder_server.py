@@ -177,10 +177,18 @@ def prep_p2p_blurb_payload(data):
         }
     }
 
+
     # Decode the base64-encoded string into an SVG file
-    base64n =  data['data'].index("base64,")
-    body_content = data['data']
-    body_content = base64.decodestring(body_content[base64n + 7:])
+    # In some cases there won't be the base64 prefix,
+    # So also handle that case
+    try:
+        base64n = data['data'].index("base64,")
+        body_content = data['data']
+        body_content = base64.decodestring(body_content[base64n + 7:])
+    except ValueError:
+        body_content = data['data']
+        body_content = base64.decodestring(body_content)
+
     body_content_cleaned = clean_for_p2p(body_content)
 
     context = {
@@ -189,6 +197,8 @@ def prep_p2p_blurb_payload(data):
 
     # Render the HTML for body and add that
     payload['body'] = context['elements']
+
+    print payload
 
     # Pass it out
     return payload
@@ -307,6 +317,8 @@ def send_to_p2p():
         # Pull the data from the latest POST request
         app.logger.debug("attempting to post")
         data = request.form
+
+        print data
 
         try:
             app.logger.debug("try. trying hard.")
