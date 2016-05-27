@@ -28,9 +28,21 @@
     <!--[if lte IE 7]><script type="text/javascript" src="//cookbook.latimes.com/js/icons-ie7.js"></script><![endif]-->
 
     <style>
+        @font-face {
+            font-family: 'Benton Gothic Bold';
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot');
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot?#iefix') format('embedded-opentype'),
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.woff') format('woff'),
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.ttf') format('truetype');
+        font-weight:normal;
+        font-style:normal;
+        }
+        body, p {font-family: 'Benton Gothic Regular';}
+        strong {font-family: 'Benton Gothic Bold';}
         .btn-upload {display:block;}
         .svg-slug-input,
         .svg-text-input {width:100%;}
+        .alert-danger {background-color:transparent; border:none; padding:0;}
     </style>
 </head>
 <body data-ad-path="4011/trb.latimes/news/datadesk" data-ad-ptype="s" data-ad-iframe-url="/static/ngux-tophat-ad-iframe.html" >
@@ -88,24 +100,37 @@
 
     <!-- CONTENT GOES HERE -->
     <div class="container" id="container">
-        <header class="center">
-            <h1>SVG Upload Blurbinator</h1>
-        </header>
 
         <div class="row">
             <div class="span8 offset2">
+                <header class="center">
+                    <h1>SVG von Blurbinator</h1>
+                    <p>Use this page to upload SVGs into P2P blurb items, instead of uploading graphics as images in P2P.</p>
+                </header>
                 <form action="" name="svg-upload" id="svg-upload" class="svg-upload">
                     <h2>SVG slug</h2>
                     <input type="text" class="svg-slug-input" id="svg-slug" name="svg-slug" value="" required>
-                    <p>The P2P slug will be <strong id="slug-output"></strong></p>
+
+                    <div class="alert alert-danger" id="no-slug-warning">
+                        Your graphic needs a slug!
+                    </div>
+                    <p class="slug-holder hidden" id="slug-holder">The P2P slug will be <strong id="slug-output"></strong></p>
+
                     <h2>Paste SVG from Illustrator</h2>
                     <textarea name="svg-text" id="svg-text" class="svg-text-input" cols="50" rows="10"></textarea>
-                    <button class="btn btn-upload" id="submit-btn">Submit</button>
+
+
+
+                    <div class="preview-holder hidden" id="preview-holder">
+                        <h2>Preview:</h2>
+                        <div id="svg-preview"></div>
+                    </div>
+
+                    <div class="upload-btn-holder hidden" id="upload-btn-holder">
+                        <h2>Upload your graphic to P2P</h2>
+                        <button class="btn btn-upload" id="submit-btn">Submit</button>
+                    </div>
                 </form>
-
-                <h2>Preview:</h2>
-                <div id="svg-preview"></div>
-
             </div>
         </div>
 
@@ -131,9 +156,13 @@
     <script>
         var submitBtn = $('#submit-btn');
         var preview = document.getElementById('svg-preview');
+        var previewHolder = document.getElementById('preview-holder');
         var svgInput = $('#svg-text');
         var svgSlugInput = $("#svg-slug");
+        var slugOutputHolder = document.getElementById('slug-holder');
         var slugOutput = document.getElementById('slug-output');
+        var uploadBtnHolder = document.getElementById('upload-btn-holder');
+        var noSlugWarning = document.getElementById('no-slug-warning');
         var slug = "";
 
         submitBtn.on('click', function(e) {
@@ -192,12 +221,44 @@
 
         svgInput.on('input propertychange', function() {
             preview.innerHTML = this.value;
+            validateInput()
         });
 
         svgSlugInput.on('input propertychange', function() {
             slug = slugify(document.getElementById('svg-slug').value)
             slugOutput.innerHTML = slug;
+            validateSlug()
         });
+
+        function validateSlug() {
+            if (document.getElementById('svg-slug').value.trim() !== '') {
+                noSlugWarning.classList.add('hidden');
+                slugOutputHolder.classList.remove('hidden');
+
+                // If SVG text field is also filled out
+                if (document.getElementById('svg-text').value.trim() !== '') {
+                    uploadBtnHolder.classList.remove('hidden');
+                }
+            } else {
+                noSlugWarning.classList.remove('hidden');
+                slugOutputHolder.classList.add('hidden');
+                uploadBtnHolder.classList.add('hidden');
+            }
+        }
+
+        function validateInput() {
+            if (document.getElementById('svg-text').value.trim() !== '') {
+                previewHolder.classList.remove('hidden');
+
+                // If slug field is also filled out
+                if (document.getElementById('svg-slug').value.trim() !== '') {
+                    uploadBtnHolder.classList.remove('hidden');
+                }
+            } else {
+                uploadBtnHolder.classList.add('hidden');
+                previewHolder.classList.add('hidden');
+            }
+        }
 
     </script>
 
