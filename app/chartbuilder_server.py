@@ -317,7 +317,6 @@ def send_to_p2p():
                 "p2p_blurb": obj,
             }
             app.logger.debug("Created object in P2P!")
-            app.logger.debug(created, obj)
         except Exception as e:
             app.logger.debug("Exception!")
             # Return the exception if it fails
@@ -346,6 +345,17 @@ def get_p2p_admin_url():
         return redirect(url, code=302)
     except p2p.P2PNotFound:
         return False
+
+
+@app.route('/svg-uploader/')
+def blurbinator():
+    """
+    Upload an SVG directly to P2P, setting the aspect ratio parameters
+    based on the SVG.
+    """
+    return render_template('svg-uploader.html')
+
+
 
 
 @app.route('/save-to-server/', methods=["POST"])
