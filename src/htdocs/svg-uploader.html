@@ -128,7 +128,7 @@
 
                     <div class="upload-btn-holder hidden" id="upload-btn-holder">
                         <h2>Upload your graphic to P2P</h2>
-                        <button class="btn btn-upload" id="submit-btn">Submit</button>
+                        <button class="btn btn-upload" id="submit-btn">Upload</button>
                     </div>
                 </form>
             </div>
@@ -172,9 +172,17 @@
                 uri = btoa(preview.innerHTML),
                 ratio = ((h / w) * 100).toFixed(2).toString();
 
-            sendToP2P(slug, uri, ratio, function() {
-                uploadBtnHolder.appendChild("<p>Success!</p>")
-            });
+            function onSuccess() {
+                var el = "<p>Your SVG has been successfully saved to P2P. You can view your chart at <a target='_blank' href='/chartbuilder/get-p2p-admin-url/?slug=" + slug + "'>" + slug + "</a></p>";
+                uploadBtnHolder.insertAdjacentHTML('beforeend',el);
+            }
+
+            function onError() {
+                var el = "<p class='alert alert-danger'>There was an error saving to P2P.</p>";
+                uploadBtnHolder.insertAdjacentHTML('beforeend',el);
+            }
+
+            sendToP2P(slug, uri, ratio, onSuccess, onError);
 
         });
 
@@ -204,7 +212,7 @@
             return slug;
         }
 
-        function sendToP2P(slug, uri, ratio, cb) {
+        function sendToP2P(slug, uri, ratio, cb, err) {
             var params = "slug=" + slug + "&ratio=" + ratio + "&source=blurbinator&data=" +  encodeURIComponent(uri);
             var postrequest = new XMLHttpRequest();
             postrequest.open("POST", "/send-to-p2p/", true);
@@ -215,6 +223,10 @@
                     // Probably should have something render on success
                     if (cb && typeof(cb) === "function") {
                         cb();
+                    }
+                } else if (postrequest.readyState == 4 && postrequest.status == 500) {
+                    if (err && typeof(err) === "function") {
+                        err();
                     }
                 }
             }
