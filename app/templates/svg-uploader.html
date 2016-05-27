@@ -172,14 +172,16 @@
                 uri = btoa(preview.innerHTML),
                 ratio = ((h / w) * 100).toFixed(2).toString();
 
+            // Replaces upload button with confirmation message
             function onSuccess() {
-                var el = "<p>Your SVG has been successfully saved to P2P. You can view your chart at <a target='_blank' href='/chartbuilder/get-p2p-admin-url/?slug=" + slug + "'>" + slug + "</a></p>";
-                uploadBtnHolder.insertAdjacentHTML('beforeend',el);
+                var msg = "<p>Your SVG has been successfully saved to P2P. You can view your chart at <a target='_blank' href='/chartbuilder/get-p2p-admin-url/?slug=" + slug + "'>" + slug + "</a></p>";
+                uploadBtnHolder.innerHTML = msg;
             }
 
+            // Replaces upload button with error message
             function onError() {
-                var el = "<p class='alert alert-danger'>There was an error saving to P2P.</p>";
-                uploadBtnHolder.insertAdjacentHTML('beforeend',el);
+                var msg = "<p class='alert alert-danger'>There was an error saving to P2P.</p>";
+                uploadBtnHolder.innerHTML = msg;
             }
 
             sendToP2P(slug, uri, ratio, onSuccess, onError);
@@ -215,7 +217,7 @@
         function sendToP2P(slug, uri, ratio, cb, err) {
             var params = "slug=" + slug + "&ratio=" + ratio + "&source=blurbinator&data=" +  encodeURIComponent(uri);
             var postrequest = new XMLHttpRequest();
-            postrequest.open("POST", "/send-to-p2p/", true);
+            postrequest.open("POST", "../send-to-p2p/", true);
             postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
             postrequest.onreadystatechange = function() {
@@ -230,6 +232,8 @@
                     }
                 }
             }
+            var msg = "<p>Uploading to P2P...</p>";
+            uploadBtnHolder.insertAdjacentHTML('beforeend',msg);
             postrequest.send(params);
         }
 
