@@ -187,7 +187,7 @@ def prep_p2p_blurb_payload(data):
         body_content = base64.decodestring(body_content[base64n + 7:])
     except ValueError:
         body_content = data['data']
-        body_content = base64.decodestring(body_content)
+        body_content = urllib.unquote(base64.decodestring(body_content))
 
     body_content_cleaned = clean_for_p2p(body_content)
 

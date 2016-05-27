@@ -169,12 +169,12 @@
             e.preventDefault();
             var w = preview.clientWidth,
                 h = preview.clientHeight,
-                uri = btoa(preview.innerHTML),
+                uri = btoa(encodeURIComponent(preview.innerHTML)),
                 ratio = ((h / w) * 100).toFixed(2).toString();
 
             // Replaces upload button with confirmation message
             function onSuccess() {
-                var msg = "<p>Your SVG has been successfully saved to P2P. You can view your chart at <a target='_blank' href='/chartbuilder/get-p2p-admin-url/?slug=" + slug + "'>" + slug + "</a></p>";
+                var msg = "<p>Your SVG has been successfully saved to P2P. You can view your chart at <a target='_blank' href='../get-p2p-admin-url/?slug=" + slug + "'><strong>" + slug + "</strong></a></p>";
                 uploadBtnHolder.innerHTML = msg;
             }
 
