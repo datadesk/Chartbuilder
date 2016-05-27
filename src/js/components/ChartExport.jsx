@@ -152,7 +152,7 @@ var ChartExport = React.createClass({
 	},
 
 	_sendToP2P: function(slug, uri, ratio, cb) {
-		var params = "slug=" + slug + "&ratio=" + ratio + "&data=" +  encodeURIComponent(uri);
+		var params = "slug=" + slug + "&ratio=" + ratio + "&source=chartbuilder&data=" +  encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
 		postrequest.open("POST", "send-to-p2p/", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

@@ -17,33 +17,12 @@ except ImportError:
     from secrets import settings_default as settings
 
 
-def set_auth_token(code):
-    """
-    Gets and returns a Slack token to be saved in the current session
-    """
-    slack_params = {
-        'client_id': settings.SLACK_CLIENT_ID,
-        'client_secret': settings.SLACK_CLIENT_SECRET,
-        'code': code
-    }
-    resp = requests.get("https://slack.com/api/oauth.access", params=slack_params)
-    resp_content = resp.json()
-    print resp_content
-
-    # If the Slack response is good, store the token as a session variable.
-    if resp_content['ok'] is True:
-        # Return the generated token
-        return resp_content['access_token']
-    #  If the response is bad then return some sort of error
-    else:
-        r = jsonify({"message": "Error connecting to Slack"})
-        r.status_code = 400
-        return r
-
-
 def prep_slack_message(slug):
+    print "Slack message slug %s" % slug
     chart_url = '%schartbuilder/?jsonurl=%s.json' % (settings.STOCKSERVER_URL, slug)
     msg = "<!here> *New chart created: %s* Please review and edit. You can edit the chart by following this link *<%s|%s>*" % (slug, chart_url, slug)
+
+    print "Slack message %s" % msg
 
     return msg
 
@@ -52,7 +31,6 @@ def send_message(msg):
     """
     Prepares and sends a Slack notification to our graphics group.
     """
-    # token = slack.set_auth_token()
     message = {
         "channel": "#graphics-requests",
         "username": "Chartbuilder-bot",

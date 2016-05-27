@@ -198,8 +198,6 @@ def prep_p2p_blurb_payload(data):
     # Render the HTML for body and add that
     payload['body'] = context['elements']
 
-    print payload
-
     # Pass it out
     return payload
 
@@ -241,8 +239,6 @@ def update_or_create_chartblurb(data):
         try:
             conn.create_content_item(payload)
             created = True
-            msg = slack.prep_slack_message(slug)
-            slack.send_message(msg)
             app.logger.debug("created content item")
         except Exception as e:
             app.logger.debug("oops")
@@ -318,8 +314,6 @@ def send_to_p2p():
         app.logger.debug("attempting to post")
         data = request.form
 
-        print data
-
         try:
             app.logger.debug("try. trying hard.")
             created, obj = update_or_create_chartblurb(data)
@@ -328,7 +322,16 @@ def send_to_p2p():
                 "created": created,
                 "p2p_blurb": obj,
             }
+
+            # print data.get('source', None)
+            slug = data['slug']
+            # Only send to Slack if this is coming from Chartbuilder
+            if data['source'] != 'blurbinator':
+                msg = slack.prep_slack_message(slug)
+                slack.send_message(msg)
+
             app.logger.debug("Created object in P2P!")
+
         except Exception as e:
             app.logger.debug("Exception!")
             # Return the exception if it fails

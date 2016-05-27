@@ -172,7 +172,9 @@
                 uri = btoa(preview.innerHTML),
                 ratio = ((h / w) * 100).toFixed(2).toString();
 
-            sendToP2P(slug, uri, ratio);
+            sendToP2P(slug, uri, ratio, function() {
+                uploadBtnHolder.appendChild("<p>Success!</p>")
+            });
 
         });
 
@@ -203,7 +205,7 @@
         }
 
         function sendToP2P(slug, uri, ratio, cb) {
-            var params = "slug=" + slug + "&ratio=" + ratio + "&data=" +  encodeURIComponent(uri);
+            var params = "slug=" + slug + "&ratio=" + ratio + "&source=blurbinator&data=" +  encodeURIComponent(uri);
             var postrequest = new XMLHttpRequest();
             postrequest.open("POST", "/send-to-p2p/", true);
             postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
