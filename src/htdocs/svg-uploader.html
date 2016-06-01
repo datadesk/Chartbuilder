@@ -308,6 +308,7 @@
 
                 // Create a rect tag, copy over the image attributes, and remove the image
                 var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.id = 'reference-rect';
                 rect.setAttribute('xlink:href', b64img);
                 rect.setAttributeNS(null, 'height', imgHeight);
                 rect.setAttributeNS(null, 'width', imgWidth);
@@ -319,16 +320,18 @@
                 // with all its corresponding attributes, when this is rendered in p2p
                 var script = document.createElement('script');
                 script.text = "var par = document.getElementById('" + id + "');\
-  var rect = par.querySelector('rect');\
-  var img = document.createElementNS('http://www.w3.org/2000/svg', 'image');\
-  var imgHeight = rect.getAttribute('height');\
-  var imgWidth = rect.getAttribute('width');\
-  var b64img = rect.getAttribute('xlink:href');\
-  img.setAttributeNS(null, 'height', imgHeight);\
-  img.setAttributeNS(null, 'width', imgWidth);\
-  img.setAttributeNS('http://www.w3.org/1999/xlink','href', b64img);\
-  par.appendChild(img);\
-  par.removeChild(rect);";
+                              var rect = document.getElementById('reference-rect');\
+                              var img = document.createElementNS('http://www.w3.org/2000/svg', 'image');\
+                              var imgHeight = rect.getAttribute('height');\
+                              var imgWidth = rect.getAttribute('width');\
+                              var transform = rect.getAttribute('transform');\
+                              var b64img = rect.getAttribute('xlink:href');\
+                              img.setAttributeNS(null, 'height', imgHeight);\
+                              img.setAttributeNS(null, 'width', imgWidth);\
+                              img.setAttributeNS(null, 'transform', transform);\
+                              img.setAttributeNS('http://www.w3.org/1999/xlink','href', b64img);\
+                              par.appendChild(img);\
+                              par.removeChild(rect);";
                 svgClone.appendChild(script);
             }
 
