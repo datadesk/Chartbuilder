@@ -169,8 +169,13 @@
             e.preventDefault();
             var w = preview.clientWidth,
                 h = preview.clientHeight,
-                uri = btoa(encodeURIComponent(preview.innerHTML)),
+                svg = preview.firstElementChild,
                 ratio = ((h / w) * 100).toFixed(2).toString();
+
+
+            svg = p2pUnjank(svg);
+            var uri = btoa(encodeURIComponent(svg));
+
 
             // Replaces upload button with confirmation message
             function onSuccess() {
@@ -276,6 +281,58 @@
                 uploadBtnHolder.classList.add('hidden');
                 previewHolder.classList.add('hidden');
             }
+
+            // If it's a valid SVG element, run it through our unjank function
+            // Might want to link other stuff to this validation in the future.
+            // if (preview.firstElementChild instanceof SVGElement === true) {
+            //     var svg = preview.firstElementChild;
+            //     p2pUnjank(svg);
+            // }
+        }
+
+        // Check if the SVG has an image child element, and if so,
+        // Can we replace it with a
+        function p2pUnjank(svg) {
+            var svgClone = svg.cloneNode(true);
+            var img = svgClone.querySelector('image');
+            if (img) {
+                // Get the parent node of the
+                var par = img.parentNode;
+                var id = par.id;
+
+                // Clone the attributes of the image element
+                var b64img = img.getAttribute('xlink:href');
+                var imgHeight = img.getAttribute('height');
+                var imgWidth = img.getAttribute('width');
+                var transform = img.getAttribute('transform');
+
+                // Create a rect tag, copy over the image attributes, and remove the image
+                var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('xlink:href', b64img);
+                rect.setAttributeNS(null, 'height', imgHeight);
+                rect.setAttributeNS(null, 'width', imgWidth);
+                rect.setAttributeNS(null, 'transform', transform);
+                par.appendChild(rect);
+                par.removeChild(img);
+
+                // Create a script that converts the rect BACK into an image,
+                // with all its corresponding attributes, when this is rendered in p2p
+                var script = document.createElement('script');
+                script.text = "var par = document.getElementById('" + id + "');\
+  var rect = par.querySelector('rect');\
+  var img = document.createElementNS('http://www.w3.org/2000/svg', 'image');\
+  var imgHeight = rect.getAttribute('height');\
+  var imgWidth = rect.getAttribute('width');\
+  var b64img = rect.getAttribute('xlink:href');\
+  img.setAttributeNS(null, 'height', imgHeight);\
+  img.setAttributeNS(null, 'width', imgWidth);\
+  img.setAttributeNS('http://www.w3.org/1999/xlink','href', b64img);\
+  par.appendChild(img);\
+  par.removeChild(rect);";
+                svgClone.appendChild(script);
+            }
+
+            return svgClone.outerHTML;
         }
 
     </script>
