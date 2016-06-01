@@ -238,7 +238,7 @@ var ChartExport = React.createClass({
 		if (this.state.enableSvgExport) {
 			chartExportButtons.push(
 				<Button
-					key="svg-export"
+					key="export-to-p2p"
 					className="export-button"
 					onClick={this.exportChart}
 					text="Save and export to P2P"
@@ -265,6 +265,7 @@ var ChartExport = React.createClass({
 					</div>
 				<div className="instructions hidden" id="export-instructions">
 			        <p>That's it, you're done! You can find your chart in P2P under the slug<br/><span className='slug-label'><a target="_blank" href={'get-p2p-admin-url/?slug=' + this.props.metadata.slug}>{this.props.metadata.slug}-chartbuilder</a></span>.</p>
+			        <p>You can also download an SVG of your chart <a target="_blank" href={"chartbuilder-storage/" + this.props.metadata.slug + "/" + this.props.metadata.slug + ".svg"}>here</a></p>
 		        </div>
 		        <p>ChartBuilder is an open source project created by <a href="https://github.com/Quartz/Chartbuilder/">Quartz</a>. Let us know if you <a href="mailto:yyartist@latimes.com?Subject=ChartBuilder bug report">find any bugs</a>.</p>
 			</div>
