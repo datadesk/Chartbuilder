@@ -739,6 +739,7 @@ span.step-number {
 }
 .cb-button-group .cb-button.active {
   color: #333;
+  background-color: rgba(0,109,162,0.2);
 }
 .colorsection {
   float: right;
