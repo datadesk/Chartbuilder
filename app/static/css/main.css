@@ -1574,6 +1574,10 @@ p {
   padding: 0 0 0 0;
   line-height: 1.6;
 }
+strong {
+  font-family: 'BentonGothic-Bold', 'Khula-Bold', Arial, sans-serif;
+  color: #333;
+}
 body {
   background-color: #f3f3f3;
   font-family: 'BentonGothic-Regular', 'Khula-Regular', Arial, Helvetica, sans-serif;
@@ -2167,6 +2171,7 @@ svg.renderer-svg tspan {
 }
 .chartbuilder-editor .cb-button-group .cb-button.active {
   color: #333;
+  background-color: rgba(0,109,162,0.2);
 }
 .chartbuilder-editor .colorsection {
   float: right;

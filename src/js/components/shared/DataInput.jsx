@@ -101,10 +101,19 @@ var DataInput = React.createClass({
 		);
 	},
 
+	_renderDateInstructions: function() {
+		if (this.props.chartProps.scale.hasDate) {
+			return (
+		        <p>Dates must in a format like <strong>YYYY-MM-DD, or DD-MM-YYYY</strong></p>
+		    );
+		}
+	},
+
 	// Render the data input text area and indicator
 	_renderDataInput: function() {
 
 		var errors = this._renderErrors();
+		var dateInstructions = this._renderDateInstructions();
 		var isValid = this.props.errors.length === 0;
 
 		return (
@@ -112,6 +121,7 @@ var DataInput = React.createClass({
 				onDragOver={this._toggleDropState}
 			>
 				<p>The first row must be column headers!</p>
+				{dateInstructions}
 				<TextArea
 					value={this.props.chartProps.input.raw}
 					onChange={this._handleReparseUpdate.bind(null, "input")}
