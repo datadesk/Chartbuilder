@@ -43,6 +43,7 @@
         .svg-slug-input,
         .svg-text-input {width:100%;}
         .alert-danger {background-color:transparent; border:none; padding:0;}
+        .export-instructions li {font-size:16px; line-height:24px;}
     </style>
 </head>
 <body data-ad-path="4011/trb.latimes/news/datadesk" data-ad-ptype="s" data-ad-iframe-url="/static/ngux-tophat-ad-iframe.html" >
@@ -106,6 +107,14 @@
                 <header class="center">
                     <h1>SVG Uploader</h1>
                     <p>Use this page to upload SVGs into P2P blurb items, instead of uploading graphics as images.</p>
+                    <p><strong>Exporting from Illustrator:</strong> You should use the "Save as" function in Illustrator to save your SVG. The proper settings should be the defaults, but listing again below (or <a target="_blank" href="https://cloud.githubusercontent.com/assets/524959/16054952/30199510-3224-11e6-8b9f-5841e4e99a14.png">see an image</a>):</p>
+                    <ul class="export-instructions">
+                        <li>Under Fonts -> Type make sure "SVG" is selected</li>
+                        <li>Under Options -> Image Location select "Embed"</li>
+                        <li>Under Advanced Options -> CSS Properties select "Style Elements"</li>
+                        <li>Under Advanced Options -> Decimal Places set to 1</li>
+                        <li>Select the checkboxes "Output fewer &lt;tspan&gt; elements," "Use &lt;textPath&gt; element for Text on Path, and "Responsive."</li>
+                    </ul>
                 </header>
                 <form action="" name="svg-upload" id="svg-upload" class="svg-upload">
                     <h2>SVG slug</h2>
