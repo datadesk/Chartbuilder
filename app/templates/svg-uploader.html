@@ -30,12 +30,12 @@
     <style>
         @font-face {
             font-family: 'Benton Gothic Bold';
-        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot');
-        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot?#iefix') format('embedded-opentype'),
+            src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot');
+            src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot?#iefix') format('embedded-opentype'),
              url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.woff') format('woff'),
              url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.ttf') format('truetype');
-        font-weight:normal;
-        font-style:normal;
+            font-weight:normal;
+            font-style:normal;
         }
         body, p {font-family: 'Benton Gothic Regular';}
         strong {font-family: 'Benton Gothic Bold';}
@@ -170,7 +170,7 @@
                 svg = preview.firstElementChild,
                 ratio = ((h / w) * 100).toFixed(2).toString();
 
-
+            includeFontFace(svg);
             svg = p2pUnjank(svg);
             var uri = btoa(encodeURIComponent(svg));
 
@@ -209,7 +209,7 @@
         }
 
         function slugify(v){
-            var slug = "la-g-" + v.toLowerCase() + this.getDateString();
+            var slug = "la-" + v.toLowerCase() + this.getDateString();
             // Switch spaces to slugs
             slug = slug.replace(/\s/g, "-");
             // Trim special characters
@@ -280,13 +280,58 @@
                 previewHolder.classList.add('hidden');
             }
 
-            // If it's a valid SVG element, run it through our unjank function
-            // Might want to link other stuff to this validation in the future.
-            // if (preview.firstElementChild instanceof SVGElement === true) {
-            //     var svg = preview.firstElementChild;
-            //     p2pUnjank(svg);
-            // }
         }
+
+        function includeFontFace(svg) {
+            var styleTag = svg.getElementsByTagName('style')[0];
+            var fontFaceString = "\
+    @font-face {\
+        font-family: 'BentonGothic-Regular';\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.eot');\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.eot?#iefix') format('embedded-opentype'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.woff') format('woff'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.ttf') format('truetype');\
+        font-weight:normal;\
+        font-style:normal;\
+    }\
+    @font-face {\
+        font-family: 'BentonGothic-Bold';\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot');\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot?#iefix') format('embedded-opentype'),\
+         url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.woff') format('woff'),\
+         url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.ttf') format('truetype');\
+        font-weight:normal;\
+        font-style:normal;\
+    }\
+    @font-face {\
+        font-family: 'BentonGothic-Black';\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.eot');\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.eot?#iefix') format('embedded-opentype'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.woff') format('woff'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.ttf') format('truetype');\
+        font-weight:normal;\
+        font-style:normal;\
+    }\
+    @font-face {\
+        font-family: 'BentonGothicTab-Regular';\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.eot');\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.eot?#iefix') format('embedded-opentype'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.woff') format('woff'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.ttf') format('truetype');\
+        font-weight:normal;\
+        font-style:normal;\
+    }";
+
+            if (typeof styleTag !== 'undefined') {
+                styleTag.innerHTML += fontFaceString;
+            } else {
+                styleTag = document.createElement('style');
+                styleTag.setAttribute('type', 'text/css');
+                styleTag.innerHTML = fontFaceString;
+            }
+        }
+
+
 
         // Check if the SVG has an image child element, and if so,
         // Can we replace it with a
