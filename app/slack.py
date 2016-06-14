@@ -17,12 +17,16 @@ except ImportError:
     from secrets import settings_default as settings
 
 
-def prep_slack_message(slug):
-    print "Slack message slug %s" % slug
+def prep_slack_message(slug, created):
+    """
+    If a new chart is created, send a slack message alerting people.
+    If it's only updated, don't send an alert.
+    """
     chart_url = '%schartbuilder/?jsonurl=%s.json' % (settings.STOCKSERVER_URL, slug)
-    msg = "<!here> *New chart created: %s* Please review and edit. You can edit the chart by following this link *<%s|%s>*" % (slug, chart_url, slug)
-
-    print "Slack message %s" % msg
+    if created:
+        msg = "<!here> *New chart created: %s* Please review and edit. You can edit the chart by following this link *<%s|%s>*" % (slug, chart_url, slug)
+    else:
+        msg = "*Chart edited: <%s|%s>* " % (chart_url, slug)
 
     return msg
 

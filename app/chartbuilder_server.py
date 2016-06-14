@@ -305,8 +305,6 @@ def send_to_p2p():
     Saves the SVG of a chart as a blurb in P2P
     """
     app.logger.debug("sending to P2P")
-    # Make a generic response object
-    r = make_response("hello, world!")
 
     # We should be POSTing
     if request.method in ["POST", "PUT"]:
@@ -325,9 +323,10 @@ def send_to_p2p():
 
             # print data.get('source', None)
             slug = data['slug']
+
             # Only send to Slack if this is coming from Chartbuilder
             if data['source'] != 'blurbinator':
-                msg = slack.prep_slack_message(slug)
+                msg = slack.prep_slack_message(slug, created)
                 slack.send_message(msg)
 
             app.logger.debug("Created object in P2P!")
