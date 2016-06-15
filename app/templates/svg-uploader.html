@@ -346,6 +346,10 @@
         // Can we replace it with a
         function p2pUnjank(svg) {
             var svgClone = svg.cloneNode(true);
+
+            // Set xml:space to default, to prevent weird spacing issues in Firefox.
+            svgClone.setAttribute('xml:space', 'default');
+
             var img = svgClone.querySelector('image');
             if (img) {
                 // Get the parent node of the
