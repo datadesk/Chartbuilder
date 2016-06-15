@@ -30,12 +30,12 @@
     <style>
         @font-face {
             font-family: 'Benton Gothic Bold';
-        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot');
-        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot?#iefix') format('embedded-opentype'),
+            src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot');
+            src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot?#iefix') format('embedded-opentype'),
              url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.woff') format('woff'),
              url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.ttf') format('truetype');
-        font-weight:normal;
-        font-style:normal;
+            font-weight:normal;
+            font-style:normal;
         }
         body, p {font-family: 'Benton Gothic Regular';}
         strong {font-family: 'Benton Gothic Bold';}
@@ -43,11 +43,11 @@
         .svg-slug-input,
         .svg-text-input {width:100%;}
         .alert-danger {background-color:transparent; border:none; padding:0;}
+        .export-instructions li {font-size:16px; line-height:24px;}
     </style>
 </head>
-<body data-ad-path="4011/trb.latimes/news/datadesk" data-ad-ptype="s" data-ad-iframe-url="/static/ngux-tophat-ad-iframe.html" >
+<body>
     <!-- NAV -->
-
     <nav title="Navigation">
         <div id="tophat-container">
             <div id="tophat">
@@ -61,36 +61,10 @@
                 <a id="tophat-logo" href="//www.latimes.com/"></a>
                 <div class="tophat-links">
                     <ul>
-                        <li>
-                            <a href="//www.latimes.com/local">Local</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/california">California</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/sports">Sports</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/entertainment">Entertainment</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/nation">Nation</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/world">World</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/business">Business</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/opinion">Opinion</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/style">Lifestyle</a>
-                        </li>
-                        <li>
-                            <a href="//www.latimes.com/travel">Travel</a>
-                        </li>
+                        <li><a href="../">Make a chart</a></li>
+                        <li><a href="../storage/">Archive</a></li>
+                        <li><a href="../svg-uploader/">SVG Uploader</a></li>
+                        <li><a href="../faq/">FAQ</a></li>
                     </ul>
                 </div>
             </div>
@@ -104,15 +78,24 @@
         <div class="row">
             <div class="span8 offset2">
                 <header class="center">
-                    <h1>SVG Uploader</h1>
+                    <h1>SVG Blurbinator</h1>
                     <p>Use this page to upload SVGs into P2P blurb items, instead of uploading graphics as images.</p>
+                    <p><strong>Exporting from Illustrator:</strong> You should use the "Save as" function in Illustrator to save your SVG. The proper settings should be the defaults, but listing again below (or <a target="_blank" href="https://cloud.githubusercontent.com/assets/524959/16054952/30199510-3224-11e6-8b9f-5841e4e99a14.png">see an image</a>):</p>
+                    <ul class="export-instructions">
+                        <li>Under Fonts -> Type make sure "SVG" is selected</li>
+                        <li>Under Options -> Image Location select "Embed"</li>
+                        <li>Under Advanced Options -> CSS Properties select "Style Elements"</li>
+                        <li>Under Advanced Options -> Decimal Places set to 1</li>
+                        <li>Select the checkboxes "Output fewer &lt;tspan&gt; elements," "Use &lt;textPath&gt; element for Text on Path, and "Responsive."</li>
+                    </ul>
+                    <p>Have more questions? Check out our <a href="../faq/">FAQ</a>.</p>
                 </header>
                 <form action="" name="svg-upload" id="svg-upload" class="svg-upload">
                     <h2>SVG slug</h2>
-                    <input type="text" class="svg-slug-input" id="svg-slug" name="svg-slug" value="" required>
+                    <input type="text" class="svg-slug-input" id="svg-slug" name="svg-slug" value="" placeholder="e.g.: la-me-g-your-slug-here" required>
 
                     <div class="alert alert-danger" id="no-slug-warning">
-                        Your graphic needs a slug!
+                        Your graphic needs a P2P-formatted slug!
                     </div>
                     <p class="slug-holder hidden" id="slug-holder">The P2P slug will be <strong id="slug-output"></strong></p>
 
@@ -129,6 +112,9 @@
                         <button class="btn btn-large btn-upload" id="submit-btn">Upload</button>
                     </div>
                 </form>
+
+                <p class="bugs">Notice any bugs? <a href="mailto:armand.emamdjomeh@latimes.com">Hit me</a>.</p>
+
             </div>
         </div>
 
@@ -170,8 +156,9 @@
                 svg = preview.firstElementChild,
                 ratio = ((h / w) * 100).toFixed(2).toString();
 
-
+            includeFontFace(svg);
             svg = p2pUnjank(svg);
+
             var uri = btoa(encodeURIComponent(svg));
 
 
@@ -209,7 +196,7 @@
         }
 
         function slugify(v){
-            var slug = "la-g-" + v.toLowerCase() + this.getDateString();
+            var slug = v.toLowerCase() + this.getDateString();
             // Switch spaces to slugs
             slug = slug.replace(/\s/g, "-");
             // Trim special characters
@@ -280,18 +267,67 @@
                 previewHolder.classList.add('hidden');
             }
 
-            // If it's a valid SVG element, run it through our unjank function
-            // Might want to link other stuff to this validation in the future.
-            // if (preview.firstElementChild instanceof SVGElement === true) {
-            //     var svg = preview.firstElementChild;
-            //     p2pUnjank(svg);
-            // }
         }
+
+        function includeFontFace(svg) {
+            var styleTag = svg.getElementsByTagName('style')[0];
+            var fontFaceString = "\
+    @font-face {\
+        font-family: 'BentonGothic-Regular';\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.eot');\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.eot?#iefix') format('embedded-opentype'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.woff') format('woff'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.ttf') format('truetype');\
+        font-weight:normal;\
+        font-style:normal;\
+    }\
+    @font-face {\
+        font-family: 'BentonGothic-Bold';\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot');\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot?#iefix') format('embedded-opentype'),\
+         url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.woff') format('woff'),\
+         url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.ttf') format('truetype');\
+        font-weight:normal;\
+        font-style:normal;\
+    }\
+    @font-face {\
+        font-family: 'BentonGothic-Black';\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.eot');\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.eot?#iefix') format('embedded-opentype'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.woff') format('woff'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.ttf') format('truetype');\
+        font-weight:normal;\
+        font-style:normal;\
+    }\
+    @font-face {\
+        font-family: 'BentonGothicTab-Regular';\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.eot');\
+        src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.eot?#iefix') format('embedded-opentype'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.woff') format('woff'),\
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-regular.ttf') format('truetype');\
+        font-weight:normal;\
+        font-style:normal;\
+    }";
+
+            if (typeof styleTag !== 'undefined') {
+                styleTag.innerHTML += fontFaceString;
+            } else {
+                styleTag = document.createElement('style');
+                styleTag.setAttribute('type', 'text/css');
+                styleTag.innerHTML = fontFaceString;
+            }
+        }
+
+
 
         // Check if the SVG has an image child element, and if so,
         // Can we replace it with a
         function p2pUnjank(svg) {
             var svgClone = svg.cloneNode(true);
+
+            // Set xml:space to default, to prevent weird spacing issues in Firefox.
+            svgClone.setAttribute('xml:space', 'default');
+
             var img = svgClone.querySelector('image');
             if (img) {
                 // Get the parent node of the
