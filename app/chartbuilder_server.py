@@ -370,6 +370,13 @@ def blurbinator():
     return render_template('svg-uploader.html')
 
 
+@app.route('/faq/')
+def faq():
+    """
+    Upload an SVG directly to P2P, setting the aspect ratio parameters
+    based on the SVG.
+    """
+    return render_template('faq.html')
 
 
 @app.route('/save-to-server/', methods=["POST"])
