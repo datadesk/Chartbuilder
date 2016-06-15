@@ -13,6 +13,7 @@ import requests
 import slack
 import sys
 import urllib
+from bs4 import BeautifulSoup
 from datetime import timedelta
 from flask import current_app
 from flask import Flask
@@ -87,7 +88,8 @@ def clean_for_p2p(html):
     This helper function returns a standardized encoding for HTML to be passed
     into p2p to avoid exceptions and upside down question marks.
     """
-    converted_str = html.encode("latin-1", "xmlcharrefreplace")
+    soup = BeautifulSoup(html, "html.parser")
+    converted_str = soup.encode("latin-1", "xmlcharrefreplace")
     # Remove tabs, newlines and spaces to fix possible display issues in Firefox
     return unicode(converted_str, "latin-1")
 
