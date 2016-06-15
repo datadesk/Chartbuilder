@@ -13,7 +13,6 @@ import requests
 import slack
 import sys
 import urllib
-from bs4 import BeautifulSoup
 from datetime import timedelta
 from flask import current_app
 from flask import Flask
@@ -88,8 +87,8 @@ def clean_for_p2p(html):
     This helper function returns a standardized encoding for HTML to be passed
     into p2p to avoid exceptions and upside down question marks.
     """
-    soup = BeautifulSoup(html, "html.parser")
-    converted_str = soup.encode("latin-1", "xmlcharrefreplace")
+    converted_str = html.encode("latin-1", "xmlcharrefreplace")
+    # Remove tabs, newlines and spaces to fix possible display issues in Firefox
     return unicode(converted_str, "latin-1")
 
 
@@ -190,6 +189,7 @@ def prep_p2p_blurb_payload(data):
         body_content = urllib.unquote(base64.decodestring(body_content))
 
     body_content_cleaned = clean_for_p2p(body_content)
+    # body_content_cleaned = unicode(body_content.encode("latin-1", "xmlcharrefreplace"), "latin-1")
 
     context = {
         'elements': body_content_cleaned

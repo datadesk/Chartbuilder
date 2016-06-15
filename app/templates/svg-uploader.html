@@ -117,10 +117,10 @@
                 </header>
                 <form action="" name="svg-upload" id="svg-upload" class="svg-upload">
                     <h2>SVG slug</h2>
-                    <input type="text" class="svg-slug-input" id="svg-slug" name="svg-slug" value="" required>
+                    <input type="text" class="svg-slug-input" id="svg-slug" name="svg-slug" value="" placeholder="e.g.: la-me-g-your-slug-here" required>
 
                     <div class="alert alert-danger" id="no-slug-warning">
-                        Your graphic needs a slug!
+                        Your graphic needs a P2P-formatted slug!
                     </div>
                     <p class="slug-holder hidden" id="slug-holder">The P2P slug will be <strong id="slug-output"></strong></p>
 
@@ -180,6 +180,7 @@
 
             includeFontFace(svg);
             svg = p2pUnjank(svg);
+
             var uri = btoa(encodeURIComponent(svg));
 
 
@@ -217,7 +218,7 @@
         }
 
         function slugify(v){
-            var slug = "la-" + v.toLowerCase() + this.getDateString();
+            var slug = v.toLowerCase() + this.getDateString();
             // Switch spaces to slugs
             slug = slug.replace(/\s/g, "-");
             // Trim special characters
