@@ -370,7 +370,7 @@
                               img.setAttributeNS(null, 'width', imgWidth);\
                               img.setAttributeNS(null, 'transform', transform);\
                               img.setAttributeNS('http://www.w3.org/1999/xlink','href', b64img);\
-                              par.appendChild(img);\
+                              par.insertBefore(img, par.childNodes[0]);\
                               par.removeChild(rect);";
                 svgClone.appendChild(script);
             }
