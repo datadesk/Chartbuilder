@@ -401,8 +401,8 @@
                 // Create a script that converts the rect BACK into an image,
                 // with all its corresponding attributes, when this is rendered in p2p
                 var script = document.createElement('script');
-                script.text = "var par = document.getElementById('" + id + "');\
-                              var rect = document.getElementById('reference-rect');\
+                script.text = "var rect = document.getElementById('reference-rect');\
+                              var par = rect.parentNode;\
                               var img = document.createElementNS('http://www.w3.org/2000/svg', 'image');\
                               var imgHeight = rect.getAttribute('height');\
                               var imgWidth = rect.getAttribute('width');\
