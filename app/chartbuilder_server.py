@@ -426,6 +426,12 @@ def delete():
     storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chartbuilder-storage')
     path = os.path.join(storage_dir, slug)
 
+    try:
+        conn = get_p2p_connection()
+        conn.delete_content_item(slug)
+    except p2p.P2PNotFound:
+        pass
+
     if os.path.exists(path):
         shutil.rmtree(path)
         return "Chart deleted %s" % slug
