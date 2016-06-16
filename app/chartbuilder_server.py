@@ -9,10 +9,10 @@ Allowing us to publish charts directly to P2P.
 import os
 import base64
 import p2p
-import requests
 import slack
 import sys
 import urllib
+import shutil
 from bs4 import BeautifulSoup
 from datetime import timedelta
 from flask import current_app
@@ -34,6 +34,7 @@ except ImportError:
 
 app = Flask(__name__, static_url_path='')
 app.debug=True
+
 
 def crossdomain(origin=None, methods=None, headers=None, max_age=21600,
                 attach_to_all=True, automatic_options=True):
@@ -416,6 +417,21 @@ def save_to_server():
             file.write(filedata_decoded)
 
     return "Chart saved to drive"
+
+
+@app.route('/delete/', methods=['GET'])
+@crossdomain(origin="*")
+def delete():
+    slug = request.args.get('slug')
+    storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chartbuilder-storage')
+    path = os.path.join(storage_dir, slug)
+
+    if os.path.exists(path):
+        shutil.rmtree(path)
+        return "Chart deleted %s" % slug
+
+    else:
+        return "Slug does not exist %s" % slug
 
 
 if __name__ == '__main__':
