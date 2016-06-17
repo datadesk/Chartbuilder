@@ -221,25 +221,8 @@
 
         });
 
-        function getDateString() {
-            // Return date string as YYYY-MM-DD
-            var d = new Date();
-            var dd = d.getDate();
-            var mm = d.getMonth()+1; //January is 0!
-            var yyyy = d.getFullYear();
-
-            if(dd<10){
-                dd='0'+dd
-            }
-            if(mm<10){
-                mm='0'+mm
-            }
-            var dateString = "-" + yyyy + "-" + mm + "-" + dd;
-            return dateString;
-        }
-
         function slugify(v){
-            var slug = v.toLowerCase() + this.getDateString();
+            var slug = v.toLowerCase();
             // Switch spaces to slugs
             slug = slug.replace(/\s/g, "-");
             // Trim special characters
