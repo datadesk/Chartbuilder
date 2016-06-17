@@ -167,8 +167,13 @@ def prep_p2p_blurb_payload(data):
     it into the data structure expected by P2P's API.
     """
     # start things off
+    if data['source'] == 'blurbinator':
+        slug = data['slug']
+    else:
+        slug = data['slug'] + "-chartbuilder"
+
     payload = {
-        'slug': data['slug'] + "-chartbuilder",
+        'slug': slug,
         'title': data['slug'],
         'content_item_type_code': 'blurb',
         'content_item_state_code': 'working',
@@ -351,7 +356,7 @@ def get_p2p_admin_url():
     Get the P2P admin URL for an exported chart.
     """
     app.logger.debug(request.args.get('slug'))
-    slug = "%s-chartbuilder" % request.args.get("slug")
+    slug = request.args.get("slug")
     conn = get_p2p_connection()
 
     try:
@@ -360,6 +365,7 @@ def get_p2p_admin_url():
         content_item_id = content_item["id"]
         url = '%s/content_items/%s/edit' % (settings.P2P_BASE_URL, content_item_id)
         return redirect(url, code=302)
+
     except p2p.P2PNotFound:
         return False
 
