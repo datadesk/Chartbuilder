@@ -179,6 +179,28 @@
         </div>
     </footer>
 
+    <script type="text/template" id="unjank-script-template">
+        var rects = document.querySelectorAll('.reference-rect');
+
+        if (rects.length > 0) {
+            for (var i = 0; i < rects.length; i++) {
+                var rect = rects[i];
+                var par = rect.parentNode;
+                var img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+                var imgHeight = rect.getAttribute('height');
+                var imgWidth = rect.getAttribute('width');
+                var transform = rect.getAttribute('transform');
+                var b64img = rect.getAttribute('xlink:href');
+                img.setAttributeNS(null, 'height', imgHeight);
+                img.setAttributeNS(null, 'width', imgWidth);
+                img.setAttributeNS(null, 'transform', transform);
+                img.setAttributeNS('http://www.w3.org/1999/xlink','href', b64img);
+                par.insertBefore(img, par.childNodes[0]);
+                par.removeChild(rect);
+            }
+        }
+    </script>
+
 
     <script>
         var submitBtn = $('#submit-btn');
@@ -360,9 +382,13 @@
             // Set xml:space to default, to prevent weird spacing issues in Firefox.
             svgClone.setAttribute('xml:space', 'default');
 
-            var img = svgClone.querySelector('image');
-            if (img) {
-                // Get the parent node of the
+            // var img = svgClone.querySelector('image');
+            var images = svgClone.querySelectorAll('image');
+
+            for (var i = 0; i < images.length; i++) {
+                var img = images[i];
+
+                // Get the parent node of the image
                 var par = img.parentNode;
 
                 // Clone the attributes of the image element
@@ -373,7 +399,8 @@
 
                 // Create a rect tag, copy over the image attributes, and remove the image
                 var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.id = 'reference-rect';
+                rect.id = 'reference-rect-' + i;
+                rect.setAttribute('class', 'reference-rect');
                 rect.setAttribute('xlink:href', b64img);
                 rect.setAttributeNS(null, 'height', imgHeight);
                 rect.setAttributeNS(null, 'width', imgWidth);
@@ -381,26 +408,16 @@
                 par.appendChild(rect);
                 par.removeChild(img);
 
-                // Create a script that converts the rect BACK into an image,
-                // with all its corresponding attributes, when this is rendered in p2p
-                var script = document.createElement('script');
-                script.text = "var rect = document.getElementById('reference-rect');\
-                              var par = rect.parentNode;\
-                              var img = document.createElementNS('http://www.w3.org/2000/svg', 'image');\
-                              var imgHeight = rect.getAttribute('height');\
-                              var imgWidth = rect.getAttribute('width');\
-                              var transform = rect.getAttribute('transform');\
-                              var b64img = rect.getAttribute('xlink:href');\
-                              img.setAttributeNS(null, 'height', imgHeight);\
-                              img.setAttributeNS(null, 'width', imgWidth);\
-                              img.setAttributeNS(null, 'transform', transform);\
-                              img.setAttributeNS('http://www.w3.org/1999/xlink','href', b64img);\
-                              par.insertBefore(img, par.childNodes[0]);\
-                              par.removeChild(rect);";
-                svgClone.appendChild(script);
             }
 
+            // Create a script that converts the rect BACK into an image,
+            // with all its corresponding attributes, when this is rendered in p2p
+            var script = document.createElement('script');
+            script.text = document.getElementById('unjank-script-template').text;
+            svgClone.appendChild(script);
+
             return svgClone.outerHTML;
+
         }
 
     </script>

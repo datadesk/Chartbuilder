@@ -217,8 +217,8 @@ def update_or_create_chartblurb(data):
     app.logger.debug("update_or_create_chartblurb(data)")
 
     # Try to get the slug from P2P
-    slug = data['slug'].strip()
-    p2p_slug = slug + "-chartbuilder"
+    p2p_slug = data['slug'].strip()
+    # p2p_slug = slug
 
     # check if the blurb exists
     obj = get_object_or_none(p2p_slug)
