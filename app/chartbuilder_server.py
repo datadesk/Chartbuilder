@@ -364,7 +364,7 @@ def get_p2p_admin_url():
         return redirect(url, code=302)
 
     except p2p.P2PNotFound:
-        return False
+        return "The item <strong>%s</strong> was not found in P2P" % slug
 
 
 @app.route('/svg-uploader/')
