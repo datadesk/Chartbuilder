@@ -167,10 +167,7 @@ def prep_p2p_blurb_payload(data):
     it into the data structure expected by P2P's API.
     """
     # start things off
-    if data['source'] == 'blurbinator':
-        slug = data['slug']
-    else:
-        slug = data['slug'] + "-chartbuilder"
+    slug = data['slug']
 
     payload = {
         'slug': slug,
