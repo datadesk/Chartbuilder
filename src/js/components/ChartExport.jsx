@@ -192,7 +192,7 @@ var ChartExport = React.createClass({
 
 		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
 
-			sendToP2P(slug, uri, ratio);
+			// sendToP2P(slug, uri, ratio);
 			sendToServer(filename, slug, uri, function() {
 				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
 					sendToServer(pngFilename, slug, pngUri, function() {
@@ -264,8 +264,13 @@ var ChartExport = React.createClass({
 						{chartExportButtons}
 					</div>
 				<div className="instructions hidden" id="export-instructions">
-			        <p>That's it, you're done! You can find your chart in P2P under the slug<br/><span className='slug-label'><a target="_blank" href={'get-p2p-admin-url/?slug=' + this.props.metadata.slug}>{this.props.metadata.slug}-chartbuilder</a></span>.</p>
-			        <p>You can also download an SVG of your chart <a target="_blank" href={"chartbuilder-storage/" + this.props.metadata.slug + "/" + this.props.metadata.slug + ".svg"}>here</a></p>
+			        <p>That's it, you're done! You can find your chart in P2P under the slug<br/><span className='slug-label'><a target="_blank" href={'get-p2p-admin-url/?slug=' + this.props.metadata.slug}>{this.props.metadata.slug}</a></span>.</p>
+			        <p><strong>What do I do from here?</strong></p>
+			        <p>Your chart has been exported as an SVG (Scalable Vector Graphic) into a blurb item in P2P. You can embed this item in SNAP by adding your slug into a <strong>P2P embed</strong> item in your story in SNAP.</p>
+
+			        <p>While you will not be able to see the SVG in the SNAP editing window, you will be able to view the item in P2P preview.</p>
+
+			        <p>You can also download an <a target="_blank" href={"chartbuilder-storage/" + this.props.metadata.slug + "/" + this.props.metadata.slug + ".svg"}>SVG</a> or <a target="_blank" href={"chartbuilder-storage/" + this.props.metadata.slug + "/" + this.props.metadata.slug + ".png"}>PNG</a> of your chart.</p>
 		        </div>
 		        <p>ChartBuilder is an open source project created by <a href="https://github.com/Quartz/Chartbuilder/">Quartz</a>. Let us know if you <a href="mailto:yyartist@latimes.com?Subject=ChartBuilder bug report">find any bugs</a>.</p>
 			</div>

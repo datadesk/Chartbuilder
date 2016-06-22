@@ -385,29 +385,31 @@
             // var img = svgClone.querySelector('image');
             var images = svgClone.querySelectorAll('image');
 
-            for (var i = 0; i < images.length; i++) {
-                var img = images[i];
+            if (images.length > 0) {
+                for (var i = 0; i < images.length; i++) {
+                    var img = images[i];
 
-                // Get the parent node of the image
-                var par = img.parentNode;
+                    // Get the parent node of the image
+                    var par = img.parentNode;
 
-                // Clone the attributes of the image element
-                var b64img = img.getAttribute('xlink:href');
-                var imgHeight = img.getAttribute('height');
-                var imgWidth = img.getAttribute('width');
-                var transform = img.getAttribute('transform');
+                    // Clone the attributes of the image element
+                    var b64img = img.getAttribute('xlink:href');
+                    var imgHeight = img.getAttribute('height');
+                    var imgWidth = img.getAttribute('width');
+                    var transform = img.getAttribute('transform');
 
-                // Create a rect tag, copy over the image attributes, and remove the image
-                var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.id = 'reference-rect-' + i;
-                rect.setAttribute('class', 'reference-rect');
-                rect.setAttribute('xlink:href', b64img);
-                rect.setAttributeNS(null, 'height', imgHeight);
-                rect.setAttributeNS(null, 'width', imgWidth);
-                rect.setAttributeNS(null, 'transform', transform);
-                par.appendChild(rect);
-                par.removeChild(img);
+                    // Create a rect tag, copy over the image attributes, and remove the image
+                    var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.id = 'reference-rect-' + i;
+                    rect.setAttribute('class', 'reference-rect');
+                    rect.setAttribute('xlink:href', b64img);
+                    rect.setAttributeNS(null, 'height', imgHeight);
+                    rect.setAttributeNS(null, 'width', imgWidth);
+                    rect.setAttributeNS(null, 'transform', transform);
+                    par.appendChild(rect);
+                    par.removeChild(img);
 
+                }
             }
 
             // Create a script that converts the rect BACK into an image,
