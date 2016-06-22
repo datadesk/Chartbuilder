@@ -192,7 +192,7 @@ var ChartExport = React.createClass({
 
 		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
 
-			// sendToP2P(slug, uri, ratio);
+			sendToP2P(slug, uri, ratio);
 			sendToServer(filename, slug, uri, function() {
 				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
 					sendToServer(pngFilename, slug, pngUri, function() {
