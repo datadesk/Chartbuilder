@@ -22,20 +22,20 @@ var chart_sizes = [
 		content: "Auto",
 		value: "auto"
 	},
+	// {
+	// 	title: "Medium",
+	// 	content: "Medium",
+	// 	value: "medium"
+	// },
 	{
-		title: "Medium",
-		content: "Medium",
-		value: "medium"
-	},
-	{
-		title: "Deep spot chart",
-		content: "Deep spot chart",
-		value: "spotLong"
-	},
-	{
-		title: "Small spot chart",
-		content: "Small spot chart",
+		title: "Small",
+		content: "Small",
 		value: "spotSmall"
+	},
+	{
+		title: "Small deep",
+		content: "Small deep",
+		value: "spotLong"
 	}
 ];
 
@@ -144,6 +144,11 @@ var ChartMetadata = React.createClass({
 				</h2>
 				{textInputs}
 				{this.props.additionalComponents}
+				<ButtonGroup
+					buttons={chart_sizes}
+					onClick={this._handleMetadataUpdate.bind(null, "size")}
+					value={metadata.size}
+				/>
 			</div>
 		);
 	}
