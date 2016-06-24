@@ -235,6 +235,9 @@ def update_or_create_chartblurb(data):
     if obj:
         # ... update it
         app.logger.debug("updating content item %s" % p2p_slug)
+
+        # Set to the content item's code
+        payload['content_item_state_code'] = obj['content_item_state_code']
         conn.update_content_item(payload, p2p_slug)
         created = False
     # if it doesn't already exist...
