@@ -144,7 +144,7 @@ var defaultProps = {
 		slug: "la-g-",
 		slugEditable: true,
 		credit: "Your name",
-		size: "auto"
+		size: "medium"
 	}
 };
 

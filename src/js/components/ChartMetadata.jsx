@@ -17,24 +17,24 @@ var TextInput = chartbuilderUI.TextInput;
 
 // Give chart sizes friendly names
 var chart_sizes = [
-	{
-		title: "Auto",
-		content: "Auto",
-		value: "auto"
-	},
 	// {
-	// 	title: "Medium",
-	// 	content: "Medium",
-	// 	value: "medium"
+	// 	title: "Auto",
+	// 	content: "Auto",
+	// 	value: "auto"
 	// },
 	{
-		title: "Small",
-		content: "Small",
+		title: "Full width",
+		content: "Full width",
+		value: "medium"
+	},
+	{
+		title: "Small embed",
+		content: "Small embed",
 		value: "spotSmall"
 	},
 	{
-		title: "Small deep",
-		content: "Small deep",
+		title: "Deep embed",
+		content: "Deep embed",
 		value: "spotLong"
 	}
 ];
@@ -136,6 +136,17 @@ var ChartMetadata = React.createClass({
 			/>
 		}, this);
 
+		/*
+		// Chart size select buttons.
+		// Re-insert into return statement below once we have
+		// source/credit positioning sorted out
+		<ButtonGroup
+			buttons={chart_sizes}
+			onClick={this._handleMetadataUpdate.bind(null, "size")}
+			value={metadata.size}
+		/>
+		*/
+
 		return (
 			<div className="editor-options">
 				<h2>
@@ -144,11 +155,7 @@ var ChartMetadata = React.createClass({
 				</h2>
 				{textInputs}
 				{this.props.additionalComponents}
-				<ButtonGroup
-					buttons={chart_sizes}
-					onClick={this._handleMetadataUpdate.bind(null, "size")}
-					value={metadata.size}
-				/>
+
 			</div>
 		);
 	}
