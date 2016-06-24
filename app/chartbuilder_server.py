@@ -247,6 +247,10 @@ def update_or_create_chartblurb(data):
         try:
             conn.create_content_item(payload)
             created = True
+
+            # Add into collection
+            conn.push_into_collection('la-me-graphics-pathing', [p2p_slug])
+
             app.logger.debug("created content item")
         except Exception as e:
             app.logger.debug("oops")
