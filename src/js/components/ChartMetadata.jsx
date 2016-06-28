@@ -155,7 +155,11 @@ var ChartMetadata = React.createClass({
 				</h2>
 				{textInputs}
 				{this.props.additionalComponents}
-
+				<ButtonGroup
+					buttons={chart_sizes}
+					onClick={this._handleMetadataUpdate.bind(null, "size")}
+					value={metadata.size}
+				/>
 			</div>
 		);
 	}
