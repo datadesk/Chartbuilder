@@ -289,9 +289,6 @@ var Chartbuilder = React.createClass({
 						metadata={this.state.metadata}
 						chartProps={this.state.chartProps}
 					/>
-					<LocalStorageTimer
-						timerOn={this.state.session.timerOn}
-					/>
 					<Editor
 						errors={this.state.errors}
 						session={this.state.session}
