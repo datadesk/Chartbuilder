@@ -137,17 +137,6 @@ var ChartMetadata = React.createClass({
 			/>
 		}, this);
 
-		/*
-		// Chart size select buttons.
-		// Re-insert into return statement below once we have
-		// source/credit positioning sorted out
-		<ButtonGroup
-			buttons={chart_sizes}
-			onClick={this._handleMetadataUpdate.bind(null, "size")}
-			value={metadata.size}
-		/>
-		*/
-
 		return (
 			<div className="editor-options">
 				<h2>
