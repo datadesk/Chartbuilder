@@ -254,7 +254,7 @@ var Chartbuilder = React.createClass({
 						<div className="phone-frame">
 							<RendererWrapper
 								editable={true} /* will component be editable or only rendered */
-								showMetadata={true}
+								showMetadata={true} /* Shows header, credit, source, etc. */
 								model={this.state}
 								enableResponsive={true}
 								className={svgWrapperClassName.mobile}
@@ -276,7 +276,7 @@ var Chartbuilder = React.createClass({
 							model={this.state}
 							enableResponsive={false}
 							width={640}
-							showMetadata={true}
+							showMetadata={true} /* Shows header, credit, source, etc. */
 							className={svgWrapperClassName.desktop}
 							svgClassName={this.props.renderedSVGClassName}
 						/>

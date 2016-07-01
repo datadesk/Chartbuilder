@@ -33,6 +33,7 @@ var display = {
 	afterXYRight: "0.8em",
 	columnExtraPadding: "0.5em",
 	bottomPaddingWithoutFooter: "0.5em",
+	bottomPaddingSmallChart: "2.1em",
 	xy: require("../cb-xy/xy-config").display,
 	margin: {
 		top: "1em",

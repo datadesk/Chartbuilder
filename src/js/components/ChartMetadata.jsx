@@ -43,6 +43,7 @@ var text_input_values = [
 	{ name: "title", content: "Title", isRequired: true },
 	{ name: "credit", content: "Credit" },
 	{ name: "source", content: "Source", isRequired: true},
+	// { name: "notes", content: "Notes"},
 	{ name: "slug",  content: "Slug (auto-generated)"}
 ];
 
@@ -66,6 +67,7 @@ var ChartMetadata = React.createClass({
 			slugEditable: PropTypes.bool,
 			source: PropTypes.string.isRequired,
 			credit: PropTypes.string.isRequired,
+			notes: PropTypes.string,
 			title: PropTypes.string.isRequired,
 		}),
 		stepNumber: PropTypes.string,
@@ -82,7 +84,6 @@ var ChartMetadata = React.createClass({
 	// Update metadata store with new settings
 	_handleMetadataUpdate: function(k, v) {
 		ChartViewActions.updateMetadata(k, v);
-
 		if (k === "title" && this.props.metadata.slugEditable) {
 			ChartViewActions.updateMetadata('slug', this._slugify(v));
 		}

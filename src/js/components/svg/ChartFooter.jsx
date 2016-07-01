@@ -40,7 +40,7 @@ var ChartFooter = React.createClass({
 
 	_config: {
 		creditSourcePadding: 20,
-		heightPerLine: 15,
+		heightPerLine: 20,
 		sampleString: "Data: abcdefg hijkl mnop qrstu vwxyz 1234 56789"
 	},
 
@@ -80,6 +80,7 @@ var ChartFooter = React.createClass({
 	},
 
 	render: function() {
+		console.log(this);
 		var sourceLineText = this._createSourceLine();
 		var chartSource = null;
 		var chartCredit;
@@ -108,7 +109,7 @@ var ChartFooter = React.createClass({
 				text={creditLineText}
 				className="svg-text-credit"
 				onUpdate={this.props.onUpdate}
-				translate={[this.props.translate.right, this.props.translate.bottom - this.props.extraHeight]}
+				translate={[this.props.translate.right, this.props.translate.bottom]}
 				updateState={this._handleStateUpdate.bind(null, "creditWidth")}
 			/>
 		);
@@ -154,8 +155,11 @@ var ChartCreditText = React.createClass({
 var ChartSourceText = React.createClass({
 
 	getInitialState: function() {
+		// We want the soruce to appear on it's own line in smaller charts
+		var onOwnLine = (this.props.chartWidth >= 630) ? false : true;
+
 		return {
-			ownLine: false // whether source will fall onto its own line
+			ownLine: onOwnLine // whether source will fall onto its own line
 		}
 	},
 
@@ -163,19 +167,25 @@ var ChartSourceText = React.createClass({
 		this.props.onUpdate(height);
 	},
 
+	// Listen for chart size change, and set ownLine property to adjust
+	componentWillReceiveProps: function(nextProps) {
+		if (nextProps.chartWidth !== this.props.chartWidth) {
+			var onOwnLine = (nextProps.chartWidth >= 630) ? false : true;
+			this.setState({ownLine: onOwnLine});
+		}
+	},
+
 	render: function() {
 		var _translate = this.props.translate;
 		var translate;
-		var classNameDirection;
+		var classNameDirection = "left"; // We always want source on the left
 		var maxWidth;
 
 		if (this.state.ownLine) {
-			translate = [_translate.right, _translate.bottom - this.props.extraHeight + this.props.heightPerLine];
-			classNameDirection = "right";
+			translate = [_translate.left, _translate.bottom - this.props.heightPerLine];
 			maxWidth = this.props.chartWidth;
 		} else {
 			translate = [_translate.left, _translate.bottom];
-			classNameDirection = "left";
 			maxWidth = this.props.chartWidth - this.props.creditDimensions.width - this.props.creditSourcePadding;
 		}
 

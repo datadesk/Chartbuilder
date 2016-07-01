@@ -77,6 +77,7 @@ var RendererWrapper = React.createClass({
 	componentWillReceiveProps: function(nextProps) {
 		var newType = nextProps.model.metadata.chartType;
 		var prevType = this.props.model.metadata.chartType;
+
 		if (newType !== prevType) {
 			var chartConfig = convertConfig(chartConfigs[newType], null, this.state.emSize, this.state.domNodeWidth);
 			this.setState({ chartConfig: chartConfig });
@@ -128,6 +129,7 @@ var RendererWrapper = React.createClass({
 	_updateWidth: function(force) {
 		var domNodeWidth = ReactDOM.findDOMNode(this).offsetWidth;
 		var bp = breakpoints.getBreakpointObj(this.props.enableResponsive, domNodeWidth);
+
 		if (domNodeWidth !== this.state.domNodeWidth) {
 			var resized = this._resizeUpdate(this.props, bp, domNodeWidth);
 			if (resized) {
@@ -207,6 +209,20 @@ var RendererWrapper = React.createClass({
 			displayConfig = update(displayConfig, { $merge: {
 				padding: _padding,
 				margin: _margin
+			}});
+		}
+
+		// Add extra padding to the bottom of the chart on small sizes
+		if (this.props.model.metadata.size !== "medium") {
+			var _padding = {
+				top: displayConfig.padding.top,
+				right: displayConfig.padding.right,
+				bottom: displayConfig.bottomPaddingSmallChart,
+				left: displayConfig.padding.left,
+			};
+
+			displayConfig = update(displayConfig, { $merge: {
+				padding: _padding
 			}});
 		}
 

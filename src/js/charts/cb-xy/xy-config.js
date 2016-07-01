@@ -42,10 +42,11 @@ var display = {
 	columnPaddingCoefficient: 0.3,
 	minPaddingOuter: "1em",
 	bottomPaddingWithoutFooter: "3em",
+	bottomPaddingSmallChart: "4.2em",
 	aspectRatio: {
 		wide: (9 / 16),
 		longSpot: (4 / 3),
-		smallSpot: (3 / 4)
+		smallSpot: (5 / 6)
 	},
 	margin: {
 		top: "1em",
@@ -56,7 +57,7 @@ var display = {
 	padding: {
 		top: 0,
 		right: 0,
-		bottom: "3.8em",
+		bottom: "3.6em",
 		left: 0
 	}
 };
