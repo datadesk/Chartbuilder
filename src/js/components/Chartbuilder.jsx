@@ -168,20 +168,31 @@ var Chartbuilder = React.createClass({
 	},
 
 	_validateMeta: function(meta) {
+		var err = [];
+
 		if (meta && meta.title.trim() !== "" && meta.source.trim() !== "") {
-			return [];
+
 		} else {
-			err = [{
+			err.push({
 				location: "input",
 				text: "Your chart needs both a title and a source.",
 				type: "error"
-			}];
-			return err;
+			});
 		}
+
+		if (meta && meta.credit.trim() === "" || meta && meta.credit.trim() === "Your name") {
+			err.push({
+				location: "input",
+				text: "You need to enter your name!",
+				type: "error"
+			});
+		}
+
+		return err;
+
 	},
 
 	_renderErrors: function() {
-
 		var metadataErrors = [];
 		if (this._validateMeta()) {
 			metadataErrors = this._validateMeta(this.state.metadata);
