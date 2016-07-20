@@ -107,7 +107,7 @@ var ChartMetadata = React.createClass({
 	},
 
 	_slugify: function(v) {
-		var slug = "la-g-" + v.toLowerCase() + this._getDateString() + "-chartbuilder";
+		var slug = "la-g-" + v.toLowerCase().trim() + this._getDateString() + "-chartbuilder";
 		// Switch spaces to slugs
 		slug = slug.replace(/\s/g, "-");
 		// Trim special characters
