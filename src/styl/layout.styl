@@ -31,9 +31,13 @@ h3
 
 p
 	position relative
-	margin 0 0 0 0
-	padding 16px 0 16px 0
+	margin 16px 0 16px 0
+	padding 0 0 0 0
 	line-height 1.6
+
+strong
+	font-family $font-sans-bold
+	color $color-headline-text
 
 // Base elements
 
@@ -103,7 +107,7 @@ canvas
 
 .clearfix
 	clear both
-	
+
 *
 	-ms-overflow-style none
 
@@ -121,10 +125,24 @@ canvas
 	z-index 10000
 	padding 0.5em 0 0 0.25em
 	h1
-		color #777
+		color #e7e7e7
+		display inline-block
 		margin 0
 		line-height 1
 		padding 0
+	nav
+		display inline-block
+		margin-left 20px
+		li
+			display inline-block
+			list-style-type none
+			padding 0 10px
+			a
+				color #e7e7e7
+				text-decoration none
+				font-size 1.4em
+				&:hover
+					text-decoration underline
 
 .chartbuilder-container
 	margin-top $header-height + 0.75
@@ -135,7 +153,7 @@ canvas
 	width $chart-area-width
 	left ($chart-area-padding / 2)
 	top $header-height
-	overflow-y scroll
+	overflow-y auto
 	overflow-x hidden
 	height 100%
 	max-width 100%
@@ -182,7 +200,7 @@ canvas
 	padding 0 10px
 	min-width 100px
 	@import 'chart-editor.styl'
-	
+
 @media screen and (max-width: $single_column_breakpoint)
 	.header
 		position relative

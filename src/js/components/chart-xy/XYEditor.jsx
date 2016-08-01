@@ -37,7 +37,7 @@ var ChartEditorMixin = require("../mixins/ChartEditorMixin.js");
 /* Available XY chart type options */
 var typeOptions = [
 	{ title: "Line", content: "Line", value: "line" },
-	{ title: "Columns", content: "Columns", value: "column" },
+	{ title: "Bars", content: "Bars", value: "column" },
 	{ title: "Dots", content: "Dots", value: "scatterPlot" }
 ];
 
@@ -172,7 +172,7 @@ var XYEditor = React.createClass({
 				<div className="editor-options">
 					<h2>
 						<span className="step-number">2</span>
-						<span>Input your data</span>
+						<span>Paste your data</span>
 					</h2>
 					<DataInput
 						errors={inputErrors}
@@ -183,7 +183,7 @@ var XYEditor = React.createClass({
 				<div className="editor-options">
 					<h2>
 						<span className="step-number">3</span>
-						<span>Set series options</span>
+						<span>Set chart type</span>
 					</h2>
 				<XY_resetLabels
 					annotations={chartProps._annotations}
@@ -308,16 +308,7 @@ var XY_chartSettings = React.createClass({
 							labelText="Color"
 						/>
 					</div>
-					<div className="section axissection">
-						<Toggle
-							className={"toggle-" + chartSetting.colorIndex}
-							onToggle={this._handleSettingsUpdate.bind(null, this.props.index, "altAxis")}
-							label="Right axis"
-							toggled={chartSetting.altAxis}
-						/>
-					</div>
 				</div>
-
 				<div className="section typesection">
 					<ButtonGroup
 						className="button-group-wrapper"
@@ -326,7 +317,6 @@ var XY_chartSettings = React.createClass({
 						value={chartSetting.type}
 					/>
 				</div>
-
 				<div className="clearfix"></div>
 			</div>
 		);

@@ -42,21 +42,22 @@ var display = {
 	columnPaddingCoefficient: 0.3,
 	minPaddingOuter: "1em",
 	bottomPaddingWithoutFooter: "3em",
+	bottomPaddingSmallChart: "4.2em",
 	aspectRatio: {
 		wide: (9 / 16),
 		longSpot: (4 / 3),
-		smallSpot: (3 / 4)
+		smallSpot: (5 / 6)
 	},
 	margin: {
-		top: "0.8em",
+		top: "1em",
 		right: "0.25em",
-		bottom: "0.15em",
+		bottom: "0.5em",
 		left: "0.25em"
 	},
 	padding: {
 		top: 0,
 		right: 0,
-		bottom: "4em",
+		bottom: "3.6em",
 		left: 0
 	}
 };
@@ -111,7 +112,8 @@ var defaultProps = {
 			{
 				altAxis: false,
 				type: "line",
-				colorIndex: 0
+				colorIndex: 0,
+				primaryData: false
 			}
 		],
 		extraPadding: {
@@ -126,7 +128,8 @@ var defaultProps = {
 				values: []
 			}
 		},
-		mobile: {}
+		mobile: {},
+		slugEditable: true,
 	},
 	/**
 	 * @name metadata
@@ -137,15 +140,17 @@ var defaultProps = {
 	 */
 	metadata: {
 		chartType: 'xy',
-		title: "",
+		title: "Enter chart title",
 		source: "",
-		credit: "Made with Chartbuilder",
-		size: "auto"
+		slug: "la-g-",
+		slugEditable: true,
+		credit: "Your name",
+		size: "medium"
 	}
 };
 
 var xy_config = new ChartConfig({
-	displayName: "XY Chart",
+	displayName: "Single Chart",
 	parser: require("./parse-xy"),
 	calculateDimensions: require("./xy-dimensions"),
 	display: display,

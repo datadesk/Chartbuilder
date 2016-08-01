@@ -181,7 +181,10 @@ var DateScaleSettings = React.createClass({
 
 	render: function() {
 		var dateSettings = this.props.scale.dateSettings;
-		var showTimezoneSettings = this._showTimezoneSettings(dateSettings.dateFrequency);
+
+		// Override to hide time zone settings
+		// var showTimezoneSettings = this._showTimezoneSettings(dateSettings.dateFrequency);
+		var showTimezoneSettings = false;
 
 		var timezoneSettings = null;
 		if (showTimezoneSettings) {
@@ -215,7 +218,7 @@ var DateScaleSettings = React.createClass({
 			<div className="scale-options scale-options-date">
 				<h2 className="scale-option-title">
 					<span className="step-number">{this.props.stepNumber}</span>
-					Set the frequency and formatting of the bottom axis
+					Configure bottom axis (x-axis)
 				</h2>
 				<div className="labelled-dropdown">
 					<label className="editor-label date-setting">Date frequency</label>

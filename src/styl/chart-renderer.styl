@@ -1,4 +1,4 @@
-$em_size = 20px
+$em_size = 18px
 $em_size_small = 14px
 $em_size_large = 36px
 
@@ -66,6 +66,12 @@ svg
     &.leftAxis
       text
         text-anchor start
+      .tick
+        line
+          stroke-dasharray 3,6px
+        &.zero
+          line
+            stroke-dasharray none
 
     &.rightAxis
       text
@@ -73,10 +79,10 @@ svg
     &[data-scale="time"]
       .tick:not([data-anchor="middle"])
         text
-          text-anchor start
+          text-anchor middle
       .tick:first-child
         text
-          text-anchor start
+          text-anchor middle
   .xAxislabel
     fill $color-chart-axis-text
   .concealer-label
@@ -103,6 +109,7 @@ svg
         stroke-linejoin round
     .label
       font-family $font-sans-light
+      fill $color-chart-label-text
 
   .column-label
     fill $color-chart-axis-text
@@ -129,11 +136,14 @@ svg
       font-style italic
 
   &.svg-text-credit
-    font-size $em_size*0.6
+    font-size $em_size_small
     fill $color-chart-meta
     text-anchor start
+    &.right
+	    text-anchor end
+
   &.svg-text-source
-    font-size $em_size*0.6
+    font-size $em_size_small
     fill $color-chart-meta
     //text
       //dominant-baseline central
@@ -142,10 +152,16 @@ svg
     &.right
       text-anchor end
   &.svg-text-title
-    fill $color-body-text
-    font-family $font-sans
-    font-size $em_size
-    
+    fill $color-chart-title-text
+    font-family $font-sans-bold
+    font-size $em_size*1.4
+
+.grid-chart-block
+  .d4
+    .leftAxis .tick line
+      display none
+    .zero
+      display none
 
 .svg-source-pipe
 	stroke $color-chart-meta
@@ -153,6 +169,7 @@ svg
 	stroke-width 0.8px
 
 .svg-label-text
+  fill $color-chart-label-text
   font-size $em_size
   font-family $font-sans-light
   &.draggable
@@ -181,11 +198,11 @@ svg
   .svg-text
     font-size $em_size
     &.svg-text-credit
-      font-size $em_size*0.6
+      font-size $em_size_small
     &.svg-text-source
-      font-size $em_size*0.6
+      font-size $em_size_small
     &.svg-text-title
-      font-size $em_size
+      font-size $em_size*1.4
 
 .small
   .em-size
@@ -207,7 +224,7 @@ svg
     &.svg-text-pipe
       text
         dominant-baseline central
-        font-size $em_size*0.6
+        font-size $em_size_small
     &.svg-text-title
       font-size $em_size_small
 
@@ -228,9 +245,9 @@ svg
   .svg-text
     font-size $em_size
     &.svg-text-credit
-      font-size $em_size*0.6
+      font-size $em_size_small
     &.svg-text-source
-      font-size $em_size*0.6
+      font-size $em_size_small
     &.svg-text-title
       font-size $em_size
 
@@ -239,6 +256,6 @@ svg
 
 .cb-credit-logo
 	fill $color-chart-meta
- 
+
 div.renderer-wrapper
-  @import 'annotations'   
+  @import 'annotations'

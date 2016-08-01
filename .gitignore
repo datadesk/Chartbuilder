@@ -5,6 +5,10 @@ build
 .DS_Store
 .tmp
 .lvimrc
+*.pyc
 npm-debug.log
 bower_components/
 src/fonts
+storage/
+secrets/
+chartbuilder-storage/

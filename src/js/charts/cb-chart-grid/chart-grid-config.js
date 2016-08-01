@@ -33,11 +33,12 @@ var display = {
 	afterXYRight: "0.8em",
 	columnExtraPadding: "0.5em",
 	bottomPaddingWithoutFooter: "0.5em",
+	bottomPaddingSmallChart: "2.1em",
 	xy: require("../cb-xy/xy-config").display,
 	margin: {
-		top: "0.8em",
+		top: "1em",
 		right: "0.25em",
-		bottom: "0.15em",
+		bottom: "0.5em",
 		left: "0.25em"
 	},
 	padding: {
@@ -73,7 +74,7 @@ var defaultProps = {
 		extraPadding: {
 			top: 0,
 			right: 0,
-			bottom: 0,
+			bottom: "0.5em",
 			left: 0
 		},
 		scale: {
@@ -118,15 +119,17 @@ var defaultProps = {
 	metadata: {
 		id: null,
 		chartType: "chartgrid",
-		title: "",
+		title: "Enter chart title",
 		source: "",
-		credit: "Made with Chartbuilder",
+		slug: "la-g-",
+		slugEditable: true,
+		credit: "Your Name",
 		size: "auto"
 	}
 };
 
 var chart_grid_config = new ChartConfig({
-	displayName: "Chart grid",
+	displayName: "Grid",
 	parser: require("./parse-chart-grid"),
 	calculateDimensions: require("./chart-grid-dimensions"),
 	display: display,

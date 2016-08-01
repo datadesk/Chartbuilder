@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <!-- METADATA -->
+    <title>Los Angeles Times</title>
+
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="data desk, los angeles times, latimes, l.a. times" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="//cookbook.latimes.com/img/favicon.ico">
+    <meta name="google-site-verification" content="a9pAUAoFTyj7Nut3H5OiQ-fUyyqdwdVT7VcFGICrpTo" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="//cookbook.latimes.com/bootstrap/2.3.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="//cookbook.latimes.com/css/ngux-tophat-0.5.4.min.css" />
+    <link rel="stylesheet" type="text/css" href="//cookbook.latimes.com/bootstrap/2.3.2/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" type="text/css" href="//cookbook.latimes.com/css/ngux-tophat-responsive-0.5.4.min.css" />
+
+    <!-- JAVASCRIPT -->
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="//cookbook.latimes.com/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="//cookbook.latimes.com/js/jquery-1.8.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cookbook.latimes.com/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//cookbook.latimes.com/js/underscore-1.8.3-min.js" type="text/javascript"></script>
+    <!--[if lte IE 7]><script type="text/javascript" src="//cookbook.latimes.com/js/icons-ie7.js"></script><![endif]-->
+
+    <style>
+        @font-face {
+            font-family: 'Benton Gothic Bold';
+            src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot');
+            src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.eot?#iefix') format('embedded-opentype'),
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.woff') format('woff'),
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-bold.ttf') format('truetype');
+            font-weight:normal;
+            font-style:normal;
+        }
+        @font-face {
+            font-family: 'Benton Gothic Black';
+            src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.eot');
+            src: url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.eot?#iefix') format('embedded-opentype'),
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.woff') format('woff'),
+             url('https://s3.amazonaws.com/latimes-datadesk-template/fonts/0.5.0/benton-gothic-black.ttf') format('truetype');
+            font-weight:normal;
+            font-style:normal;
+        }
+
+        header {margin-bottom:40px;}
+        h2 {margin-top:50px;}
+        .questions-list li,
+        .export-instructions li {line-height:27px;}
+        .benton {font-family: "Benton Gothic Regular";}
+        .benton-bold {font-family: "Benton Gothic Bold";}
+        .benton-black {font-family: "Benton Gothic Black";}
+    </style>
+</head
+>
+<body>
+    <!-- NAV -->
+    <nav title="Navigation">
+        <div id="tophat-container">
+            <div id="tophat">
+
+                <span id="tophat-dropdown">
+                    <hr />
+                    <hr />
+                    <hr />
+                </span>
+
+                <a id="tophat-logo" href="//www.latimes.com/"></a>
+                <div class="tophat-links">
+                    <ul>
+                        <li><a href="../">Make a chart</a></li>
+                        <li><a href="../storage/">Archive</a></li>
+                        <li><a href="../svg-uploader/">SVG Uploader</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- CONTENT GOES HERE -->
+    <div class="container" id="container">
+
+        <div class="row">
+            <div class="span10 offset1">
+                <header class="center">
+                    <h1>Frequently Asked Questions</h1>
+                </header>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="span8 offset2">
+                <ul class="questions-list">
+                    <li><a href="#export">How should I export an SVG?</a></li>
+                    <li><a href="#why">When do I want to use an SVG blurb as opposed to an image?</a></li>
+                    <li><a href="#leadart">Can I use SVG blurbs for lead art?</a></li>
+                    <li><a href="#fonts">What fonts can I use in my SVG?</a></li>
+                    <li><a href="#nowwhat">I exported the SVG. Now what?</a></li>
+                    <li><a href="#type">My type looks weird in the SVG in P2P. What gives?</a></li>
+                    <li><a href="#snap">I don't see my blurb in SNAP. What happened?</a></li>
+                </ul>
+
+                <a name="export" id="export"></a>
+                <h2>How should I export an SVG?</h2>
+                <p>Best practices are also in <a href="../svg-uploader/">the upload form</a>, and repeated below. You can also check <a target="_blank" href="https://cloud.githubusercontent.com/assets/524959/16054952/30199510-3224-11e6-8b9f-5841e4e99a14.png">this image</a>.</p>
+
+                <p><strong>Exporting from Illustrator:</strong> You should use the "Save as" function in Illustrator to save your SVG. The proper settings should be the defaults, and are listed below:</p>
+
+                <ul class="export-instructions">
+                    <li>First of all, <strong>remove any extra data or images you don't want to appear!</strong></li>
+                    <li>Under Fonts -> Type make sure "SVG" is selected</li>
+                    <li>Under Options -> Image Location select "Embed"</li>
+                    <li>Under Advanced Options -> CSS Properties select "Style Elements"</li>
+                    <li>Under Advanced Options -> Decimal Places set to 1</li>
+                    <li>Select the checkboxes "Output fewer &lt;tspan&gt; elements," "Use &lt;textPath&gt; element for Text on Path, and "Responsive."</li>
+                </ul>
+
+
+                <a name="why" id="why"></a>
+                <h2>When do I want to use an SVG blurb as opposed to an image?</h2>
+                <p>Pretty much always. Using SVGs result in crisper images, smaller file sizes, and better display across devices compared to static images.</p>
+                <p>If you have a particularly large or detailed SVG, however, you may be off exporting an image, which will result in a smaller file size.</p>
+
+
+                <a name="leadart" id="leadart"></a>
+                <h2>Can I use SVG blurbs for lead art?</h2>
+                <p>Yes! Just add the blurb as the first related item in P2P. The only caveat is that this is the one case where you will need a <strong>16:9 aspect ratio</strong> in your SVG.</p>
+
+
+                <a name="fonts" id="fonts"></a>
+                <h2>What fonts can I use in my SVG?</h2>
+                <p>To reduce the number of fonts we have to serve to our users, please keep the fonts used in your graphics to <span class="benton">Benton Gothic Regular</span>, <span class="benton-bold">Benton Gothic Bold</span>, and <span class="benton-black">Benton Gothic Black</span>.</p>
+
+                <a name="nowwhat" id="nowwhat"></a>
+                <h2>I exported the SVG. Now what?</h2>
+                <p>Your SVG will save as a blurb in working in P2P. For now, you'll have to go and turn the blurb live manually, though this may change in the future.</p>
+                <p>If you're working on a story in SNAP, add the slug of the blurb to a P2P embed item. Not that <strong>the SVG will not show up in the story</strong> -- SNAP cannot read the contents of the blurb, so it will not display in SNAP, but will show in P2P preview.</p>
+
+                <a name="snap" id="snap"></a>
+                <h2>I don't see my blurb in SNAP. What happened?</h2>
+                <p>Note that SNAP can't read the contents of a blurb, so you'll just see an empty space in the story editing screen in SNAP. You will be able to see the SVG if you preview in P2P, however.</p>
+
+                <a name="type" id="type"></a>
+                <h2>My type looks weird in the SVG in P2P. What gives?</h2>
+                <p>Most likely, one of two things happened:</p>
+                <ol>
+                    <li>There were fonts other than <span class="benton">Benton Gothic Regular</span>, <span class="benton-bold">Benton Gothic Bold</span>, and <span class="benton-black">Benton Gothic Black</span> included in the SVG.</li>
+                    <li>The SVG was pasted directly into the P2P blurb, without using the uploader. The uploader performs a number of fixes to get the SVG to display properly in P2P, so please do not paste directly into P2P.</li>
+                </ol>
+
+                <a name="snap" id="snap"></a>
+                <h2>I really enjoyed this FAQ. Thank you.</h2>
+                <p>Thank you! Feel free to head <a href="../svg-uploader/">back to the SVG uploader</a>.</p>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <footer title="Footer">
+        <div id="footer-container">
+            <div id="footer">
+                <a id="footer-logo" href="//www.latimes.com/"></a>
+                <div id="tos">
+                    <a href="//www.tribpub.com/central-terms-of-service/">Terms of Service</a> |
+                    <a href="//www.tribpub.com/privacy-policy-and-your-privacy-rights/">Privacy Policy</a> |
+                    <a href="//www.latimes.com/lat-about-our-ads,0,3875412.htmlstory">About Our Ads</a> |
+                    <a href="//www.latimes.com/services/site/la-reprint-request-splash,0,6731163.htmlstory">&copy; <script type="text/javascript">document.write(new Date().getFullYear())</script></a> |
+                    <a href="//www.latimes.com/about/">About This Site</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+<!--Good with data?-->
+<!--Tired of grinding on the same old apps?-->
+<!--Want to use your skills in defense of truth, justice and the American way?-->
+<!--Email datadesk@latimes.com and let us know you're out there.-->
+</html>

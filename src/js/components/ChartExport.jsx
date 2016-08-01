@@ -9,6 +9,9 @@ var d3 = require("d3");
 var Button = require("chartbuilder-ui").Button;
 var saveSvgAsPng = require("save-svg-as-png");
 
+var ChartMetadataStore = require("../stores/ChartMetadataStore");
+var ChartViewActions = require("../actions/ChartViewActions");
+
 function outerHTML(el) {
 	var outer = document.createElement("div");
 	outer.appendChild(el);
@@ -32,12 +35,14 @@ var ChartExport = React.createClass({
 	getDefaultProps: function() {
 		return {
 			enableJSONExport: false,
+			slugEditable: false,
 		};
 	},
 
 	getInitialState: function() {
 		return {
 			enableSvgExport: true,
+			slugEditable: true
 		};
 	},
 
@@ -87,22 +92,35 @@ var ChartExport = React.createClass({
 	},
 
 	_makeFilename: function(extension) {
-		var filename = this.props.data.reduce(function(a, b, i) {
-			if (a.length === 0) {
-				return b.name;
-			} else {
-				return [a, b.name].join("_");
-			}
-		}, this.props.metadata.title);
+		var filename = this.props.metadata.slug;
 		return [
-			(filename + "_chartbuilder").replace(/\s/g, "_"),
+			filename,
 			extension
 		].join(".");
 	},
 
 	downloadPNG: function() {
-		filename = this._makeFilename("png");
+		var self = this;
+		var filename = this._makeFilename("png");
+		var slug = this.props.metadata.slug;
+		var svgFilename = this._makeFilename("svg");
+		var chart = this._addIDsForIllustrator(this.state.chartNode);
+		var sendToServer = this._sendToServer;
+
 		saveSvgAsPng.saveSvgAsPng(this.state.chartNode, filename, { scale: 2.0 });
+
+		// Save PNG to server
+		saveSvgAsPng.svgAsPngUri(self.state.chartNode, { scale: 2.0 }, function(pngUri){
+			sendToServer(filename, slug, pngUri, function () {
+				// Save SVG to server
+				saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
+					sendToServer(svgFilename, slug, uri, function() {
+						self.downloadJSON(true);
+					});
+				});
+			});
+		});
+
 	},
 
 	_autoClickDownload: function(filename, href) {
@@ -116,31 +134,94 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
-	downloadSVG: function() {
-		var filename = this._makeFilename("svg");
-		var chart = this._addIDsForIllustrator(this.state.chartNode);
-		var autoClickDownload = this._autoClickDownload;
-		saveSvgAsPng.svgAsDataUri(chart, {
-			cleanFontDefs: true,
-			fontFamilyRemap: {
-				"Khula-Light": "Khula Light",
-				"Khula-Regular": "Khula",
+	_sendToServer: function(filename, slug, uri, cb) {
+		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
+		var postrequest = new XMLHttpRequest();
+		postrequest.open("POST", "save-to-server/", true);
+		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+		postrequest.onreadystatechange = function() {
+			if (postrequest.readyState == 4 && postrequest.status == 200) {
+				if (cb && typeof(cb) === "function") {
+					cb();
+				}
 			}
-		}, function(uri) {
-			autoClickDownload(filename, uri);
-		});
+		}
+
+		postrequest.send(params);
 	},
 
-	downloadJSON: function() {
+	_sendToP2P: function(slug, uri, ratio, cb) {
+		var params = "slug=" + slug + "&ratio=" + ratio + "&source=chartbuilder&data=" +  encodeURIComponent(uri);
+		var postrequest = new XMLHttpRequest();
+		postrequest.open("POST", "send-to-p2p/", true);
+		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
+		postrequest.onreadystatechange = function() {
+			if (postrequest.readyState == 4 && postrequest.status == 200) {
+				// Probably should have something render on success
+				if (cb && typeof(cb) === "function") {
+					cb();
+				}
+			}
+		}
+		postrequest.send(params);
+
+	},
+
+
+	// renamed from downloadSVG
+	// Saves chart as a blurb in P2P, and saves to stockserver as SVG, PNG and JSON
+	exportChart: function() {
+		var self = this;
+		var filename = this._makeFilename("svg");
+		var pngFilename = this._makeFilename("png");
+		var slug = this.props.metadata.slug;
+		var chart = this._addIDsForIllustrator(this.state.chartNode);
+		var autoClickDownload = this._autoClickDownload;
+		var sendToServer = this._sendToServer;
+		var sendToP2P = this._sendToP2P;
+		var instructions = document.getElementById('export-instructions');
+
+		var ratio = (chart.getAttribute('height') / chart.getAttribute('width')) * 100;
+		ratio = ratio.toString()
+
+		// Set the slug to be not editable and show the final instructions
+		ChartViewActions.updateMetadata('slugEditable', false);
+		instructions.classList.remove("hidden");
+
+		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
+
+			sendToP2P(slug, uri, ratio);
+			sendToServer(filename, slug, uri, function() {
+				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
+					sendToServer(pngFilename, slug, pngUri, function() {
+						self.downloadJSON(true);
+					});
+				});
+			});
+		});
+
+	},
+
+	downloadJSON: function(sendToServer) {
 		json_string = JSON.stringify({
 			chartProps: this.props.model.chartProps,
 			metadata: this.props.model.metadata
-		}, null, "\t")
+		}, null, "\t");
 
 		var filename = this._makeFilename("json");
-		var href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
-		this._autoClickDownload(filename, href);
+
+		// If sendToServer is specified, save it to our server.
+		// Otherwise, simply download the file (which we won't normally do.)
+		if (sendToServer) {
+			var base64json = btoa(json_string);
+			this._sendToServer(filename, this.props.metadata.slug, encodeURIComponent(base64json));
+		} else {
+			var href = "data:text/json;charset=utf-8," + encodeURIComponent(json_string);
+			this._autoClickDownload(filename, href);
+		}
+
 	},
 
 	setAdvancedOptionState: function() {
@@ -152,22 +233,15 @@ var ChartExport = React.createClass({
 	render: function() {
 		var self = this;
 
-		var chartExportButtons = [
-			<Button
-				key="png-export"
-				className="export-button"
-				onClick={this.downloadPNG}
-				text="Image"
-			/>
-		];
+		var chartExportButtons = [];
 
 		if (this.state.enableSvgExport) {
 			chartExportButtons.push(
 				<Button
-					key="svg-export"
+					key="export-to-p2p"
 					className="export-button"
-					onClick={this.downloadSVG}
-					text="SVG"
+					onClick={this.exportChart}
+					text="Save and export to P2P"
 				/>
 			);
 		}
@@ -189,6 +263,16 @@ var ChartExport = React.createClass({
 					<div className="export-button-wrapper">
 						{chartExportButtons}
 					</div>
+				<div className="instructions hidden" id="export-instructions">
+			        <p>That's it, you're done! You can find your chart in P2P under the slug<br/><span className='slug-label'><a target="_blank" href={'get-p2p-admin-url/?slug=' + this.props.metadata.slug}>{this.props.metadata.slug}</a></span>.</p>
+			        <p><strong>What do I do from here?</strong></p>
+			        <p>Your chart has been exported as an SVG (Scalable Vector Graphic) into a blurb item in P2P. You can embed this item in SNAP by adding your slug into a <strong>P2P embed</strong> item in your story in SNAP.</p>
+
+			        <p>While you will not be able to see the SVG in the SNAP editing window, you will be able to view the item in P2P preview.</p>
+
+			        <p>You can also download an <a target="_blank" href={"chartbuilder-storage/" + this.props.metadata.slug + "/" + this.props.metadata.slug + ".svg"}>SVG</a> or <a target="_blank" href={"chartbuilder-storage/" + this.props.metadata.slug + "/" + this.props.metadata.slug + ".png"}>PNG</a> of your chart.</p>
+		        </div>
+		        <p>ChartBuilder is an open source project created by <a href="https://github.com/Quartz/Chartbuilder/">Quartz</a>. Let us know if you <a href="mailto:yyartist@latimes.com?Subject=ChartBuilder bug report">find any bugs</a>.</p>
 			</div>
 		);
 	}

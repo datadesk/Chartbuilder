@@ -17,32 +17,34 @@ var TextInput = chartbuilderUI.TextInput;
 
 // Give chart sizes friendly names
 var chart_sizes = [
+	// {
+	// 	title: "Auto",
+	// 	content: "Auto",
+	// 	value: "auto"
+	// },
 	{
-		title: "Auto",
-		content: "Auto",
-		value: "auto"
-	},
-	{
-		title: "Medium",
-		content: "Medium",
+		title: "Full width",
+		content: "Full width",
 		value: "medium"
 	},
 	{
-		title: "Long spot chart",
-		content: "Long spot chart",
-		value: "spotLong"
+		title: "Small embed",
+		content: "Small embed",
+		value: "spotSmall"
 	},
 	{
-		title: "Small spot chart",
-		content: "Small spot chart",
-		value: "spotSmall"
+		title: "Deep embed",
+		content: "Deep embed",
+		value: "spotLong"
 	}
 ];
 
 var text_input_values = [
 	{ name: "title", content: "Title", isRequired: true },
-	{ name: "credit", content: "Credit" },
-	{ name: "source", content: "Source" }
+	{ name: "credit", content: "Your name" },
+	{ name: "source", content: "Source", isRequired: true},
+	// { name: "notes", content: "Notes"},
+	{ name: "slug",  content: "Slug (auto-generated)"}
 ];
 
 /**
@@ -61,12 +63,16 @@ var ChartMetadata = React.createClass({
 		metadata: PropTypes.shape({
 			chartType: PropTypes.string.isRequired,
 			size: PropTypes.string.isRequired,
-			source: PropTypes.string,
-			credit: PropTypes.string,
-			title: PropTypes.string
+			slug: PropTypes.string,
+			slugEditable: PropTypes.bool,
+			source: PropTypes.string.isRequired,
+			credit: PropTypes.string.isRequired,
+			notes: PropTypes.string,
+			title: PropTypes.string.isRequired,
 		}),
 		stepNumber: PropTypes.string,
-		additionalComponents: PropTypes.array
+		additionalComponents: PropTypes.array,
+		errors: PropTypes.array
 	},
 
 	// Get text input types from state
@@ -78,6 +84,35 @@ var ChartMetadata = React.createClass({
 	// Update metadata store with new settings
 	_handleMetadataUpdate: function(k, v) {
 		ChartViewActions.updateMetadata(k, v);
+		if (k === "title" && this.props.metadata.slugEditable) {
+			ChartViewActions.updateMetadata('slug', this._slugify(v));
+		}
+	},
+
+	_getDateString: function() {
+		// Return date string as YYYY-MM-DD
+		var d = new Date();
+	    var dd = d.getDate();
+	    var mm = d.getMonth()+1; //January is 0!
+	    var yyyy = d.getFullYear();
+
+	    if(dd<10){
+            dd='0'+dd
+        }
+        if(mm<10){
+            mm='0'+mm
+        }
+        var dateString = "-" + yyyy + "-" + mm + "-" + dd;
+        return dateString;
+	},
+
+	_slugify: function(v) {
+		var slug = "la-g-" + v.toLowerCase().trim() + this._getDateString() + "-chartbuilder";
+		// Switch spaces to slugs
+		slug = slug.replace(/\s/g, "-");
+		// Trim special characters
+		slug = slug.replace(/[^\w-]+/g, "");
+		return slug;
 	},
 
 	render: function() {
@@ -89,6 +124,7 @@ var ChartMetadata = React.createClass({
 				c.props.value = metadata[c.key] || "";
 			}, this);
 		}
+
 		// Create text input field for each metadata textInput
 		var textInputs = text_input_values.map(function(textInput) {
 			return <ChartMetadataText
@@ -105,7 +141,7 @@ var ChartMetadata = React.createClass({
 			<div className="editor-options">
 				<h2>
 					<span className="step-number">{this.props.stepNumber}</span>
-					<span>Set title, source, credit and size</span>
+					<span>Set title, source and credit</span>
 				</h2>
 				{textInputs}
 				{this.props.additionalComponents}
@@ -129,7 +165,7 @@ var ChartMetadataText = React.createClass({
 			<div>
 				<TextInput
 					value={this.props.value}
-					className="meta-option"
+					className={"meta-option " + this.props.name}
 					onChange={this.props.onChange.bind(null, this.props.name)}
 					placeholder={this.props.placeholder}
 					isRequired={this.props.isRequired}

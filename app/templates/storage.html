@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>Chartbuilder 2.6.4 archive page</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <style>
+        .container {margin-top:42px;}
+        .delete {color:#930000;}
+        .links {margin-bottom:0;}
+        .delete-confirmation {margin-top:0; padding-top:0;}
+        .removing p, .removing h2 {display:none;}
+        .storageItem {transition:all .5s;}
+
+    </style>
+
+    <script type="text/javascript" src="//cookbook.latimes.com/js/jquery-1.8.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="header">
+        <h1>Chartbuilder 2.6.4</h1>
+        <nav>
+            <li><a href="../">Make a chart</a></li>
+            <li><a href="../storage/">Archive</a></li>
+            <li><a href="../svg-uploader/">SVG Uploader</a></li>
+        </nav>
+    </div>
+
+    <div class="chartbuilder-container">
+        <div class="chartbuilder-storage">
+            <div class="page-header">
+                <h1 class="chartbuilder-title">Chartbuilder archive</h1>
+            </div>
+
+            <div class="storage-list">
+            {% for d in dirs_list %}
+                {% if d != ".DS_Store" %}
+                    <div class="storageItem">
+                        <a href="../?jsonurl={{d}}.json">
+                            <img src="../chartbuilder-storage/{{d}}/{{d}}.png"/>
+                        </a>
+                        <h2 class="itemSlug">{{ d }}</h2>
+                        <p class="links">
+                            <a href="../?jsonurl={{d}}.json">Edit chart</a> | <a href="../chartbuilder-storage/{{d}}/{{d}}.svg">SVG</a> | <a href="../chartbuilder-storage/{{d}}/{{d}}.png">PNG</a> | <a class="delete" data-slug="{{d}}" href="#">Delete</a>
+                        </p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+    function bindDelete(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $('.delete').off('click', bindDelete);
+
+        var $this = $(this);
+        var slug = $this.data('slug');
+
+        var item = $this.parents('.storageItem');;
+        item.append("<p class='delete-confirmation'>Are you sure you want to delete this chart? <a id='yes' href='#'>YES</a> | <a id='no' href='#'>NO</a></p>");
+
+        $('#no').on('click', function() {
+            e.preventDefault();
+            e.stopPropagation();
+            $('.delete-confirmation').remove();
+
+            // Rebind delete click event
+            $('.delete').on('click', bindDelete);
+        });
+
+
+        $('#yes').on('click', function() {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var url = '../delete/?slug=' + slug;
+
+            $.get(url, function() {
+                $('.delete-confirmation', item).remove();
+                item.addClass('removing').css({'opacity':0, 'width':0})
+
+                setTimeout(function() {
+                    item.remove();
+                }, 600)
+            });
+
+            // Rebind delete click event
+            $('.delete').on('click', bindDelete);
+        });
+
+
+
+    }
+
+    $('.delete').on('click', bindDelete);
+    </script>
+
+</body>
+</html>

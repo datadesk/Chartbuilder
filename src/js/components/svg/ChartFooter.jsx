@@ -40,7 +40,7 @@ var ChartFooter = React.createClass({
 
 	_config: {
 		creditSourcePadding: 20,
-		heightPerLine: 15,
+		heightPerLine: 20,
 		sampleString: "Data: abcdefg hijkl mnop qrstu vwxyz 1234 56789"
 	},
 
@@ -54,7 +54,7 @@ var ChartFooter = React.createClass({
 		var sourceText;
 		var sourceLine;
 		if (this.props.metadata.source && this.props.metadata.source !== "") {
-			sourceText = "Data: " + this.props.metadata.source;
+			sourceText = "Source: " + this.props.metadata.source;
 		} else {
 			sourceText = "";
 		}
@@ -66,6 +66,17 @@ var ChartFooter = React.createClass({
 		}
 
 		return sourceLine;
+	},
+
+	_createCreditLine: function() {
+		var creditText;
+
+		if (this.props.metadata.credit === "" || this.props.metadata.credit === "Your name") {
+			creditText =  "@latimesgraphics";
+		} else {
+			creditText = this.props.metadata.credit + " / @latimesgraphics";
+		}
+		return creditText;
 	},
 
 	render: function() {
@@ -91,12 +102,13 @@ var ChartFooter = React.createClass({
 			);
 		}
 
+		var creditLineText = this._createCreditLine();
 		chartCredit = (
 			<ChartCreditText
-				text={this.props.metadata.credit}
+				text={creditLineText}
 				className="svg-text-credit"
 				onUpdate={this.props.onUpdate}
-				translate={[this.props.translate.left, this.props.translate.bottom - this.props.extraHeight]}
+				translate={[this.props.translate.right, this.props.translate.bottom]}
 				updateState={this._handleStateUpdate.bind(null, "creditWidth")}
 			/>
 		);
@@ -126,11 +138,13 @@ var ChartCreditText = React.createClass({
 	},
 
 	render: function() {
+		var classNameDirection = "right";
+
 		return (
 			<SvgText
 				text={this.props.text}
 				translate={this.props.translate}
-				className="svg-text-credit"
+				className={"svg-text-credit " + classNameDirection}
 			/>
 		);
 	}
@@ -140,8 +154,11 @@ var ChartCreditText = React.createClass({
 var ChartSourceText = React.createClass({
 
 	getInitialState: function() {
+		// We want the soruce to appear on it's own line in smaller charts
+		var onOwnLine = (this.props.chartWidth >= 630) ? false : true;
+
 		return {
-			ownLine: false // whether source will fall onto its own line
+			ownLine: onOwnLine // whether source will fall onto its own line
 		}
 	},
 
@@ -149,19 +166,25 @@ var ChartSourceText = React.createClass({
 		this.props.onUpdate(height);
 	},
 
+	// Listen for chart size change, and set ownLine property to adjust
+	componentWillReceiveProps: function(nextProps) {
+		if (nextProps.chartWidth !== this.props.chartWidth) {
+			var onOwnLine = (nextProps.chartWidth >= 630) ? false : true;
+			this.setState({ownLine: onOwnLine});
+		}
+	},
+
 	render: function() {
 		var _translate = this.props.translate;
 		var translate;
-		var classNameDirection;
+		var classNameDirection = "left"; // We always want source on the left
 		var maxWidth;
 
 		if (this.state.ownLine) {
-			translate = [_translate.left, _translate.bottom - this.props.extraHeight + this.props.heightPerLine];
-			classNameDirection = "left"
+			translate = [_translate.left, _translate.bottom - this.props.heightPerLine];
 			maxWidth = this.props.chartWidth;
 		} else {
-			translate = [_translate.right, _translate.bottom];
-			classNameDirection = "right"
+			translate = [_translate.left, _translate.bottom];
 			maxWidth = this.props.chartWidth - this.props.creditDimensions.width - this.props.creditSourcePadding;
 		}
 

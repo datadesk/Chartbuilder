@@ -79,7 +79,7 @@ span.step-number
  * Series items
  */
 .series-control
-	margin 0 0 10px 0
+	margin 10px 0 10px 0
 	&.inline
 		display inline-block
 		margin-right 10px
@@ -95,7 +95,7 @@ span.step-number
 		flex-direction(column)
 		transform(translateX(4%))
 		label
-			color #bebebe
+			color $color-editor-text
 			font-size 16px
 			line-height 24px
 		@media screen and (max-width: $single_column_breakpoint)
@@ -111,7 +111,7 @@ span.step-number
 		background none
 		border none
 		transition(padding 0.1s ease-out)
-		height 57px
+		height 30px
 
 		width 100%
 		&:hover, &:focus
@@ -132,6 +132,13 @@ span.step-number
 	width 100%
 	label
 		pointer-events none
+
+.cb-button-group .cb-button
+	color $color-editor-disabled
+	&.active
+		color $color-editor-text
+		background-color rgba(0, 109, 162, 0.2)
+
 
 .colorsection
 	float right
@@ -239,6 +246,10 @@ span.step-number
 		&:active
 			background-color $color-editor-border
 
+.instructions
+	.slug-label
+		font-family $font-sans-bold
+
 .save-button
 	width 100%
 	transition none
@@ -254,7 +265,6 @@ span.step-number
 			label
 				font-size 16px
 				line-height 24px
-				color #bebebe
 			@media screen and (max-width: $single_column_breakpoint)
 				width 100%
 

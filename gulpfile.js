@@ -23,6 +23,7 @@ var uglify = require("gulp-uglify");
 var config = require("./gulp/config");
 var gutil = require("gulp-util")
 
+
 gulp.task("stylus", function () {
 	return gulp.src(config.paths.src.styl + "/main.styl")
 		.pipe(stylus({
@@ -30,10 +31,6 @@ gulp.task("stylus", function () {
 			import: ["nib"],
 			"include css": true,
 			errors: true
-		}))
-		.pipe(base64({
-			baseDir: "./src",
-			maxWeightResource: 1000000
 		}))
 		.pipe(gulp.dest(config.paths.build.css))
 		.pipe(reload({stream:true}));
@@ -45,10 +42,6 @@ gulp.task("stylus:core", ["clean-dist"], function () {
 			use: [nib()],
 			"include css": true,
 			errors: true
-		}))
-		.pipe(base64({
-			baseDir: "./src",
-			maxWeightResource: 1000000
 		}))
 		.pipe(gulp.dest(config.paths.dist.css));
 });
@@ -64,6 +57,7 @@ gulp.task("browserify:dev", function () {
 		.pipe(gulp.dest(config.paths.build.js))
 		.pipe(reload({ stream:true }));
 });
+
 
 gulp.task("browserify:test", function () {
 	var bundler = browserify("./test/test-page/main.js", {
@@ -106,8 +100,8 @@ gulp.task("clean-dist", function (done) {
 
 gulp.task("copy-htdocs", function () {
 	return gulp.src(config.paths.src.htdocs + "/**")
-		.pipe(changed(config.dirs.build))
-		.pipe(gulp.dest(config.dirs.build))
+		.pipe(changed(config.dirs.templates))
+		.pipe(gulp.dest(config.dirs.templates))
 		.pipe(reload({ stream: true }));
 });
 
@@ -131,6 +125,7 @@ gulp.task("copy-assets", function () {
 		.pipe(gulp.dest(config.paths.build.assets))
 		.pipe(reload({ stream: true }));
 });
+
 
 gulp.task("browser-sync", ["watch"], function () {
 	browserSync({
@@ -204,3 +199,6 @@ gulp.task("gh-pages", function() {
 	return gulp.src("./build/**/*")
 		.pipe(require("gulp-gh-pages")());
 });
+
+
+

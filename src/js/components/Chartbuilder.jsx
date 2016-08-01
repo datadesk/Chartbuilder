@@ -25,6 +25,7 @@ var ChartMetadata = require("./ChartMetadata.jsx");
 var ChartTypeSelector = require("./ChartTypeSelector.jsx");
 var RendererWrapper = require("./RendererWrapper.jsx");
 var LocalStorageTimer = require("./LocalStorageTimer.jsx");
+var Instructions = require("./Instructions.jsx");
 
 var AlertGroup = require("chartbuilder-ui").AlertGroup;
 
@@ -39,6 +40,8 @@ var numColors = require("../config/chart-style").numColors;
 
 /* API to localStorage that allows saving and retrieving charts */
 var ChartbuilderLocalStorageAPI = require("../util/ChartbuilderLocalStorageAPI");
+var validateChartModel = require("../util/validate-chart-model");
+var ChartServerActions = require("../actions/ChartServerActions");
 
 /**
  * Function to query Flux stores for all data. Runs whenever the stores are
@@ -97,6 +100,36 @@ var Chartbuilder = React.createClass({
 		renderedSVGClassName: React.PropTypes.string
 	},
 
+	getQueryVariable: function(v) {
+		var q = window.location.search.substring(1);
+		var vars = q.split("&");
+		for (var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split("=");
+			if (decodeURIComponent(pair[0]) === v) {
+				return decodeURIComponent([pair[1]]);
+			}
+		}
+		return false;
+	},
+
+	loadDataFromUrl: function(url) {
+		var client = new XMLHttpRequest();
+		url = 'chartbuilder-storage/' + url.replace('.json', '') + '/' + url;
+		url = url + "?v=" + Math.floor(Math.random() * 10000000000);
+		client.open('GET', url);
+		client.onreadystatechange = function() {
+			if (client.readyState == 4) {
+				var data = client.responseText;
+				parsedModel = validateChartModel(client.responseText);
+				if (parsedModel) {
+					// Update flux store with incoming model
+					ChartServerActions.receiveModel(parsedModel);
+				}
+			}
+		}
+        client.send();
+	},
+
 	getInitialState: function() {
 		return getStateFromStores();
 	},
@@ -117,6 +150,13 @@ var Chartbuilder = React.createClass({
 		ChartMetadataStore.addChangeListener(this._onChange);
 		ErrorStore.addChangeListener(this._onChange);
 		SessionStore.addChangeListener(this._onChange);
+
+		// Check to see if there is a jsonurl parameter in the querystring
+		// If so, load the data from that URL
+		this.dataUrl = this.getQueryVariable('jsonurl');
+		if (this.dataUrl) {
+			this.loadDataFromUrl(this.dataUrl);
+		}
 	},
 
 	/* Remove listeners on component unmount */
@@ -127,21 +167,62 @@ var Chartbuilder = React.createClass({
 		SessionStore.removeChangeListener(this._onChange);
 	},
 
-	_renderErrors: function() {
+	_validateMeta: function(meta) {
+		var err = [];
 
+		if (meta && meta.title.trim() !== "" && meta.source.trim() !== "") {
+
+		} else {
+			err.push({
+				location: "input",
+				text: "Your chart needs both a title and a source.",
+				type: "error"
+			});
+		}
+
+		if (meta && meta.credit.trim() === "" || meta && meta.credit.trim() === "Your name") {
+			err.push({
+				location: "input",
+				text: "You need to enter your name!",
+				type: "error"
+			});
+		}
+
+		return err;
+
+	},
+
+	_renderErrors: function() {
 		var metadataErrors = [];
-		if (this.props.validateMeta) {
-			metadataErrors = this.props.validateMeta(this.state.metadata);
+		if (this._validateMeta()) {
+			metadataErrors = this._validateMeta(this.state.metadata);
 		}
 
 		var errorArrMessage = this.state.errors.messages.concat(metadataErrors);
+		var hasErrors = false;
+		for (var i = 0; i < errorArrMessage.length; i++) {
+			if (errorArrMessage[i].type === "error") {
+				hasErrors = true;
+			}
+		}
 
-		if (errorArrMessage.length === 0) {
-			return null;
+
+		if (!hasErrors) {
+			return (
+		        <ChartExport
+		        	data={this.state.chartProps.data}
+		        	enableJSONExport={this.props.enableJSONExport}
+		        	svgWrapperClassName={svgWrapperClassName.desktop}
+		        	metadata={this.state.metadata}
+		        	stepNumber={String(7)}
+		        	additionalComponents={this.props.additionalComponents.misc}
+		        	model={this.state}
+		        />
+			);
 		} else {
 			return (
 				<div>
-					<h2>Have a look at these issues:</h2>
+					<h2>Have a look at these issues before you export your chart:</h2>
 					<AlertGroup
 						alerts={errorArrMessage}
 					/>
@@ -184,7 +265,7 @@ var Chartbuilder = React.createClass({
 						<div className="phone-frame">
 							<RendererWrapper
 								editable={true} /* will component be editable or only rendered */
-								showMetadata={true}
+								showMetadata={true} /* Shows header, credit, source, etc. */
 								model={this.state}
 								enableResponsive={true}
 								className={svgWrapperClassName.mobile}
@@ -206,7 +287,7 @@ var Chartbuilder = React.createClass({
 							model={this.state}
 							enableResponsive={false}
 							width={640}
-							showMetadata={true}
+							showMetadata={true} /* Shows header, credit, source, etc. */
 							className={svgWrapperClassName.desktop}
 							svgClassName={this.props.renderedSVGClassName}
 						/>
@@ -214,12 +295,10 @@ var Chartbuilder = React.createClass({
 					{mobilePreview}
 				</div>
 				<div className="chartbuilder-editor">
+				  	<Instructions/>
 					<ChartTypeSelector
 						metadata={this.state.metadata}
 						chartProps={this.state.chartProps}
-					/>
-					<LocalStorageTimer
-						timerOn={this.state.session.timerOn}
 					/>
 					<Editor
 						errors={this.state.errors}
@@ -235,15 +314,6 @@ var Chartbuilder = React.createClass({
 					/>
 					{mobileOverrides}
 					{this._renderErrors()}
-					<ChartExport
-						data={this.state.chartProps.data}
-						enableJSONExport={this.props.enableJSONExport}
-						svgWrapperClassName={svgWrapperClassName.desktop}
-						metadata={this.state.metadata}
-						stepNumber={String(editorSteps + 3)}
-						additionalComponents={this.props.additionalComponents.misc}
-						model={this.state}
-					/>
 				</div>
 				<div className="chartbuilder-canvas">
 					<Canvas />

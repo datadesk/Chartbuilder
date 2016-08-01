@@ -159,7 +159,7 @@ var ChartGridEditor = React.createClass({
 				<div className="editor-options">
 					<h2>
 						<span className="step-number">2</span>
-						<span>Input your data</span>
+						<span>Paste your data</span>
 					</h2>
 					<DataInput
 						errors={inputErrors}
@@ -170,15 +170,8 @@ var ChartGridEditor = React.createClass({
 				<div className="editor-options">
 					<h2>
 						<span className="step-number">3</span>
-						<span>Set series options</span>
+						<span>Set chart type</span>
 					</h2>
-					<ChartGrid_universalToggle
-						text="Single color"
-						chartSettings={chartProps.chartSettings}
-						universalSettings={this.state.universalSettings}
-						onUpdate={this._handlePropUpdate.bind(null, "chartSettings")}
-						onClick={this._handleStateUpdate}
-					/>
 					{chartSettings}
 					<ChartGrid_gridSettings
 						grid={chartProps._grid}

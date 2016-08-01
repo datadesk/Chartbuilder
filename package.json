@@ -61,7 +61,7 @@
     "react-addons-shallow-compare": "^15.0.1",
     "react-addons-update": "^15.0.1",
     "react-dom": "^15.0.1",
-    "save-svg-as-png": "git://github.com/nsonnad/saveSvgAsPng.git#clean-svg-fonts",
+    "save-svg-as-png": "git://github.com/datadesk/saveSvgAsPng.git#responsive",
     "sizeof": "^1.0.0",
     "sugar-date": "^1.5.1"
   },
