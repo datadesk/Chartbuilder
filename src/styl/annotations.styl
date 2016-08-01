@@ -1,4 +1,3 @@
-
 .annotation-layer
 	position absolute
 	top 0
@@ -7,18 +6,18 @@
 	height 100%
 .blurb
 	width 20em
-	
+
 	font-size 1em
 	padding 5px
 	box-sizing border-box
 	z-index 10
-	
+
 	&[data-mode="edit"]
 		background-color #ccc
-		
+
 	&*
 		box-sizing border-box
-	
+
 	p
 		z-index 1
 		width 100%
@@ -29,11 +28,11 @@
 		top 0
 		left 0
 		width 100%
-		path 
+		path
 			fill none
 			stroke $color-body-text
 			stroke-width 1px
-			
+
 		circle
 			opacity 0
 			fill black
@@ -41,24 +40,24 @@
 			stroke #999
 			stroke-width 2px
 			stroke-dasharray 5,5
-			
+
 			&:hover
 				opacity 1
 				cursor move
 		z-index 0
-		
+
 	.content
 		width 100%
 		height 100%
 		z-index 1
 		span
 			cursor text
-			
+
 		.end-mark
 			width 1px
 			height 1px
 			display inline-block
-		
+
 	.interface
 		position absolute
 		top -10px
@@ -70,6 +69,6 @@
 		cursor move
 	span
 		font-family $font-sans-bold
-		
+
 	span + span
 		font-family $font-sans
