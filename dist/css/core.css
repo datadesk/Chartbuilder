@@ -429,175 +429,218 @@ text[data-color-index="9"] {
   background-color: #a82f42;
 }
 [data-color-index="10"] path {
-  stroke: #333;
+  stroke: #339482;
 }
 [data-color-index="10"] rect {
-  fill: #333;
+  fill: #339482;
 }
 [data-color-index="10"] circle {
-  stroke: #333;
+  stroke: #339482;
   stroke-width: 2px;
-  fill: #333;
+  fill: #339482;
 }
 .color-index-10 {
-  fill: #333;
+  fill: #339482;
 }
 rect[data-color-index="10"] {
-  fill: #333;
+  fill: #339482;
 }
 text[data-color-index="10"] {
-  fill: #333;
+  fill: #339482;
 }
 .d4 .axis .tick text[data-color-index="10"] {
-  fill: #333;
+  fill: #339482;
 }
 .cb-colorpicker-color-10 {
-  background-color: #333;
+  background-color: #339482;
 }
 .series-label-10 {
-  color: #333;
+  color: #339482;
 }
 .series-label-input-10 {
-  border-bottom: 2px solid #333;
+  border-bottom: 2px solid #339482;
 }
 .series-label-input-10:hover,
 .series-label-input-10:focus {
   border: none;
-  border-bottom: 2px solid #333;
+  border-bottom: 2px solid #339482;
 }
 .series-label-input-10 input {
-  color: #333;
+  color: #339482;
 }
 .cb-toggle.toggled.toggle-10 .cb-toggle-container {
-  background-color: #333;
+  background-color: #339482;
 }
 [data-color-index="11"] path {
-  stroke: #666;
+  stroke: #333;
 }
 [data-color-index="11"] rect {
-  fill: #666;
+  fill: #333;
 }
 [data-color-index="11"] circle {
-  stroke: #666;
+  stroke: #333;
   stroke-width: 2px;
-  fill: #666;
+  fill: #333;
 }
 .color-index-11 {
-  fill: #666;
+  fill: #333;
 }
 rect[data-color-index="11"] {
-  fill: #666;
+  fill: #333;
 }
 text[data-color-index="11"] {
-  fill: #666;
+  fill: #333;
 }
 .d4 .axis .tick text[data-color-index="11"] {
-  fill: #666;
+  fill: #333;
 }
 .cb-colorpicker-color-11 {
-  background-color: #666;
+  background-color: #333;
 }
 .series-label-11 {
-  color: #666;
+  color: #333;
 }
 .series-label-input-11 {
-  border-bottom: 2px solid #666;
+  border-bottom: 2px solid #333;
 }
 .series-label-input-11:hover,
 .series-label-input-11:focus {
   border: none;
-  border-bottom: 2px solid #666;
+  border-bottom: 2px solid #333;
 }
 .series-label-input-11 input {
-  color: #666;
+  color: #333;
 }
 .cb-toggle.toggled.toggle-11 .cb-toggle-container {
-  background-color: #666;
+  background-color: #333;
 }
 [data-color-index="12"] path {
-  stroke: #999;
+  stroke: #666;
 }
 [data-color-index="12"] rect {
-  fill: #999;
+  fill: #666;
 }
 [data-color-index="12"] circle {
-  stroke: #999;
+  stroke: #666;
   stroke-width: 2px;
-  fill: #999;
+  fill: #666;
 }
 .color-index-12 {
-  fill: #999;
+  fill: #666;
 }
 rect[data-color-index="12"] {
-  fill: #999;
+  fill: #666;
 }
 text[data-color-index="12"] {
-  fill: #999;
+  fill: #666;
 }
 .d4 .axis .tick text[data-color-index="12"] {
-  fill: #999;
+  fill: #666;
 }
 .cb-colorpicker-color-12 {
-  background-color: #999;
+  background-color: #666;
 }
 .series-label-12 {
-  color: #999;
+  color: #666;
 }
 .series-label-input-12 {
-  border-bottom: 2px solid #999;
+  border-bottom: 2px solid #666;
 }
 .series-label-input-12:hover,
 .series-label-input-12:focus {
   border: none;
-  border-bottom: 2px solid #999;
+  border-bottom: 2px solid #666;
 }
 .series-label-input-12 input {
-  color: #999;
+  color: #666;
 }
 .cb-toggle.toggled.toggle-12 .cb-toggle-container {
-  background-color: #999;
+  background-color: #666;
 }
 [data-color-index="13"] path {
-  stroke: #ccc;
+  stroke: #999;
 }
 [data-color-index="13"] rect {
-  fill: #ccc;
+  fill: #999;
 }
 [data-color-index="13"] circle {
-  stroke: #ccc;
+  stroke: #999;
   stroke-width: 2px;
-  fill: #ccc;
+  fill: #999;
 }
 .color-index-13 {
-  fill: #ccc;
+  fill: #999;
 }
 rect[data-color-index="13"] {
-  fill: #ccc;
+  fill: #999;
 }
 text[data-color-index="13"] {
-  fill: #ccc;
+  fill: #999;
 }
 .d4 .axis .tick text[data-color-index="13"] {
-  fill: #ccc;
+  fill: #999;
 }
 .cb-colorpicker-color-13 {
-  background-color: #ccc;
+  background-color: #999;
 }
 .series-label-13 {
-  color: #ccc;
+  color: #999;
 }
 .series-label-input-13 {
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #999;
 }
 .series-label-input-13:hover,
 .series-label-input-13:focus {
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #999;
 }
 .series-label-input-13 input {
-  color: #ccc;
+  color: #999;
 }
 .cb-toggle.toggled.toggle-13 .cb-toggle-container {
+  background-color: #999;
+}
+[data-color-index="14"] path {
+  stroke: #ccc;
+}
+[data-color-index="14"] rect {
+  fill: #ccc;
+}
+[data-color-index="14"] circle {
+  stroke: #ccc;
+  stroke-width: 2px;
+  fill: #ccc;
+}
+.color-index-14 {
+  fill: #ccc;
+}
+rect[data-color-index="14"] {
+  fill: #ccc;
+}
+text[data-color-index="14"] {
+  fill: #ccc;
+}
+.d4 .axis .tick text[data-color-index="14"] {
+  fill: #ccc;
+}
+.cb-colorpicker-color-14 {
+  background-color: #ccc;
+}
+.series-label-14 {
+  color: #ccc;
+}
+.series-label-input-14 {
+  border-bottom: 2px solid #ccc;
+}
+.series-label-input-14:hover,
+.series-label-input-14:focus {
+  border: none;
+  border-bottom: 2px solid #ccc;
+}
+.series-label-input-14 input {
+  color: #ccc;
+}
+.cb-toggle.toggled.toggle-14 .cb-toggle-container {
   background-color: #ccc;
 }
 span.step-number {
