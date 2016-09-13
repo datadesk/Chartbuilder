@@ -1,6 +1,13 @@
 var React = require('react');
 
-var AnnotationBlurb = require("./AnnotationBlurb.jsx")
+var ChartViewActions = require("../../../actions/ChartViewActions");
+var AnnotationBlurb = require("./AnnotationBlurb.jsx");
+var AnnotationMarker = require("./AnnotationMarker.jsx")
+var annotation_config = require("./annotation-config.js");
+
+var DateScaleMixin = require("../../mixins/DateScaleMixin.js");
+var NumericScaleMixin = require("../../mixins/NumericScaleMixin.js");
+
 
 var clone = require("lodash/clone");
 
@@ -11,30 +18,43 @@ var AnnotationLayer = React.createClass({
 	propTypes: {
 		blurbs: React.PropTypes.array,
 		chartProps: React.PropTypes.object,
-		dimensions: React.PropTypes.object
+		dimensions: React.PropTypes.object,
+		isSmall: React.PropTypes.bool
 	},
+
+	mixins: [ DateScaleMixin, NumericScaleMixin ],
 
 	getDefaultProps: function() {
 		return {
 			blurbs: [],
-			defaultBlurb: {
-				tout: "New Blurb",
-				copy: "Lorem ipsume dolor sit amet.",
-				pos: {x: 100, y: 100},
-				arrowStart: {x:0.5, y:0.5},
-				arrowEnd: {x:0.5, y:0.8},
-				arrowClockwise: true
-			}
+			defaultBlurb: annotation_config.defaultBlurb
 		};
 	},
 
+	_updateAnnotations: function(newAnnotations) {
+		ChartViewActions.updateChartProp("_annotations", newAnnotations);
+	},
 
-	_handleBlurbUpdate: function(i,prop,key) {
-		console.error(i,prop,key)
-		this.props.blurbs[i][key] = prop;
 
-		//CHANGE
-		this.forceUpdate();
+	_handleBlurbUpdate: function(index_or_array,prop,key) {
+		var _annotations = this.props.chartProps._annotations
+
+		if(index_or_array.length !== undefined) {
+			var update_list = index_or_array;		
+		}
+		else {
+			var update_list = [{i: index_or_array, prop: prop, key: key}];
+		}
+		
+		update_list.forEach(function(d){
+			_annotations.blurbs.values[d.i][d.key] = d.prop;
+		});
+
+		this._updateAnnotations(_annotations);
+	},
+
+	_handleMarkerUpdate: function(index_or_array, prop, key) {
+		this._handleBlurbUpdate(index_or_array, prop, key);
 	},
 
 	_addBlurb: function() {
@@ -46,122 +66,230 @@ var AnnotationLayer = React.createClass({
 	},
 
 	componentWillMount: function() {
-		this._addBlurb()
+		this._addBlurb();
+	},
+
+	getInitialState: function() {
+		return {
+			dateScaleInfo: null
+		};
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			dateScaleInfo: nextProps.chartProps.scale.hasDate ? this.generateDateScale(nextProps) : null 
+		});
 	},
 
 	_createScales: function() {
 
 		var styleConfig = this.props.styleConfig;
 		var displayConfig = this.props.displayConfig;
-		var props = this.props;
+		var props = clone(this.props);
 		var dimensions = props.dimensions;
 
-		// props.chartAreaDimensions = {
-		// 	width: (
-		// 		dimensions.width -
-		// 		displayConfig.margin.left - displayConfig.margin.right -
-		// 		displayConfig.padding.left - displayConfig.padding.right -
-		// 		this.state.maxTickWidth.primaryScale - this.state.maxTickWidth.secondaryScale
-		// 	),
-		// 	height: (
-		// 		dimensions.height -
-		// 		displayConfig.margin.top - displayConfig.margin.bottom -
-		// 		displayConfig.padding.top - displayConfig.padding.bottom
-		// 	)
-		// };
+		//CHANGE
+		maxTickWidth = {
+			primaryScale: 0,
+			secondaryScale: 0
+		}
 
-		// var padding = computePadding(props);
+		props.chartAreaDimensions = {
+			width: (
+				dimensions.width -
+				displayConfig.margin.left - displayConfig.margin.right -
+				displayConfig.padding.left - displayConfig.padding.right -
+				maxTickWidth.primaryScale - maxTickWidth.secondaryScale
+			),
+			height: (
+				dimensions.height -
+				displayConfig.margin.top - displayConfig.margin.bottom -
+				displayConfig.padding.top - displayConfig.padding.bottom
+			)
+		};
 
-		// var scales = this.props.chartProps.scale;
-		// yScale_info = scales.primaryScale
-		// xScale_info = xScaleInfo(
-		// 		this.props.dimensions.width,
-		// 		padding,styleConfig,
-		// 		displayConfig,
-		// 		{
-		// 			dateSettings: this.state.dateScaleInfo
-		// 		}
-		// 	);
+		var padding = computePadding(props);
 
-		// var yRange = [
-		// 	this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
-		// 	padding.top + displayConfig.margin.top
-		// ];
 
-		// var xRange = props.chartProps.scale.hasDate ? [
-		// 	padding.left + displayConfig.margin.left + this.props.maxTickWidth.primaryScale,
-		// 	xScale_info.rangeR-padding.right-displayConfig.margin.right-this.props.maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
-		// ] : [];
+		var scales = this.props.chartProps.scale;
+		yScale_info = scales.primaryScale
+		xScale_info = xScaleInfo(
+				this.props.dimensions.width,
+				padding,styleConfig,
+				displayConfig,
+				{
+					dateSettings: this.state.dateScaleInfo
+				}
+			);
 
-		// scale = {
-		// 	y: {
-		// 		domain: yScale_info.domain,
-		// 		range: yRange
-		// 	},
-		// 	x: {
-		// 		domain: xScale_info.domain ? xScale_info.domain : [],
-		// 		range: xRange
-		// 	}
-		// };
+		var yRange = [
+			this.props.dimensions.height - padding.bottom - displayConfig.margin.bottom,
+			padding.top + displayConfig.margin.top
+		];
+
+		var xRange = props.chartProps.scale.hasDate ? [
+			padding.left + displayConfig.margin.left + maxTickWidth.primaryScale,
+			xScale_info.rangeR-padding.right-displayConfig.margin.right-maxTickWidth.secondaryScale - displayConfig.minPaddingOuter
+		] : [];
+
+		scale = {
+			y: {
+				domain: yScale_info.domain,
+				range: yRange
+			},
+			x: {
+				domain: xScale_info.domain ? xScale_info.domain : [],
+				range: xRange
+			}
+		};
 
 		var yScale = d3.scale.linear()
-			// .domain(props.scale.y.domain)
-			// .range(props.scale.y.range);
+			.domain(scale.y.domain)
+			.range(scale.y.range);
 
 		var xScale = d3.scale.linear()
-			// .domain(props.scale.x.domain)
-			// .range(props.scale.x.range);
+			.domain(scale.x.domain)
+			.range(scale.x.range);
 
 
 		return {x: xScale, y: yScale}
 	},
 
+	_toProportionalPosition: function(pos,props,origin){
+		// takes a pixel position and converts it to a proportional one
+
+		if (!props) {
+			props = this.props;
+		}
+
+		if(!origin) {
+			origin = {x: 0, y: 0}
+		}
+		return {
+			x: (pos.x + origin.x) / props.dimensions.width,
+			y: (pos.y + origin.y) / props.dimensions.height,
+		};
+	},
+
+	_fromProportionalPosition: function(pos,props,origin){
+		// takes a proportional position and converts it to a pixel location
+		if (!props) {
+			props = this.props;
+		}
+
+		if(!origin) {
+			origin = {x: 0, y: 0}
+		}
+
+		return {
+			x: (pos.x - origin.x) * props.dimensions.width,
+			y: (pos.y - origin.y) * props.dimensions.height,
+		};
+	},
+
+	_toValuePosition: function(pos, props) {
+		
+		if (!props) {
+			props = this.props;
+		}
+		var scales = this._createScales();
+
+		return {
+			x: pos.x !== 0 ? scales.x.invert(pos.x+props.offset.x) : null,
+			y: pos.y !== 0 ? scales.y.invert(pos.y+props.offset.y) : null
+		};
+	},
+
+	_fromValuePosition: function(vals, props) {
+		console.trace(vals)
+		var scales = this._createScales();
+		return {
+			x: vals.x === 0 || vals.x ? scales.x(vals.x)-props.offset.x : 0,
+			y: vals.y === 0 || vals.y ? scales.y(vals.y)-props.offset.y : 0
+		};
+	},
+
 	render: function() {
 		//CHANGE
 		var scales = this._createScales();
+
 		var that = this;
-		var blurbs = this.props.blurbs.map(function(d,i) {
-			return (<AnnotationBlurb 
+		var blurbs = [];
+		var annotation_markers = []
+
+		this.props.chartProps._annotations.blurbs.values.forEach(function(d,i) {
+			var shared = {
+				index: i,
+				dimensions: that.props.dimensions,
+				margin: {x: 0, y: 0},
+				offset: {x: 0, y: 0},
+				editable: true,
+				relPosKey: "val",
+				toRelative: that._toValuePosition,
+				fromRelative: that._fromValuePosition
+			}
+
+			blurbs.push((
+				<AnnotationBlurb
+					{...shared}
 					key={"blurb" + i}
-					index={d.index}
 					tout={d.tout}
 					copy={d.copy}
 					pos={d.pos}
 					onBlurbUpdate={that._handleBlurbUpdate}
-					x={scales.x}
-					y={scales.y}
-					dimensions={that.props.dimensions}
-					margin={{x: 0, y: 0}}
-					offset={{x: 0, y: 0}}
-					arrow={{
-						start: {pct: d.arrowStart},
-						end: {pct: d.arrowEnd},
+					hasArrow={d.hasArrow}
+					direct={that.props.isSmall}
+					arrow= {{
+						start: {pct: d.arrowStart, val: d.arrowStart},
+						end: {pct: d.arrowEnd, val: d.arrowEnd},
 						snapTo: null,
 						clockwise: d.arrowClockwise
 					}}
-				/>)
-		})	
+				/>
+				))
+
+			annotation_markers.push((
+				<AnnotationMarker
+					{...shared} 
+					key={"marker" + i}
+					pos={d.pos}
+					onMarkerUpdate={that._handleMarkerUpdate}
+					arrow= {{
+						start: {pct: d.arrowStart, val: d.arrowStart},
+						end: {pct: d.arrowEnd, val: d.arrowEnd},
+						snapTo: null,
+						clockwise: d.arrowClockwise
+					}}
+				/>
+				))
+		});	
+
 		return (
-			<div className="annotation-layer">
-				{blurbs}
-				<svg>
-					<defs>
-						<marker
-							id="arrowhead"
-							viewBox="0 0 5.108 8.18"
-							markerHeight="8.18"
-							markerWidth="5.108"
-							refY="4.09"
-							refX="5"
-							orient="auto"
-						>
-							<polygon
-								points="0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999" 
-								fill="#4C4C4C"
-							/>
-						</marker>
-					</defs>
-				</svg>
+			<div className="annotation-layer-wrap">
+				<div className="annotation-layer">
+					{blurbs}
+					<svg className="arrowhead-wrap">
+						<defs>
+							<marker
+								id="arrowhead"
+								viewBox="0 0 5.108 8.18"
+								markerHeight="8.18"
+								markerWidth="5.108"
+								refY="4.09"
+								refX="5"
+								orient="auto"
+							>
+								<polygon
+									points="0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999" 
+									fill="#4C4C4C"
+								/>
+							</marker>
+						</defs>
+					</svg>
+				</div>
+				<div className="annotation-layer-mobile">
+					{annotation_markers}
+				</div>
 			</div>
 		);
 	}
@@ -203,7 +331,8 @@ function xScaleInfo(width, padding, styleConfig, displayConfig, state) {
 function computePadding(props) {
 	var labels = props.chartProps._annotations.labels;
 	var displayConfig = props.displayConfig;
-	console.log(props)
+	var dimensions = props.dimensions;
+
 	var _top = (props.labelYMax * props.chartAreaDimensions.height) + displayConfig.afterLegend;
 
 	if (props.hasTitle) {

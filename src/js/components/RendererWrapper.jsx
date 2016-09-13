@@ -334,6 +334,7 @@ var RendererWrapper = React.createClass({
 					displayConfig={displayConfig}
 					styleConfig={this.state.styleConfig}
 					dimensions={dimensions}
+					isSmall={isSmall}
 				/>
 			</div>
 		);

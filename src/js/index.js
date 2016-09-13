@@ -17,8 +17,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Render parent chartbuilder component
 	ReactDOM.render(
 		<Chartbuilder
+<<<<<<< HEAD
 			showMobilePreview={false}
 			enableJSONExport={false}
+=======
+			showMobilePreview={true}
+			enableJSONExport={true}
+>>>>>>> 082e6c72ced1497c2d5145c2ccbe8e1d7099b396
 		/>,
 	container );
 

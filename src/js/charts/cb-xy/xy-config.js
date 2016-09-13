@@ -126,6 +126,9 @@ var defaultProps = {
 			labels: {
 				hasDragged: false,
 				values: []
+			},
+			blurbs: {
+				values: []
 			}
 		},
 		mobile: {},

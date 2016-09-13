@@ -26,6 +26,7 @@ var ChartTypeSelector = require("./ChartTypeSelector.jsx");
 var RendererWrapper = require("./RendererWrapper.jsx");
 var LocalStorageTimer = require("./LocalStorageTimer.jsx");
 var Instructions = require("./Instructions.jsx");
+var AnnotationSettings = require("./shared/annotations/AnnotationSettings.jsx");
 
 var AlertGroup = require("chartbuilder-ui").AlertGroup;
 
@@ -311,6 +312,10 @@ var Chartbuilder = React.createClass({
 						data={this.state.chartProps.data}
 						stepNumber={String(editorSteps + 2)}
 						additionalComponents={this.props.additionalComponents.metadata}
+					/>
+					<AnnotationSettings
+						stepNumber={String(editorSteps + 3)}
+						chartProps={this.state.chartProps}
 					/>
 					{mobileOverrides}
 					{this._renderErrors()}
