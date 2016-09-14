@@ -6,13 +6,14 @@ A Flask application backend that connects
 Chartbuilder's interface with P2P's API
 Allowing us to publish charts directly to P2P.
 """
-import os
 import base64
+import boto
+import os
 import p2p
 import slack
+import shutil
 import sys
 import urllib
-import shutil
 from bs4 import BeautifulSoup
 from datetime import timedelta
 from flask import current_app
@@ -25,7 +26,8 @@ from flask import make_response
 from flask import render_template
 from flask import send_from_directory
 from functools import update_wrapper
-from stat import S_ISREG, ST_CTIME, ST_MODE
+from werkzeug.utils import secure_filename
+
 
 try:
     from secrets import settings_local as settings
@@ -82,6 +84,29 @@ def crossdomain(origin=None, methods=None, headers=None, max_age=21600,
         return update_wrapper(wrapped_function, f)
 
     return decorator
+
+
+def s3_upload(source_file, upload_dir=settings.S3_UPLOAD_DIRECTORY, acl='public-read'):
+    """
+    Uploads a file object to S3.
+
+    Expects following attributes from your settings file to be set:
+        S3_KEY              :   S3 API Key
+        S3_SECRET           :   S3 Secret Key
+        S3_BUCKET           :   What bucket to upload to
+        S3_UPLOAD_DIRECTORY :   Which S3 Directory.
+    """
+    filename = secure_filename(source_file.data.filename)
+
+    # Connect to S3 and upload file.
+    conn = boto.connect_s3(settings.S3_KEY, settings.S3_SECRET)
+    b = conn.get_bucket(settings.S3_BUCKET)
+
+    sml = b.new_key("/".join([upload_dir, destination_filename]))
+    sml.set_contents_from_string(source_file.data.read())
+    sml.set_acl(acl)
+
+    return destination_filename
 
 
 def clean_for_p2p(html):

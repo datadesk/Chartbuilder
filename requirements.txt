@@ -1,4 +1,5 @@
 beautifulsoup4==4.4.1
+boto==2.42.0
 ecdsa==0.13
 Fabric==1.11.1
 Flask==0.10.1
