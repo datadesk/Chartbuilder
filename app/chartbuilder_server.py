@@ -178,6 +178,12 @@ def prep_p2p_blurb_payload(data):
             'ratio-above-840': data['ratio'],
             'ratio-420-840': data['ratio'],
             'ratio-below-420': data['ratio'],
+        },
+        'photo_upload': {
+            'alt_thumbnail': {
+                # 'url': url,
+                'url': 'http://www.trbimg.com/img-57d850e5/turbine/la-dc-g-household-income-20160913/750/750x422'
+            }
         }
     }
 

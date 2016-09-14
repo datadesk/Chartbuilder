@@ -82,6 +82,15 @@ gulp.task("browserify:prod", function () {
 		.pipe(gulp.dest(config.paths.build.js));
 });
 
+gulp.task("browserify:svguploader", function() {
+	var bundler = browserify(config.paths.src.js + "/svguploader.js");
+
+	return bundler.bundle()
+		.pipe(source("svguploader.js"))
+		.pipe(gulp.dest(config.paths.build.js))
+		.pipe(reload({ stream:true }));
+});
+
 
 gulp.task("clean", function (done) {
 	del([
@@ -144,6 +153,7 @@ gulp.task("browser-sync-test", ["test-page-setup"], function () {
 // Serve files, watch for changes and update
 gulp.task("watch", [
 	"browserify:dev",
+	"browserify:svguploader",
 	"stylus",
 	"copy-htdocs",
 	"copy-fonts",
@@ -160,6 +170,7 @@ gulp.task("watch", [
 // build for production
 gulp.task("_build", [
 	"browserify:prod",
+	"browserify:svguploader",
 	"stylus",
 	"stylus:core",
 	"copy-htdocs",
