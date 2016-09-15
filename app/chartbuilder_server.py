@@ -123,9 +123,6 @@ def get_s3_url(slug):
     app.logger.debug(key_name)
 
     k = boto.s3.key.Key(b, key_name)
-
-    app.logger.debug(k)
-    app.logger.debug(filename)
     url = k.generate_url(expires_in=300)
     app.logger.debug(url)
 
@@ -287,7 +284,7 @@ def update_or_create_chartblurb(data):
     if obj:
         # ... update it
         app.logger.debug("updating content item %s" % p2p_slug)
-
+        app.logger.debug(payload)
         # Set to the content item's code
         payload['content_item_state_code'] = obj['content_item_state_code']
         conn.update_content_item(payload, p2p_slug)
@@ -359,7 +356,6 @@ def send_slack_message():
         return "Slack message sent!"
     else:
         return "Error sending Slack message"
-
 
 
 @app.route('/send-to-p2p/', methods=["POST"])
@@ -455,6 +451,8 @@ def save_to_s3():
         name = data['name'].strip()
         filedata = data['filedata'].strip()
 
+        app.logger.debug("saving file to S3")
+
         # Trim base64 prefix from encoded file
         filepos = filedata.find("base64,", 0, 50)
         if filepos > -1:
@@ -462,8 +460,6 @@ def save_to_s3():
 
         # Decode base64 string
         filedata_decoded = base64.decodestring(urllib.unquote(filedata))
-
-
         s3_upload(name, filedata_decoded)
 
         return "Chart image uploaded to S3"

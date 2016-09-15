@@ -35,7 +35,18 @@
             uploadBtnHolder.innerHTML = msg;
         }
 
-        sendToP2P(slug, uri, ratio, onSuccess, onError);
+        console.debug(svg);
+        // Save PNG as data URI
+        saveSvgAsPng.svgAsPngUri(preview.firstElementChild, { scale: 2.0 }, function(pngUri){
+            console.debug("saving PNG");
+            var pngFilename = slug + ".png";
+            // save image to S3
+            sendToS3(pngFilename, pngUri, function() {
+                console.debug("Sending PNG to S3");
+                sendToP2P(slug, uri, ratio, onSuccess, onError);
+            });
+        });
+
 
     });
 
@@ -68,6 +79,23 @@
         };
         var msg = "<p>Uploading to P2P...</p>";
         uploadBtnHolder.insertAdjacentHTML('beforeend',msg);
+        postrequest.send(params);
+    }
+
+    function sendToS3(filename, uri, cb) {
+        var params = "name=" + filename + "&filedata=" + encodeURIComponent(uri);
+        var postrequest = new XMLHttpRequest();
+        postrequest.open("POST", "../save-to-s3/", true);
+        postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        postrequest.onreadystatechange = function() {
+            if (postrequest.readyState == 4 && postrequest.status == 200) {
+                if (cb && typeof(cb) === "function") {
+                    cb();
+                }
+            }
+        };
+
         postrequest.send(params);
     }
 

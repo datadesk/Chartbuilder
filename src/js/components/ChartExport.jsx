@@ -134,8 +134,8 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
-	_sendToS3: function(filename, slug, uri, cb) {
-		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
+	_sendToS3: function(filename, uri, cb) {
+		var params = "name=" + filename + "&filedata=" + encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
 		postrequest.open("POST", "save-to-s3/", true);
 		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -146,7 +146,7 @@ var ChartExport = React.createClass({
 					cb();
 				}
 			}
-		}
+		};
 
 		postrequest.send(params);
 	},
@@ -218,7 +218,7 @@ var ChartExport = React.createClass({
 		// Save PNG as data URI
 		saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
 			// save image to S3
-			sendToS3(pngFilename, slug, pngUri, function() {
+			sendToS3(pngFilename, pngUri, function() {
 				// When done, send PNG to storage server
 				sendToServer(pngFilename, slug, pngUri, function() {
 					// Save the SVG as a data URI

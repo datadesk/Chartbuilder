@@ -159,7 +159,7 @@ gulp.task("watch", [
 	"copy-fonts",
 	"copy-assets"
 ], function (done) {
-	gulp.watch(config.paths.src.js + "/**", ["browserify:dev"]);
+	gulp.watch(config.paths.src.js + "/**", ["browserify:dev", "browserify:svguploader"]);
 	gulp.watch(config.paths.src.styl + "/**", ["stylus"]);
 	gulp.watch(config.paths.src.htdocs + "/**", ["copy-htdocs"]);
 	gulp.watch("./node_modules/d4/d4.js", ["browserify:dev"]);
