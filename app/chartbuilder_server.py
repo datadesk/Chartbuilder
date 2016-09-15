@@ -26,6 +26,7 @@ from flask import make_response
 from flask import render_template
 from flask import send_from_directory
 from functools import update_wrapper
+from uuid import uuid4
 from werkzeug.utils import secure_filename
 
 
@@ -86,7 +87,7 @@ def crossdomain(origin=None, methods=None, headers=None, max_age=21600,
     return decorator
 
 
-def s3_upload(source_file, upload_dir=settings.S3_UPLOAD_DIRECTORY, acl='public-read'):
+def s3_upload(name, data, upload_dir=settings.S3_UPLOAD_DIRECTORY, acl='public-read'):
     """
     Uploads a file object to S3.
 
@@ -96,17 +97,39 @@ def s3_upload(source_file, upload_dir=settings.S3_UPLOAD_DIRECTORY, acl='public-
         S3_BUCKET           :   What bucket to upload to
         S3_UPLOAD_DIRECTORY :   Which S3 Directory.
     """
-    filename = secure_filename(source_file.data.filename)
 
     # Connect to S3 and upload file.
-    conn = boto.connect_s3(settings.S3_KEY, settings.S3_SECRET)
-    b = conn.get_bucket(settings.S3_BUCKET)
+    conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    b = conn.get_bucket(settings.AWS_BUCKET_NAME)
 
-    sml = b.new_key("/".join([upload_dir, destination_filename]))
-    sml.set_contents_from_string(source_file.data.read())
+    sml = b.new_key("/".join([upload_dir, name]))
+    sml.set_contents_from_string(data)
     sml.set_acl(acl)
+    app.logger.debug("Image uploaded to S3")
 
-    return destination_filename
+    return name
+
+
+def get_s3_url(slug):
+    conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    b = conn.get_bucket(settings.AWS_BUCKET_NAME)
+
+    app.logger.debug("getting s3 url")
+
+    filename = "%s.png" % slug
+    key_name = "/".join([settings.S3_UPLOAD_DIRECTORY, filename])
+
+    app.logger.debug(filename)
+    app.logger.debug(key_name)
+
+    k = boto.s3.key.Key(b, key_name)
+
+    app.logger.debug(k)
+    app.logger.debug(filename)
+    url = k.generate_url(expires_in=300)
+    app.logger.debug(url)
+
+    return url
 
 
 def clean_for_p2p(html):
@@ -193,6 +216,7 @@ def prep_p2p_blurb_payload(data):
     """
     # start things off
     slug = data['slug']
+    url = get_s3_url(slug)
 
     payload = {
         'slug': slug,
@@ -206,12 +230,10 @@ def prep_p2p_blurb_payload(data):
         },
         'photo_upload': {
             'alt_thumbnail': {
-                # 'url': url,
-                'url': 'http://www.trbimg.com/img-57d850e5/turbine/la-dc-g-household-income-20160913/750/750x422'
+                'url': url,
             }
         }
     }
-
 
     # Decode the base64-encoded string into an SVG file
     # In some cases there won't be the base64 prefix,
@@ -225,7 +247,6 @@ def prep_p2p_blurb_payload(data):
         body_content = urllib.unquote(base64.decodestring(body_content))
 
     body_content_cleaned = clean_for_p2p(body_content)
-    # body_content_cleaned = unicode(body_content.encode("latin-1", "xmlcharrefreplace"), "latin-1")
 
     context = {
         'elements': body_content_cleaned
@@ -423,12 +444,37 @@ def faq():
     return render_template('faq.html')
 
 
+@app.route('/save-to-s3/', methods=["POST"])
+@crossdomain(origin="*")
+def save_to_s3():
+    """
+    Saves an object to S3
+    """
+    if request.method in ["POST", "PUT"]:
+        data = request.form
+        name = data['name'].strip()
+        filedata = data['filedata'].strip()
+
+        # Trim base64 prefix from encoded file
+        filepos = filedata.find("base64,", 0, 50)
+        if filepos > -1:
+            filedata = filedata[filepos + len("base64,"):]
+
+        # Decode base64 string
+        filedata_decoded = base64.decodestring(urllib.unquote(filedata))
+
+
+        s3_upload(name, filedata_decoded)
+
+        return "Chart image uploaded to S3"
+
+
+
 @app.route('/save-to-server/', methods=["POST"])
 @crossdomain(origin="*")
 def save_to_server():
     """
     Meant to replace PHP script that writes to stockserver.
-    One day.
     """
     if request.method in ["POST", "PUT"]:
         data = request.form

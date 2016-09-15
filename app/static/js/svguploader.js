@@ -279,7 +279,6 @@
 
 },{}],2:[function(require,module,exports){
     var saveSvgAsPng = require("save-svg-as-png");
-
     var submitBtn = $('#submit-btn');
     var preview = document.getElementById('svg-preview');
     var previewHolder = document.getElementById('preview-holder');

@@ -134,6 +134,23 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
+	_sendToS3: function(filename, slug, uri, cb) {
+		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
+		var postrequest = new XMLHttpRequest();
+		postrequest.open("POST", "save-to-s3/", true);
+		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+		postrequest.onreadystatechange = function() {
+			if (postrequest.readyState == 4 && postrequest.status == 200) {
+				if (cb && typeof(cb) === "function") {
+					cb();
+				}
+			}
+		}
+
+		postrequest.send(params);
+	},
+
 	_sendToServer: function(filename, slug, uri, cb) {
 		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
 		var postrequest = new XMLHttpRequest();
@@ -179,24 +196,40 @@ var ChartExport = React.createClass({
 		var slug = this.props.metadata.slug;
 		var chart = this._addIDsForIllustrator(this.state.chartNode);
 		var autoClickDownload = this._autoClickDownload;
+		var sendToS3 = this._sendToS3;
 		var sendToServer = this._sendToServer;
 		var sendToP2P = this._sendToP2P;
 		var instructions = document.getElementById('export-instructions');
-
 		var ratio = (chart.getAttribute('height') / chart.getAttribute('width')) * 100;
+
 		ratio = ratio.toString()
 
 		// Set the slug to be not editable and show the final instructions
 		ChartViewActions.updateMetadata('slugEditable', false);
 		instructions.classList.remove("hidden");
 
-		saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
+		// This complicated chain of callbacks first saves the chart as a PNG
+		// Which it then sends to S3 and the storage server
+		// Then it saves the SVG to P2P and the storage server
+		// Then it saves the chart JSON to the storage server.
+		// Whew.
 
-			sendToP2P(slug, uri, ratio);
-			sendToServer(filename, slug, uri, function() {
-				saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
-					sendToServer(pngFilename, slug, pngUri, function() {
-						self.downloadJSON(true);
+		// Maybe this should be a big promise chain
+		// Save PNG as data URI
+		saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
+			// save image to S3
+			sendToS3(pngFilename, slug, pngUri, function() {
+				// When done, send PNG to storage server
+				sendToServer(pngFilename, slug, pngUri, function() {
+					// Save the SVG as a data URI
+					saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
+						// Send the SVG to P2P
+						sendToP2P(slug, uri, ratio);
+						// Save the SVG to storage server
+						sendToServer(filename, slug, uri, function() {
+							// Send the JSON to the storage server
+							self.downloadJSON(true);
+						});
 					});
 				});
 			});
