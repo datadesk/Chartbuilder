@@ -315,14 +315,11 @@
             uploadBtnHolder.innerHTML = msg;
         }
 
-        console.debug(svg);
         // Save PNG as data URI
         saveSvgAsPng.svgAsPngUri(preview.firstElementChild, { scale: 2.0 }, function(pngUri){
-            console.debug("saving PNG");
-            var pngFilename = slug + ".png";
             // save image to S3
             sendToS3(pngFilename, pngUri, function() {
-                console.debug("Sending PNG to S3");
+                // Send to P2P
                 sendToP2P(slug, uri, ratio, onSuccess, onError);
             });
         });
