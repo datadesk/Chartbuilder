@@ -10,6 +10,53 @@
     var noSlugWarning = document.getElementById('no-slug-warning');
     var slug = "";
 
+    function slugify(v){
+        var slug = v.toLowerCase();
+        // Switch spaces to slugs
+        slug = slug.replace(/\s/g, "-");
+        // Trim special characters
+        slug = slug.replace(/[^\w-]+/g, "");
+        return slug;
+    }
+
+    function sendToP2P(slug, uri, ratio) {
+        return new Promise(function(resolve, reject) {
+            var params = "slug=" + slug + "&ratio=" + ratio + "&source=blurbinator&data=" +  encodeURIComponent(uri);
+            var postrequest = new XMLHttpRequest();
+            postrequest.open("POST", "../send-to-p2p/", true);
+            postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            postrequest.onload = function() {
+                if (postrequest.status == 200) {
+                    // Probably should have something render on success
+                    resolve(postrequest.response);
+                } else if (postrequest.status == 500) {
+                    reject(postrequest.response);
+                }
+            };
+            var msg = "<p>Uploading to P2P...</p>";
+            uploadBtnHolder.insertAdjacentHTML('beforeend',msg);
+            postrequest.send(params);
+        });
+    }
+
+    function sendToS3(filename, uri) {
+        return new Promise(function(resolve, reject) {
+            var params = "name=" + filename + "&filedata=" + encodeURIComponent(uri);
+            var postrequest = new XMLHttpRequest();
+            postrequest.open("POST", "../save-to-s3/", true);
+            postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            postrequest.onload = function() {
+                if (postrequest.status == 200) {
+                    resolve(postrequest.response);
+                }
+            };
+
+            postrequest.send(params);
+        });
+    }
+
     submitBtn.on('click', function(e) {
         e.preventDefault();
         var w = preview.clientWidth,
@@ -21,7 +68,6 @@
         svg = p2pUnjank(svg);
 
         var uri = btoa(encodeURIComponent(svg));
-
 
         // Replaces upload button with confirmation message
         function onSuccess() {
@@ -39,62 +85,12 @@
         saveSvgAsPng.svgAsPngUri(preview.firstElementChild, { scale: 2.0 }, function(pngUri){
             var pngFilename = slug + ".png";
             // save image to S3
-            sendToS3(pngFilename, pngUri, function() {
-                sendToP2P(slug, uri, ratio, onSuccess, onError);
-            });
+            sendToS3(pngFilename, pngUri)
+                .then(sendToP2P(slug, uri, ratio))
+                .then(onSuccess)
+                .catch(onError);
         });
-
-
     });
-
-    function slugify(v){
-        var slug = v.toLowerCase();
-        // Switch spaces to slugs
-        slug = slug.replace(/\s/g, "-");
-        // Trim special characters
-        slug = slug.replace(/[^\w-]+/g, "");
-        return slug;
-    }
-
-    function sendToP2P(slug, uri, ratio, cb, err) {
-        var params = "slug=" + slug + "&ratio=" + ratio + "&source=blurbinator&data=" +  encodeURIComponent(uri);
-        var postrequest = new XMLHttpRequest();
-        postrequest.open("POST", "../send-to-p2p/", true);
-        postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-        postrequest.onreadystatechange = function() {
-            if (postrequest.readyState == 4 && postrequest.status == 200) {
-                // Probably should have something render on success
-                if (cb && typeof(cb) === "function") {
-                    cb();
-                }
-            } else if (postrequest.readyState == 4 && postrequest.status == 500) {
-                if (err && typeof(err) === "function") {
-                    err();
-                }
-            }
-        };
-        var msg = "<p>Uploading to P2P...</p>";
-        uploadBtnHolder.insertAdjacentHTML('beforeend',msg);
-        postrequest.send(params);
-    }
-
-    function sendToS3(filename, uri, cb) {
-        var params = "name=" + filename + "&filedata=" + encodeURIComponent(uri);
-        var postrequest = new XMLHttpRequest();
-        postrequest.open("POST", "../save-to-s3/", true);
-        postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-        postrequest.onreadystatechange = function() {
-            if (postrequest.readyState == 4 && postrequest.status == 200) {
-                if (cb && typeof(cb) === "function") {
-                    cb();
-                }
-            }
-        };
-
-        postrequest.send(params);
-    }
 
     svgInput.on('input propertychange', function() {
         preview.innerHTML = this.value;

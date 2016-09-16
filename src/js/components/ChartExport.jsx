@@ -231,7 +231,6 @@ var ChartExport = React.createClass({
 			});
 		});
 
-
 	},
 
 	downloadJSON: function(sendToServer) {
