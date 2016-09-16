@@ -134,56 +134,56 @@ var ChartExport = React.createClass({
 		a.click();
 	},
 
-	_sendToS3: function(filename, uri, cb) {
-		var params = "name=" + filename + "&filedata=" + encodeURIComponent(uri);
-		var postrequest = new XMLHttpRequest();
-		postrequest.open("POST", "save-to-s3/", true);
-		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	_sendToS3: function(filename, uri) {
+		return new Promise(function(resolve, reject) {
+			var params = "name=" + filename + "&filedata=" + encodeURIComponent(uri);
+			var postrequest = new XMLHttpRequest();
+			postrequest.open("POST", "save-to-s3/", true);
+			postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-		postrequest.onreadystatechange = function() {
-			if (postrequest.readyState == 4 && postrequest.status == 200) {
-				if (cb && typeof(cb) === "function") {
-					cb();
+			postrequest.onload = function() {
+				if (postrequest.status === 200) {
+					resolve(postrequest.response);
 				}
 			}
-		};
 
-		postrequest.send(params);
+			postrequest.send(params);
+		});
 	},
 
 	_sendToServer: function(filename, slug, uri, cb) {
-		var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
-		var postrequest = new XMLHttpRequest();
-		postrequest.open("POST", "save-to-server/", true);
-		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		return new Promise(function(resolve, reject) {
+			var params = "name=" + filename + "&slug=" + slug + "&filedata=" + encodeURIComponent(uri);
+			var postrequest = new XMLHttpRequest();
+			postrequest.open("POST", "save-to-server/", true);
+			postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-		postrequest.onreadystatechange = function() {
-			if (postrequest.readyState == 4 && postrequest.status == 200) {
-				if (cb && typeof(cb) === "function") {
-					cb();
+			postrequest.onload = function() {
+				if (postrequest.status === 200) {
+					resolve(postrequest.response);
 				}
 			}
-		}
 
-		postrequest.send(params);
+			postrequest.send(params);
+		});
 	},
 
 	_sendToP2P: function(slug, uri, ratio, cb) {
-		var params = "slug=" + slug + "&ratio=" + ratio + "&source=chartbuilder&data=" +  encodeURIComponent(uri);
-		var postrequest = new XMLHttpRequest();
-		postrequest.open("POST", "send-to-p2p/", true);
-		postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		return new Promise(function(resolve, reject) {
 
-		postrequest.onreadystatechange = function() {
-			if (postrequest.readyState == 4 && postrequest.status == 200) {
-				// Probably should have something render on success
-				if (cb && typeof(cb) === "function") {
-					cb();
+			var params = "slug=" + slug + "&ratio=" + ratio + "&source=chartbuilder&data=" +  encodeURIComponent(uri);
+			var postrequest = new XMLHttpRequest();
+			postrequest.open("POST", "send-to-p2p/", true);
+			postrequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+			postrequest.onload = function() {
+				if (postrequest.status === 200) {
+					resolve(postrequest.response);
 				}
 			}
-		}
-		postrequest.send(params);
 
+			postrequest.send(params);
+		});
 	},
 
 
@@ -213,27 +213,24 @@ var ChartExport = React.createClass({
 		// Then it saves the SVG to P2P and the storage server
 		// Then it saves the chart JSON to the storage server.
 		// Whew.
-
-		// Maybe this should be a big promise chain
-		// Save PNG as data URI
 		saveSvgAsPng.svgAsPngUri(chart, { scale: 2.0 }, function(pngUri){
-			// save image to S3
-			sendToS3(pngFilename, pngUri, function() {
-				// When done, send PNG to storage server
-				sendToServer(pngFilename, slug, pngUri, function() {
-					// Save the SVG as a data URI
-					saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
-						// Send the SVG to P2P
-						sendToP2P(slug, uri, ratio);
-						// Save the SVG to storage server
-						sendToServer(filename, slug, uri, function() {
-							// Send the JSON to the storage server
-							self.downloadJSON(true);
-						});
+			var sendPngToS3 = sendToS3(pngFilename, pngUri),
+				sendPngToServer = sendToServer(pngFilename, slug, pngUri);
+
+			Promise.all([sendPngToS3, sendPngToServer]).then(function(results) {
+
+				saveSvgAsPng.svgAsDataUri(chart, { responsive: true }, function(uri) {
+					var sendSvgToP2P = sendToP2P(slug, uri, ratio),
+						sendSvgToServer = sendToServer(filename, slug, uri);
+
+					Promise.all([sendSvgToP2P, sendSvgToServer]).then(function() {
+						// Send the JSON to the storage server
+						self.downloadJSON(true);
 					});
 				});
 			});
 		});
+
 
 	},
 
