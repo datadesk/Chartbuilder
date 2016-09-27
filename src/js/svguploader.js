@@ -9,6 +9,96 @@
     var uploadBtnHolder = document.getElementById('upload-btn-holder');
     var noSlugWarning = document.getElementById('no-slug-warning');
     var slug = "";
+    var errorMsg = $('.box__error');
+    var $input = $('#file');
+    var $label = $('#uploader-label');
+    var droppedFiles = false;
+
+    // Whether drag and drop uploading is supported
+    var isAdvancedUpload = function() {
+        var div = document.createElement('div');
+        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+    }();
+
+    var showFiles = function(files) {
+        $label.text(files[ 0 ].name);
+    };
+
+    var $svgUploaderForm = $('#draggable-uploader');
+
+    if (isAdvancedUpload) {
+        $svgUploaderForm.addClass('has-advanced-upload');
+        $svgUploaderForm.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        .on('dragover dragenter', function() {
+            $svgUploaderForm.addClass('is-dragover');
+        })
+        .on('dragleave dragend drop', function() {
+            $svgUploaderForm.removeClass('is-dragover');
+        })
+        .on('drop', function(e) {
+            droppedFiles = e.originalEvent.dataTransfer.files;
+            showFiles( droppedFiles );
+        });
+    }
+
+    $input.on('change', function(e) {
+      showFiles(e.target.files);
+    });
+
+    $svgUploaderForm.on('submit', function(e) {
+        if ($svgUploaderForm.hasClass('is-uploading')) {
+            return false;
+        }
+
+        $svgUploaderForm.addClass('is-uploading').removeClass('is-error');
+
+        if(isAdvancedUpload) {
+            e.preventDefault();
+
+            // console.log($svgUploaderForm.get(0));
+            var ajaxData = new FormData($svgUploaderForm.get(0));
+
+            // console.log(droppedFiles);
+
+            if (droppedFiles) {
+                $.each(droppedFiles, function(i, file) {
+                    console.log($input.attr('name'), file);
+                    ajaxData.append($input.attr('name'), file);
+
+                });
+            }
+
+            for (var pair of ajaxData.entries()) {
+                console.log(pair);
+            }
+
+            $.ajax({
+                url: '../send-to-p2p/',
+                type: 'post',
+                data: ajaxData,
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false,
+                complete: function() {
+                    $svgUploaderForm.removeClass('is-uploading');
+                },
+                success: function(data) {
+                    $form.addClass( data.success === true ? 'is-success' : 'is-error' );
+                    if (!data.success) {
+                        $errorMsg.text(data.error);
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            });
+
+        }
+    });
 
     function slugify(v){
         var slug = v.toLowerCase();
@@ -92,10 +182,10 @@
         });
     });
 
-    svgInput.on('input propertychange', function() {
-        preview.innerHTML = this.value;
-        validateInput();
-    });
+    // svgInput.on('input propertychange', function() {
+    //     preview.innerHTML = this.value;
+    //     validateInput();
+    // });
 
     svgSlugInput.on('input propertychange', function() {
         slug = slugify(document.getElementById('svg-slug').value);
