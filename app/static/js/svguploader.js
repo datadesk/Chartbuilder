@@ -310,20 +310,25 @@
         var file = files[0],
             reader = new FileReader();
 
+        $label.removeClass('alert-danger');
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function(evt) {
+            $svgUploaderForm.addClass('has-content');
+            previewHolder.classList.remove('hidden');
+            preview.innerHTML = evt.target.result;
+            validateSlug();
+        };
+
+    };
+
+    var validateSVG = function(files) {
         // Validate that the uploaded file is actually an SVG file
-        if (file.type === "image/svg+xml") {
-            $label.removeClass('alert-danger');
-            reader.readAsText(file, "UTF-8");
-            reader.onload = function(evt) {
-                $svgUploaderForm.addClass('has-content');
-                previewHolder.classList.remove('hidden');
-                preview.innerHTML = evt.target.result;
-                validateSlug();
-            };
+        if (files[0].type === "image/svg+xml") {
+            showFileName(files);
+            renderSVGPreview(files);
         } else {
             $label.text("Your uploaded file must be an SVG").addClass('alert-danger');
         }
-
     };
 
     var $svgUploaderForm = $('#draggable-uploader');
@@ -342,15 +347,16 @@
         })
         .on('drop', function(e) {
             droppedFiles = e.originalEvent.dataTransfer.files;
-            showFileName( droppedFiles );
-            renderSVGPreview( droppedFiles );
+            validateSVG(droppedFiles)
         });
     }
 
     $input.on('change', function(e) {
-      showFileName(e.target.files);
-      renderSVGPreview( e.target.files );
+        validateSVG(e.target.files);
     });
+
+
+
 
     function slugify(v){
         var slug = v.toLowerCase();

@@ -30,19 +30,14 @@
         var file = files[0],
             reader = new FileReader();
 
-        // Validate that the uploaded file is actually an SVG file
-
-            $label.removeClass('alert-danger');
-            reader.readAsText(file, "UTF-8");
-            reader.onload = function(evt) {
-                $svgUploaderForm.addClass('has-content');
-                previewHolder.classList.remove('hidden');
-                preview.innerHTML = evt.target.result;
-                validateSlug();
-            };
-        } else {
-            $label.text("Your uploaded file must be an SVG").addClass('alert-danger');
-        }
+        $label.removeClass('alert-danger');
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function(evt) {
+            $svgUploaderForm.addClass('has-content');
+            previewHolder.classList.remove('hidden');
+            preview.innerHTML = evt.target.result;
+            validateSlug();
+        };
 
     };
 
