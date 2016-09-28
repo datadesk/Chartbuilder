@@ -292,6 +292,7 @@
     var errorMsg = $('.box__error');
     var $input = $('#file');
     var $label = $('#uploader-label');
+    var $uploadBtn = $('#upload-btn');
     var droppedFiles = false;
 
     // Whether drag and drop uploading is supported
@@ -300,8 +301,24 @@
         return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
     }();
 
-    var showFiles = function(files) {
+    var showFileName = function(files) {
         $label.text(files[ 0 ].name);
+    };
+
+    var renderSVGPreview = function(files) {
+        console.log(files.length)
+        // TODO: won't need to do this once we can ensure just one file is uploaded
+        var file = files[0],
+            reader = new FileReader();
+        console.log("attempting to render file");
+
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function(evt) {
+            console.log("attempting to set preview inner HTML");
+            previewHolder.classList.remove('hidden');
+            preview.innerHTML = evt.target.result;
+            $uploadBtn.removeClass('hidden')
+        };
     };
 
     var $svgUploaderForm = $('#draggable-uploader');
@@ -320,12 +337,14 @@
         })
         .on('drop', function(e) {
             droppedFiles = e.originalEvent.dataTransfer.files;
-            showFiles( droppedFiles );
+            showFileName( droppedFiles );
+            renderSVGPreview( droppedFiles );
         });
     }
 
     $input.on('change', function(e) {
-      showFiles(e.target.files);
+      showFileName(e.target.files);
+      renderSVGPreview( droppedFiles );
     });
 
     $svgUploaderForm.on('submit', function(e) {
@@ -338,16 +357,11 @@
         if(isAdvancedUpload) {
             e.preventDefault();
 
-            // console.log($svgUploaderForm.get(0));
-            var ajaxData = new FormData($svgUploaderForm.get(0));
-
-            // console.log(droppedFiles);
+            var ajaxData = new FormData();
 
             if (droppedFiles) {
                 $.each(droppedFiles, function(i, file) {
-                    console.log($input.attr('name'), file);
                     ajaxData.append($input.attr('name'), file);
-
                 });
             }
 
@@ -373,7 +387,7 @@
                     }
                 },
                 error: function(data) {
-                    console.log(data);
+                    console.log("Something went wrong in the upload process.");
                 }
             });
 
