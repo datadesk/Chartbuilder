@@ -36,6 +36,12 @@
             $svgUploaderForm.addClass('has-content');
             previewHolder.classList.remove('hidden');
             preview.innerHTML = evt.target.result;
+
+            // Fill in the slug, if nothing present
+            if (document.getElementById('svg-slug').value.trim() === '') {
+                svgSlugInput.val(file.name);
+            }
+
             validateSlug();
         };
 
