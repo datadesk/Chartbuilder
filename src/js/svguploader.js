@@ -2,17 +2,15 @@
     var submitBtn = $('#submit-btn');
     var preview = document.getElementById('svg-preview');
     var previewHolder = document.getElementById('preview-holder');
-    var svgInput = $('#svg-text');
     var svgSlugInput = $("#svg-slug");
     var slugOutputHolder = document.getElementById('slug-holder');
     var slugOutput = document.getElementById('slug-output');
     var uploadBtnHolder = document.getElementById('upload-btn-holder');
+    var msgHolder = document.getElementById('message-holder');
     var noSlugWarning = document.getElementById('no-slug-warning');
     var slug = "";
-    var errorMsg = $('.box__error');
     var $input = $('#file');
     var $label = $('#uploader-label');
-    var $uploadBtn = $('#upload-btn');
     var droppedFiles = false;
 
     // Whether drag and drop uploading is supported
@@ -25,20 +23,37 @@
         $label.text(files[ 0 ].name);
     };
 
+    // Reads the uploaded file and renders it into a div
+    // Which is used for the rest of the upload process
     var renderSVGPreview = function(files) {
-        console.log(files.length)
         // TODO: won't need to do this once we can ensure just one file is uploaded
         var file = files[0],
             reader = new FileReader();
-        console.log("attempting to render file");
 
-        reader.readAsText(file, "UTF-8");
-        reader.onload = function(evt) {
-            console.log("attempting to set preview inner HTML");
-            previewHolder.classList.remove('hidden');
-            preview.innerHTML = evt.target.result;
-            $uploadBtn.removeClass('hidden')
-        };
+        // Validate that the uploaded file is actually an SVG file
+
+            $label.removeClass('alert-danger');
+            reader.readAsText(file, "UTF-8");
+            reader.onload = function(evt) {
+                $svgUploaderForm.addClass('has-content');
+                previewHolder.classList.remove('hidden');
+                preview.innerHTML = evt.target.result;
+                validateSlug();
+            };
+        } else {
+            $label.text("Your uploaded file must be an SVG").addClass('alert-danger');
+        }
+
+    };
+
+    var validateSVG = function(files) {
+        // Validate that the uploaded file is actually an SVG file
+        if (files[0].type === "image/svg+xml") {
+            showFileName(files);
+            renderSVGPreview(files);
+        } else {
+            $label.text("Your uploaded file must be an SVG").addClass('alert-danger');
+        }
     };
 
     var $svgUploaderForm = $('#draggable-uploader');
@@ -57,62 +72,16 @@
         })
         .on('drop', function(e) {
             droppedFiles = e.originalEvent.dataTransfer.files;
-            showFileName( droppedFiles );
-            renderSVGPreview( droppedFiles );
+            validateSVG(droppedFiles)
         });
     }
 
     $input.on('change', function(e) {
-      showFileName(e.target.files);
-      renderSVGPreview( droppedFiles );
+        validateSVG(e.target.files);
     });
 
-    $svgUploaderForm.on('submit', function(e) {
-        if ($svgUploaderForm.hasClass('is-uploading')) {
-            return false;
-        }
 
-        $svgUploaderForm.addClass('is-uploading').removeClass('is-error');
 
-        if(isAdvancedUpload) {
-            e.preventDefault();
-
-            var ajaxData = new FormData();
-
-            if (droppedFiles) {
-                $.each(droppedFiles, function(i, file) {
-                    ajaxData.append($input.attr('name'), file);
-                });
-            }
-
-            for (var pair of ajaxData.entries()) {
-                console.log(pair);
-            }
-
-            $.ajax({
-                url: '../send-to-p2p/',
-                type: 'post',
-                data: ajaxData,
-                dataType: 'json',
-                cache: false,
-                contentType: false,
-                processData: false,
-                complete: function() {
-                    $svgUploaderForm.removeClass('is-uploading');
-                },
-                success: function(data) {
-                    $form.addClass( data.success === true ? 'is-success' : 'is-error' );
-                    if (!data.success) {
-                        $errorMsg.text(data.error);
-                    }
-                },
-                error: function(data) {
-                    console.log("Something went wrong in the upload process.");
-                }
-            });
-
-        }
-    });
 
     function slugify(v){
         var slug = v.toLowerCase();
@@ -176,13 +145,15 @@
         // Replaces upload button with confirmation message
         function onSuccess() {
             var msg = "<p>Your SVG has been successfully saved to P2P. You can view your chart at <a target='_blank' href='../get-p2p-admin-url/?slug=" + slug + "'><strong>" + slug + "</strong></a></p><a href='' class='btn btn-large'>Upload another SVG</a>";
-            uploadBtnHolder.innerHTML = msg;
+            uploadBtnHolder.classList.add('hidden');
+            msgHolder.innerHTML = msg;
         }
 
         // Replaces upload button with error message
         function onError() {
             var msg = "<p class='alert alert-danger'>There was an error saving to P2P.</p>";
-            uploadBtnHolder.innerHTML = msg;
+            uploadBtnHolder.classList.add('hidden');
+            msgHolder.innerHTML = msg;
         }
 
         // Save PNG as data URI
@@ -196,11 +167,6 @@
         });
     });
 
-    // svgInput.on('input propertychange', function() {
-    //     preview.innerHTML = this.value;
-    //     validateInput();
-    // });
-
     svgSlugInput.on('input propertychange', function() {
         slug = slugify(document.getElementById('svg-slug').value);
         slugOutput.innerHTML = slug;
@@ -211,9 +177,7 @@
         if (document.getElementById('svg-slug').value.trim() !== '') {
             noSlugWarning.classList.add('hidden');
             slugOutputHolder.classList.remove('hidden');
-
-            // If SVG text field is also filled out
-            if (document.getElementById('svg-text').value.length > 0) {
+            if (droppedFiles) {
                 uploadBtnHolder.classList.remove('hidden');
             }
         } else {
@@ -221,21 +185,6 @@
             slugOutputHolder.classList.add('hidden');
             uploadBtnHolder.classList.add('hidden');
         }
-    }
-
-    function validateInput() {
-        if (document.getElementById('svg-text').value.length > 0) {
-            previewHolder.classList.remove('hidden');
-
-            // If slug field is also filled out
-            if (document.getElementById('svg-slug').value.trim() !== '') {
-                uploadBtnHolder.classList.remove('hidden');
-            }
-        } else {
-            uploadBtnHolder.classList.add('hidden');
-            previewHolder.classList.add('hidden');
-        }
-
     }
 
     function includeFontFace(svg) {
@@ -300,7 +249,6 @@
             styleTag.innerHTML = fontFaceString;
         }
     }
-
 
 
     // Check if the SVG has an image child element, and if so,
