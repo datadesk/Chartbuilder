@@ -7,14 +7,110 @@
     <title>Chartbuilder 2.6.4 archive page</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
     <style>
         .container {margin-top:42px;}
         .delete {color:#930000;}
         .links {margin-bottom:0;}
         .delete-confirmation {margin-top:0; padding-top:0;}
         .removing p, .removing h2 {display:none;}
-        .storageItem {transition:all .5s;}
-
+        .list {padding:0;}
+        .storageItem {transition:all .5s; list-style-type: none;}
+        #text-search {
+                width: 325px;
+        }
+        .standalone-search {
+            width: 100%;
+            margin: 20px 0;
+            clear: both;
+            height: 50px;
+        }
+        form.standalone-search .btn {
+            -webkit-border-top-left-radius: 0;
+            -webkit-border-bottom-left-radius: 0;
+            -webkit-border-top-right-radius: 4px;
+            -webkit-border-bottom-right-radius: 4px;
+            -moz-border-radius-topleft: 0;
+            -moz-border-radius-bottomleft: 0;
+            -moz-border-radius-topright: 4px;
+            -moz-border-radius-bottomright: 4px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            font-weight: normal;
+            height: 40px;
+            padding: 8px 8px;
+            font-size: 22px;
+            line-height: 28px;
+            background-color: #fff;
+            background-image: none;
+            color: #4591B8;
+        }
+        form.standalone-search input[type="text"] {
+            font-family: 'BentonGothic-Regular',Arial,sans-serif;
+            font-size: 17px;
+            line-height: 20px;
+            height: 22px;
+            padding: 8px 4px;
+            min-width: 60px;
+            -webkit-border-top-left-radius: 4px;
+            -webkit-border-bottom-left-radius: 4px;
+            -moz-border-radius-topleft: 4px;
+            -moz-border-radius-bottomleft: 4px;
+            -webkit-border-top-right-radius: 0;
+            -webkit-border-bottom-right-radius: 0;
+            -moz-border-radius-topright: 0;
+            -moz-border-radius-bottomright: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            box-sizing: content-box;
+        }
+        form.standalone-search input, form.standalone-search button {
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ddd;
+            font-family: 'BentonGothic-Regular',Arial,sans-serif;
+            float: left;
+            margin: 0 0 10px 0;
+        }
+        input[type="text"] {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+            -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+            -webkit-transition: border linear .2s,box-shadow linear .2s;
+            -moz-transition: border linear .2s,box-shadow linear .2s;
+            -o-transition: border linear .2s,box-shadow linear .2s;
+            transition: border linear .2s,box-shadow linear .2s;
+            display: inline-block;
+            height: 20px;
+            padding: 4px 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 20px;
+            color: #555;
+            vertical-align: middle;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+        }
+        .LATSearch01 {
+            font-family: 'LAiconsA';
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+        }
+        .LATSearch01:before {
+            content: "\e1";
+        }
     </style>
 
     <script type="text/javascript" src="//cookbook.latimes.com/js/jquery-1.8.1/jquery.min.js"></script>
@@ -36,26 +132,44 @@
                 <h1 class="chartbuilder-title">Chartbuilder archive</h1>
             </div>
 
-            <div class="storage-list">
-            {% for d in dirs_list %}
-                {% if d != ".DS_Store" %}
-                    <div class="storageItem">
-                        <a href="../?jsonurl={{d}}.json">
-                            <img src="../chartbuilder-storage/{{d}}/{{d}}.png"/>
-                        </a>
-                        <h2 class="itemSlug">{{ d }}</h2>
-                        <p class="links">
-                            <a href="../?jsonurl={{d}}.json">Edit chart</a> | <a href="../chartbuilder-storage/{{d}}/{{d}}.svg">SVG</a> | <a href="../chartbuilder-storage/{{d}}/{{d}}.png">PNG</a> | <a class="delete" data-slug="{{d}}" href="#">Delete</a>
-                        </p>
-                    </div>
-                {% endif %}
-            {% endfor %}
+
+            <div class="storage-list" id="storage-list">
+
+                <form class="standalone-search">
+                    <input id="text-search" class="search" type="text" name="q" placeholder="Search by slug" value="">
+                    <button type="submit" class="btn" disabled>
+                        <i class="LATSearch01"></i>
+                    </button>
+                </form>
+
+                <ul class="list">
+                    {% for d in dirs_list %}
+                        {% if d != ".DS_Store" %}
+                            <li class="storageItem">
+                                <a href="../?jsonurl={{d}}.json">
+                                    <img src="../chartbuilder-storage/{{d}}/{{d}}.png"/>
+                                </a>
+                                <h2 class="itemSlug">{{ d }}</h2>
+                                <p class="links">
+                                    <a href="../?jsonurl={{d}}.json">Edit chart</a> | <a href="../chartbuilder-storage/{{d}}/{{d}}.svg">SVG</a> | <a href="../chartbuilder-storage/{{d}}/{{d}}.png">PNG</a> | <a class="delete" data-slug="{{d}}" href="#">Delete</a>
+                                </p>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
 
     <script>
+    var listOptions = {
+        valueNames: ['itemSlug']
+    };
+
+    var chartList = new List('storage-list', listOptions);
+
 
     function bindDelete(e) {
         e.preventDefault();
@@ -91,14 +205,12 @@
 
                 setTimeout(function() {
                     item.remove();
-                }, 600)
+                }, 600);
             });
 
             // Rebind delete click event
             $('.delete').on('click', bindDelete);
         });
-
-
 
     }
 
