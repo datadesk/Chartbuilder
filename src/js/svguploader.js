@@ -39,7 +39,9 @@
 
             // Fill in the slug, if nothing present
             if (document.getElementById('svg-slug').value.trim() === '') {
-                svgSlugInput.val(file.name);
+                var fileSlug = file.name.replace('.svg', '');
+                svgSlugInput.val(fileSlug);
+                updateSlug();
             }
 
             validateSlug();
@@ -168,11 +170,13 @@
         });
     });
 
-    svgSlugInput.on('input propertychange', function() {
+    function updateSlug() {
         slug = slugify(document.getElementById('svg-slug').value);
         slugOutput.innerHTML = slug;
         validateSlug();
-    });
+    }
+
+    svgSlugInput.on('input propertychange', updateSlug);
 
     function validateSlug() {
         if (document.getElementById('svg-slug').value.trim() !== '') {
