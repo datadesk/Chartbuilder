@@ -30,6 +30,8 @@
         var file = files[0],
             reader = new FileReader();
 
+        console.log(file);
+
         $label.removeClass('alert-danger');
         reader.readAsText(file, "UTF-8");
         reader.onload = function(evt) {
@@ -42,6 +44,13 @@
                 var fileSlug = file.name.replace('.svg', '');
                 svgSlugInput.val(fileSlug);
                 updateSlug();
+            }
+
+            // Show warning if file size is too big
+            if (file.size > 1500000) {
+                msgHolder.innerHTML = "<p class='alert alert-danger'>Your SVG is very large (> 1.5MB), consider saving this as an image instead</p>";
+            } else {
+                msgHolder.innerHTML = '';
             }
 
             validateSlug();
@@ -75,15 +84,13 @@
         })
         .on('drop', function(e) {
             droppedFiles = e.originalEvent.dataTransfer.files;
-            validateSVG(droppedFiles)
+            validateSVG(droppedFiles);
         });
     }
 
     $input.on('change', function(e) {
         validateSVG(e.target.files);
     });
-
-
 
 
     function slugify(v){
