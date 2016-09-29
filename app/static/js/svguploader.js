@@ -313,9 +313,7 @@
         // Show warning if file size is too big
         if (file.size > 2000000) {
             $label.addClass("alert-danger").html("Your SVG is too big (> 2MB).<br>Consider saving this as an image instead or<br>make sure there aren't any extra layers<br>in your Illustrator file.");
-
         } else {
-
             $label.removeClass('alert-danger');
             reader.readAsText(file, "UTF-8");
             reader.onload = function(evt) {
@@ -419,6 +417,13 @@
         });
     }
 
+    function checkRatio(ratio) {
+        if (ratio > 1.0) {
+            var msg = "<p class='alert alert-danger'>You're uploading a vertically-oriented graphic. Please check the display in the P2P story item to make sure that it does not collide with another embed or ad and break the layout of the story</p>";
+            msgHolder.innerHTML += msg;
+        }
+    }
+
     submitBtn.on('click', function(e) {
         e.preventDefault();
         var w = preview.clientWidth,
@@ -433,9 +438,11 @@
 
         // Replaces upload button with confirmation message
         function onSuccess() {
-            var msg = "<p>Your SVG has been successfully saved to P2P. You can view your chart at <a target='_blank' href='../get-p2p-admin-url/?slug=" + slug + "'><strong>" + slug + "</strong></a></p><a href='' class='btn btn-large'>Upload another SVG</a>";
+            var msg = "<p>Your SVG has been successfully saved to P2P. You can view your chart at <a target='_blank' href='../get-p2p-admin-url/?slug=" + slug + "'><strong>" + slug + "</strong></a></p>";
             uploadBtnHolder.classList.add('hidden');
             msgHolder.innerHTML = msg;
+            checkRatio(ratio);
+            msgHolder.innerHTML += "<a href='' class='btn btn-large'>Upload another SVG</a>";
         }
 
         // Replaces upload button with error message
@@ -443,7 +450,10 @@
             var msg = "<p class='alert alert-danger'>There was an error saving to P2P.</p>";
             uploadBtnHolder.classList.add('hidden');
             msgHolder.innerHTML = msg;
+            checkRatio(ratio);
         }
+
+
 
         // Save PNG as data URI
         saveSvgAsPng.svgAsPngUri(preview.firstElementChild, { scale: 2.0 }, function(pngUri){
