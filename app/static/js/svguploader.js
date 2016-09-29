@@ -310,31 +310,30 @@
         var file = files[0],
             reader = new FileReader();
 
-        console.log(file);
+        // Show warning if file size is too big
+        if (file.size > 2000000) {
+            $label.addClass("alert-danger").html("Your SVG is too big (> 2MB).<br>Consider saving this as an image instead or<br>make sure there aren't any extra layers<br>in your Illustrator file.");
 
-        $label.removeClass('alert-danger');
-        reader.readAsText(file, "UTF-8");
-        reader.onload = function(evt) {
-            $svgUploaderForm.addClass('has-content');
-            previewHolder.classList.remove('hidden');
-            preview.innerHTML = evt.target.result;
+        } else {
 
-            // Fill in the slug, if nothing present
-            if (document.getElementById('svg-slug').value.trim() === '') {
-                var fileSlug = file.name.replace('.svg', '');
-                svgSlugInput.val(fileSlug);
-                updateSlug();
-            }
+            $label.removeClass('alert-danger');
+            reader.readAsText(file, "UTF-8");
+            reader.onload = function(evt) {
+                $svgUploaderForm.addClass('has-content');
+                previewHolder.classList.remove('hidden');
+                preview.innerHTML = evt.target.result;
 
-            // Show warning if file size is too big
-            if (file.size > 1500000) {
-                msgHolder.innerHTML = "<p class='alert alert-danger'>Your SVG is very large (> 1.5MB), consider saving this as an image instead</p>";
-            } else {
-                msgHolder.innerHTML = '';
-            }
+                // Fill in the slug, if nothing present
+                if (document.getElementById('svg-slug').value.trim() === '') {
+                    var fileSlug = file.name.replace('.svg', '');
+                    svgSlugInput.val(fileSlug);
+                    updateSlug();
+                }
 
-            validateSlug();
-        };
+                validateSlug();
+            };
+
+        }
 
     };
 
@@ -479,6 +478,7 @@
         }
     }
 
+    // Include the font definitions, instead of trying to remap what illustrator has
     function includeFontFace(svg) {
         var styleTag = svg.getElementsByTagName('style')[0];
         var fontFaceString = "\
