@@ -138,7 +138,7 @@
     }
 
     function checkRatio(ratio) {
-        if (ratio > 1.0) {
+        if (ratio > 100) {
             var msg = "<p class='alert alert-danger'>You're uploading a vertically-oriented graphic. Please check the display in the P2P story item to make sure that it does not collide with another embed or ad and break the layout of the story</p>";
             msgHolder.innerHTML += msg;
         }
