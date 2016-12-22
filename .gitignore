@@ -3,6 +3,7 @@ node_modules/**
 build
 !node_modules/stylus-normalize
 .DS_Store
+.idea
 .tmp
 .lvimrc
 *.pyc
@@ -12,3 +13,5 @@ src/fonts
 storage/
 secrets/
 chartbuilder-storage/
+config.json
+.awspublish-*
