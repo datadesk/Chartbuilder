@@ -180,7 +180,7 @@
         var $this = $(this);
         var slug = $this.data('slug');
 
-        var item = $this.parents('.storageItem');;
+        var item = $this.parents('.storageItem');
         item.append("<p class='delete-confirmation'>Are you sure you want to delete this chart? <a id='yes' href='#'>YES</a> | <a id='no' href='#'>NO</a></p>");
 
         $('#no').on('click', function() {
@@ -201,7 +201,7 @@
 
             $.get(url, function() {
                 $('.delete-confirmation', item).remove();
-                item.addClass('removing').css({'opacity':0, 'width':0})
+                item.addClass('removing').css({'opacity':0, 'width':0});
 
                 setTimeout(function() {
                     item.remove();
