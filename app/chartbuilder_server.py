@@ -414,7 +414,7 @@ def send_to_p2p():
             slug = data['slug']
 
             # Only send to Slack if this is coming from Chartbuilder
-            if data['source'] != 'blurbinator':
+            if data['source'] != 'blurbinator' and created:
                 msg = slack.prep_slack_message(slug, created)
                 slack.send_message(msg)
 
