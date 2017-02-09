@@ -300,7 +300,10 @@ def update_or_create_chartblurb(data):
     app.logger.debug("prepping payload")
 
     # prep the data for P2P
-    payload = prep_p2p_blurb_payload(data)
+    if data['source'] != "mapmaker":
+        payload = prep_p2p_blurb_payload(data)
+    else:
+        payload = prep_p2p_image_payload(data)
 
     # Get a P2P connection ready to go
     conn = get_p2p_connection()
@@ -399,10 +402,7 @@ def send_to_p2p():
 
         try:
             app.logger.debug("try. trying hard.")
-            if data['source'] != "mapmaker":
-                created, obj = update_or_create_chartblurb(data)
-            else:
-                created, obj = update_or_create_photo(data)
+            created, obj = update_or_create_chartblurb(data)
 
             content = {
                 "message": "Updated in P2P",
