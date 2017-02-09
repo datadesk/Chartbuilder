@@ -220,14 +220,15 @@ def prep_p2p_image_payload(data):
         'title': data['slug'],
         'content_item_type_code': 'photo',
         'content_item_state_code': 'working',
-        "original_thumbnail_url": url,
-        "thumbnail_source_code": "latimes",
-        "alt_thumbnail_source_code": "latimes",
-        # 'photo_upload': {
-        #     'alt_thumbnail': {
-        #         'url': url,
-        #     }
-        # }
+        # "original_thumbnail_url": url,
+        # "thumbnail_source_code": "latimes",
+        # "alt_thumbnail_source_code": "latimes",
+        'photo_upload': {
+            'alt_thumbnail': {
+                'url': url,
+                'source_code': "latimes"
+            }
+        }
     }
 
     # Pass it out
