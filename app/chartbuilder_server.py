@@ -225,7 +225,8 @@ def prep_p2p_image_payload(data):
         # "alt_thumbnail_source_code": "latimes",
         'photo_upload': {
             'alt_thumbnail': {
-                'url': url,
+                # 'url': url,
+                'url': "https://s3-us-west-2.amazonaws.com/latimes-graphics-media/chartbuilder/temp/map_02_08_2017_30_18_7",
                 'source_code': "latimes"
             }
         }
