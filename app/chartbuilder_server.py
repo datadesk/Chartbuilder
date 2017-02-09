@@ -424,6 +424,7 @@ def send_to_p2p():
                 slack.send_message(msg)
 
             app.logger.debug("Created object in P2P!")
+            return slug
 
         except Exception as e:
             app.logger.debug("Exception!")
