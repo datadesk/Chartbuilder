@@ -308,6 +308,9 @@ def update_or_create_chartblurb(data):
     # Get a P2P connection ready to go
     conn = get_p2p_connection()
 
+    # Default created to False
+    created = False
+
     # If a P2P record already exists...
     if obj:
         # ... update it
@@ -316,7 +319,6 @@ def update_or_create_chartblurb(data):
         # Set to the content item's code
         payload['content_item_state_code'] = obj['content_item_state_code']
         conn.update_content_item(payload, p2p_slug)
-        created = False
     # if it doesn't already exist...
     else:
         # ... create it
