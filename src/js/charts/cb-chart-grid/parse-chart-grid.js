@@ -64,7 +64,7 @@ function parseChartgrid(config, _chartProps, callback, parseOpts) {
 
 	if (bySeries.hasDate) {
 		chartProps.scale.dateSettings = chartProps.scale.dateSettings || clone(config.defaultProps.chartProps.scale.dateSettings);
-		chartProps.scale.dateSettings.inputTZ = chartProps.scale.dateSettings.inputTZ || SessionStore.get("nowOffset")
+		chartProps.scale.dateSettings.inputTZ = chartProps.scale.dateSettings.inputTZ || SessionStore.get("nowOffset");
 		// for dates, default type should be line
 		gridSettings.type = _chartProps._grid.type || "line";
 		isColumnOrBar = (gridSettings.type === "column" || gridSettings.type === "bar");

@@ -94,7 +94,7 @@ var using = {
 		line.x(function(d) {
 			if (this.x.$scale == "time" || this.x.$scale == "linear") {
 				return this.x(d[this.x.$key]);
-			} 
+			}
 			else {
 				return this.x(d[this.x.$key]) + this.x.rangeBand() / 2;
 			}
@@ -351,20 +351,20 @@ var cb_xy = d4.chart("cb-xy", function() {
 				var coords = help.transformCoords(axisNode.attr("transform"));
 				coords[1] = coords[1] + xy_config.xAxisShift;
 				axisNode.attr("transform","translate(" + coords + ")");
-				
 
 
-				
 
-				
+
+
+
 
 			});
 		})
 		.using("x-axis-label", function(label) {
 			label.afterRender(function(curLabel, data, chartArea){
-				var first_tick = this.container.selectAll(".xAxis .tick")[0][0]
-				chartArea.selectAll(".xAxislabel").attr("dx",first_tick.getBoundingClientRect().width/-2)
-			})
+				var first_tick = this.container.selectAll(".xAxis .tick")[0][0];
+				chartArea.selectAll(".xAxislabel").attr("dx",first_tick.getBoundingClientRect().width/-2);
+			});
 		})
 		.y(function(y){
 			y.clamp(false);

@@ -206,6 +206,31 @@ def slug_exists(slug):
         return False
 
 
+def prep_p2p_image_payload(data):
+    """
+    Accepts a data dictionary POSTed by the chartbuilder interface and transforms
+    it into the data structure expected by P2P's API.
+    """
+    # start things off
+    slug = data['slug']
+    url = get_s3_url(slug)
+
+    payload = {
+        'slug': slug,
+        'title': data['slug'],
+        'content_item_type_code': 'photo',
+        'content_item_state_code': 'working',
+        'photo_upload': {
+            'alt_thumbnail': {
+                'url': url,
+            }
+        }
+    }
+
+    # Pass it out
+    return payload
+
+
 def prep_p2p_blurb_payload(data):
     """
     Accepts a data dictionary POSTed by the chartbuilder interface and transforms
@@ -374,7 +399,11 @@ def send_to_p2p():
 
         try:
             app.logger.debug("try. trying hard.")
-            created, obj = update_or_create_chartblurb(data)
+            if data['source'] != "mapmaker":
+                created, obj = update_or_create_chartblurb(data)
+            else:
+                created, obj = update_or_create_photo(data)
+
             content = {
                 "message": "Updated in P2P",
                 "created": created,
@@ -400,6 +429,8 @@ def send_to_p2p():
             return r
 
     return "Sending to p2p!"
+
+
 
 
 @app.route('/get-p2p-admin-url/')
