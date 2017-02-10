@@ -220,13 +220,9 @@ def prep_p2p_image_payload(data):
         'title': data['slug'],
         'content_item_type_code': 'photo',
         'content_item_state_code': 'working',
-        # "original_thumbnail_url": url,
-        # "thumbnail_source_code": "latimes",
-        # "alt_thumbnail_source_code": "latimes",
         'photo_upload': {
             'alt_thumbnail': {
-                # 'url': url,
-                'url': "https://s3-us-west-2.amazonaws.com/latimes-graphics-media/chartbuilder/temp/map_02_08_2017_30_18_7",
+                'url': url,
                 'source_code': "latimes"
             }
         }
